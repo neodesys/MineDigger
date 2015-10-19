@@ -1,0 +1,2 @@
+target extended-remote :6400
+set remote exec-file MineDigger/bin/mingw64/MineDigger_debug.exe
