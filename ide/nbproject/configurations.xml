@@ -166,7 +166,11 @@
             <standard>8</standard>
             <incDir>
               <pElem>/usr/x86_64-w64-mingw32/include</pElem>
+              <pElem>../ext/SDL2-2.0.3/include/SDL2</pElem>
               <pElem>../ext/SDL2-2.0.3/include</pElem>
+              <pElem>../ext/SDL2_image-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_mixer-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_ttf-2.0.12/include</pElem>
             </incDir>
             <preprocessorList>
               <Elem>_WIN32</Elem>
@@ -199,7 +203,11 @@
             <standard>8</standard>
             <incDir>
               <pElem>/usr/x86_64-w64-mingw32/include</pElem>
+              <pElem>../ext/SDL2-2.0.3/include/SDL2</pElem>
               <pElem>../ext/SDL2-2.0.3/include</pElem>
+              <pElem>../ext/SDL2_image-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_mixer-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_ttf-2.0.12/include</pElem>
             </incDir>
             <preprocessorList>
               <Elem>NDEBUG</Elem>
@@ -233,7 +241,11 @@
             <standard>8</standard>
             <incDir>
               <pElem>/usr/i686-w64-mingw32/include</pElem>
+              <pElem>../ext/SDL2-2.0.3/include/SDL2</pElem>
               <pElem>../ext/SDL2-2.0.3/include</pElem>
+              <pElem>../ext/SDL2_image-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_mixer-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_ttf-2.0.12/include</pElem>
             </incDir>
             <preprocessorList>
               <Elem>_WIN32</Elem>
@@ -266,7 +278,11 @@
             <standard>8</standard>
             <incDir>
               <pElem>/usr/i686-w64-mingw32/include</pElem>
+              <pElem>../ext/SDL2-2.0.3/include/SDL2</pElem>
               <pElem>../ext/SDL2-2.0.3/include</pElem>
+              <pElem>../ext/SDL2_image-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_mixer-2.0.0/include</pElem>
+              <pElem>../ext/SDL2_ttf-2.0.12/include</pElem>
             </incDir>
             <preprocessorList>
               <Elem>NDEBUG</Elem>

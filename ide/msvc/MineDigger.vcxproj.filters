@@ -2,18 +2,129 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{4303ffc2-643a-44d9-943d-684ffbdc05a7}</UniqueIdentifier>
+      <UniqueIdentifier>{4669cbb4-f501-4803-945b-1677c5724124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\app">
+      <UniqueIdentifier>{6abe8479-8d3f-4b51-88cc-ecee9567fab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game">
+      <UniqueIdentifier>{9b887927-934a-494d-8288-2a943ca77a5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sys">
+      <UniqueIdentifier>{b159ae18-120e-49bc-b8fa-5190c9cab0bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="precomp.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\app\app.cpp">
+      <Filter>src\app</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\src\precomp.h">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\app\DynSprite.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\FixedPlane.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\Sprite.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\GemSprite.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\MineDigger.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\PlayScreen.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\ScoreScreen.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\StartScreen.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\GameEngine.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\Logger.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\Renderer.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\ResLoader.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\SoundPlayer.cpp">
+      <Filter>src\sys</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="precomp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\app\app.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\DynSprite.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\FixedPlane.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\IGame.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\IGameScreen.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\IResHolder.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Sprite.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Vec2.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\GemSprite.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\MineDigger.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\PlayScreen.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\ScoreScreen.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\StartScreen.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\GameEngine.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\IDrawable.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\IMouseListener.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\Logger.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\Renderer.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\ResLoader.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\SoundPlayer.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\precomp.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

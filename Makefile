@@ -54,11 +54,10 @@ PROJECT_NAME=MineDigger
 SRC_DIR=src
 BUILD_DIR=build
 BIN_DIR=bin
+EXT_DIR=ext
+RES_DIR=res
 
 SRC_PRECOMP_HEADER=precomp.h
-
-EXT_DIR=ext
-SDL2_VERSION=2.0.3
 
 #Build paths and tools
 ifeq ($(PLATFORM),linux)
@@ -75,12 +74,13 @@ LD=$(CXX)
 MKDIR=mkdir -p
 RMDIR=rmdir --ignore-fail-on-non-empty
 RM=rm -rf
-CP=cp -f
+CP=cp -uf
 SED=sed
 
 #Compiler/Linker default options
 CXXFLAGS+=-Wall -Werror -std=c++11 -pedantic -fno-rtti
-LDLIBS=-lSDL2
+
+LDLIBS=-lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 ifeq ($(ARCH),64)
     CXXFLAGS+=-m64
@@ -103,13 +103,15 @@ else
 endif
 
 ifeq ($(PLATFORM),mingw)
-    INCDIRS+=-I$(EXT_DIR)/SDL2-$(SDL2_VERSION)/include
-    LIBDIRS+=-L$(EXT_DIR)/SDL2-$(SDL2_VERSION)/lib/$(PLATFORM)$(ARCH)
+    INCDIRS+=$(patsubst %,-I%,$(wildcard $(EXT_DIR)/SDL2-*/include/SDL2) $(wildcard $(EXT_DIR)/*/include))
+    LIBDIRS+=$(patsubst %,-L%,$(wildcard $(EXT_DIR)/*/lib/$(PLATFORM)$(ARCH)))
+    LDLIBS:=-lmingw32 -lSDL2main $(LDLIBS)
     LDFLAGS+=-static-libgcc -static-libstdc++ -mwindows
 endif
 
 #Build variables
-TARGET=$(BIN_DIR)/$(PLATFORM)$(ARCH)/$(PROJECT_NAME)_$(BUILD)
+TARGET_DIR=$(BIN_DIR)/$(PLATFORM)$(ARCH)
+TARGET=$(TARGET_DIR)/$(PROJECT_NAME)_$(BUILD)
 OBJ_DIR=$(BUILD_DIR)/$(PLATFORM)$(ARCH)_$(BUILD)
 
 ifeq ($(PLATFORM),mingw)
@@ -126,20 +128,21 @@ DEP_FILES=$(patsubst %.cpp, $(OBJ_DIR)/%.d, $(SRC_FILES))
 .PHONY: all clean clean-all
 
 ifeq ($(PLATFORM),mingw)
-    SDL2_DLL_TARGET=$(BIN_DIR)/$(PLATFORM)$(ARCH)/SDL2.dll
-    all: $(TARGET) $(SDL2_DLL_TARGET)
-
-    $(SDL2_DLL_TARGET): $(EXT_DIR)/SDL2-$(SDL2_VERSION)/bin/win$(ARCH)/SDL2.dll
-	@$(MKDIR) $(@D)
-	@$(CP) $< $@
+    EXT_DLL=$(wildcard $(EXT_DIR)/*/bin/win$(ARCH)/*.dll)
+    all: $(TARGET) $(RES_DIR) $(EXT_DLL)
+	@$(MKDIR) $(TARGET_DIR)
+	@$(CP) -r $(RES_DIR) $(TARGET_DIR)/
+	@$(CP) $(EXT_DLL) $(TARGET_DIR)/
 else
-    all: $(TARGET)
+    all: $(TARGET) $(RES_DIR)
+	@$(MKDIR) $(TARGET_DIR)
+	@$(CP) -r $(RES_DIR) $(TARGET_DIR)/
 endif
 
 clean:
 	$(info Cleaning $(BUILD) build on $(PLATFORM) $(ARCH) bits...)
 	@$(RM) $(OBJ_DIR) $(TARGET)
-	@-$(RMDIR) $(BIN_DIR)/$(PLATFORM)$(ARCH) $(BIN_DIR) $(BUILD_DIR) 2>/dev/null
+	@-$(RMDIR) $(TARGET_DIR) $(BIN_DIR) $(BUILD_DIR) 2>/dev/null
 
 clean-all:
 	$(info Cleaning all builds on all platforms...)

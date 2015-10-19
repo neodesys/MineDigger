@@ -17,63 +17,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_main.h>
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif //_WIN32
+#include "sys/Logger.h"
+#include "app/app.h"
+#include "game/MineDigger.h"
 
-#include "Logger.h"
-
-#ifdef _WIN32
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
-#else
-int main()
-#endif //_WIN32
+int main(int argc, char** argv)
 {
-	Logger::setLogPriority(LogLevel::INFO);
-	const Logger log("main");
-
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER))
+	//Parse command line for log priority
+	for (int i = 1; i < argc; ++i)
 	{
-		log.critical("Cannot initialize SDL2 (%s)", SDL_GetError());
-		return -1;
-	}
-
-	SDL_Window* pWnd = SDL_CreateWindow("MineDigger", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 755, 600, SDL_WINDOW_SHOWN);
-	if (!pWnd)
-	{
-		log.critical("Cannot create game window (%s)", SDL_GetError());
-		SDL_Quit();
-		return -2;
-	}
-
-	bool bQuit = false;
-	for (;;)
-	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		if ((!SDL_strcmp(argv[i], "-l") || !SDL_strcmp(argv[i], "--log")) && (i + 1 < argc))
 		{
-			switch(event.type)
+			const char* level = argv[i + 1];
+			if (!SDL_strcasecmp(level, "info"))
 			{
-			case SDL_QUIT:
-				bQuit = true;
+				sys::Logger::setLogPriority(sys::LogLevel::INFO);
 				break;
-
-			case SDL_KEYUP:
-				//TODO
+			}
+			else if (!SDL_strcasecmp(level, "warn") || !SDL_strcasecmp(level, "warning"))
+			{
+				sys::Logger::setLogPriority(sys::LogLevel::WARNING);
+				break;
+			}
+			else if (!SDL_strcasecmp(level, "crit") || !SDL_strcasecmp(level, "critical"))
+			{
+				sys::Logger::setLogPriority(sys::LogLevel::CRITICAL);
 				break;
 			}
 		}
-
-		if (bQuit)
-			break;
-
-		//TODO: implement game main loop
 	}
 
-	SDL_DestroyWindow(pWnd);
-	SDL_Quit();
-	return 0;
+	//Run game
+	game::MineDigger game;
+	return static_cast<int>(app::run(game));
 }

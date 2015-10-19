@@ -33,15 +33,16 @@
        gnu-compatible ones (gcc, mingw and clang) and Visual C++
 #endif
 
+#include <cstdint>
 #include <cstdarg>
-#include <cstdio>
 #include <ctime>
+#include <cassert>
+#include <new>
+#include <cmath>
 
 #include <SDL2/SDL.h>
-
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif //_WIN32
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 
 #endif //_PRECOMP_H_
