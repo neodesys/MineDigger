@@ -21,19 +21,40 @@
 #define	_SPRITE_H_
 
 #include "../sys/IDrawable.h"
-#include "Vec2.h"
+#include "../sys/Vec2.h"
+
+namespace sys
+{
+	class Texture;
+}
 
 namespace app
 {
 	class Sprite : public sys::IDrawable
 	{
 	public:
-		Vec2 m_pos;
-		float m_scale = 1.f;
+		void setPos(const sys::Vec2& pos)
+		{
+			m_pos = pos;
+		}
 
-		//TODO
+		void setScale(float scale)
+		{
+			m_scale = scale;
+		}
+
+		void setTexture(const sys::Texture* pTexture);
+		void setTexture(const sys::Texture* pTexture, const sys::Rect& clip);
 
 		virtual void draw(sys::Renderer& rdr) override;
+
+	protected:
+		sys::Vec2 m_pos;
+		float m_scale = 1.f;
+
+		const sys::Texture* m_pTexture = nullptr;
+		bool m_bSrcClip = false;
+		sys::Rect m_srcClip;
 	};
 }
 

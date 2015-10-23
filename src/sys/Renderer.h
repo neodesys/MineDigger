@@ -20,16 +20,19 @@
 #ifndef _RENDERER_H_
 #define	_RENDERER_H_
 
-#include <cstdint>
-
 #include "Logger.h"
 
+struct SDL_Texture;
+struct SDL_Surface;
 struct SDL_Window;
 struct SDL_Renderer;
 
 namespace sys
 {
 	class IDrawable;
+	class Texture;
+	class Rect;
+	class Color;
 
 	class Renderer final
 	{
@@ -43,8 +46,19 @@ namespace sys
 			return m_bFullscreen;
 		}
 
+		SDL_Texture* createSDLTextureFromSurface(SDL_Surface* pSDLSurf);
+
 		void renderFrame(IDrawable* p);
-		void clearBackground(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a);
+
+		//Background is always cleared with an opaque color.
+		//If pColor is null, background is cleared with opaque black.
+		void clearBackground(const Color* pColor);
+
+		void draw(IDrawable& d);
+
+		//If pSrcRect is null, source texture is not clipped.
+		//If pDestRect is null, destination is stretched to the entire viewport
+		void drawTexture(const Texture& tex, const Rect* pSrcRect, const Rect* pDestRect);
 
 	private:
 		Renderer(SDL_Window* pSDLWnd, SDL_Renderer* pSDLRdr) : m_pSDLWnd(pSDLWnd), m_pSDLRdr(pSDLRdr) {}

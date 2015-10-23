@@ -19,15 +19,20 @@
 
 #include "MineDigger.h"
 
+#include "../sys/Texture.h"
+
 namespace
 {
-	const char GAME_NAME[] = "MineDigger";
-
-	const int BOARD_DIMENSIONS[] = {755, 600};
+	#include "MineDigger.cfg"
 }
 
 namespace game
 {
+	MineDigger::MineDigger() :
+		m_startScreen(*this),
+		m_playScreen(*this, PLAYSCREEN_CONFIG),
+		m_scoreScreen(*this) {}
+
 	MineDigger::~MineDigger()
 	{
 		cleanRes(true);
@@ -62,11 +67,8 @@ namespace game
 
 	void MineDigger::destroyLoadingDrawable()
 	{
-		if (m_pLoadingDrawable)
-		{
-			delete m_pLoadingDrawable;
-			m_pLoadingDrawable = nullptr;
-		}
+		delete m_pLoadingDrawable;
+		m_pLoadingDrawable = nullptr;
 	}
 
 	void MineDigger::onGameStart()
@@ -139,12 +141,25 @@ namespace game
 
 	app::ResState MineDigger::getSharedResState(const sys::GameEngine* pEngine)
 	{
-		//TODO
-		return app::ResState::READY;
+		if (m_pBackgroundTex)
+			return app::ResState::READY;
+
+		if (!pEngine)
+			return app::ResState::LOADING;
+
+		m_pBackgroundTex = sys::Texture::loadTexture(BACKGROUND_ASSET, *pEngine);
+		if (m_pBackgroundTex)
+			return app::ResState::READY;
+
+		return app::ResState::ERROR;
 	}
 
 	void MineDigger::cleanSharedRes(bool bForce)
 	{
-		//TODO
+		if (bForce)
+		{
+			delete m_pBackgroundTex;
+			m_pBackgroundTex = nullptr;
+		}
 	}
 }

@@ -20,9 +20,9 @@
 #ifndef _VEC2_H_
 #define	_VEC2_H_
 
-#include <cmath>
+#include "sys.h"
 
-namespace app
+namespace sys
 {
 	class Vec2 final
 	{
@@ -30,8 +30,11 @@ namespace app
 		float x = 0.f;
 		float y = 0.f;
 
+		static constexpr float EPSILON = 1e-6f;
+
 		Vec2() = default;
 		Vec2(float x, float y) : x(x), y(y) {}
+		Vec2(int x, int y) : x(static_cast<float>(x)), y(static_cast<float>(y)) {}
 
 		Vec2& operator+=(const Vec2& v)
 		{
@@ -69,6 +72,11 @@ namespace app
 			return Vec2(x * f, y * f);
 		}
 
+		float squareNorm() const
+		{
+			return x * x + y * y;
+		}
+
 		float norm() const
 		{
 			return std::sqrt(x * x + y * y);
@@ -90,14 +98,32 @@ namespace app
 			return (v - *this).norm();
 		}
 
-		bool operator<=(const Vec2& v) const
+		float dot(const Vec2& v) const
 		{
-			return ((x <= v.x) && (y <= v.y));
+			return x * v.x + y * v.y;
 		}
 
-		bool operator>=(const Vec2& v) const
+		bool isInside(const Rect& r) const
 		{
-			return ((x >= v.x) && (y >= v.y));
+			return ((x >= r.x) && (y >= r.y) &&
+					(x < r.x + r.w) && (y < r.y + r.h));
+		}
+
+		bool operator==(const Vec2& v) const
+		{
+			return ((std::abs(v.x - x) <= EPSILON) &&
+					(std::abs(v.y - y) <= EPSILON));
+		}
+
+		bool operator!=(const Vec2& v) const
+		{
+			return !(*this == v);
+		}
+
+		bool isNull() const
+		{
+			return ((std::abs(x) <= EPSILON) &&
+					(std::abs(y) <= EPSILON));
 		}
 	};
 }

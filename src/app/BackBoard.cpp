@@ -17,19 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _FIXEDPLANE_H_
-#define	_FIXEDPLANE_H_
+#include "BackBoard.h"
 
-#include "../sys/IDrawable.h"
+#include "../sys/Renderer.h"
 
 namespace app
 {
-	class FixedPlane : public sys::IDrawable
+	void BackBoard::draw(sys::Renderer& rdr)
 	{
-	public:
-		//TODO
-		virtual void draw(sys::Renderer& rdr) override;
-	};
-}
+		rdr.clearBackground(&m_backColor);
 
-#endif //_FIXEDPLANE_H_
+		if (m_pTexture)
+			rdr.drawTexture(*m_pTexture, nullptr, nullptr);
+	}
+}

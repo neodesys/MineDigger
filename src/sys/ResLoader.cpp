@@ -23,6 +23,7 @@
 
 #include <SDL2/SDL_rwops.h>
 #include <SDL2/SDL_filesystem.h>
+#include <SDL2/SDL_image.h>
 
 namespace
 {
@@ -119,6 +120,16 @@ namespace sys
 	ResLoader::~ResLoader()
 	{
 		SDL_free(m_pPathBuffer);
+	}
+
+	SDL_Surface* ResLoader::loadImage(const char* asset)
+	{
+		SDL_Surface* pSDLSurf = IMG_Load(getAssetFullPath(asset));
+		if (pSDLSurf)
+			return pSDLSurf;
+
+		s_log.warning("Cannot load \"%s\" image (%s)", asset ? asset : "", IMG_GetError());
+		return nullptr;
 	}
 
 	const char* ResLoader::getAssetFullPath(const char* asset)

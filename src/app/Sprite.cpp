@@ -20,11 +20,53 @@
 #include "Sprite.h"
 
 #include "../sys/Renderer.h"
+#include "../sys/Texture.h"
 
 namespace app
 {
+	void Sprite::setTexture(const sys::Texture* pTexture)
+	{
+		m_pTexture = pTexture;
+		m_bSrcClip = false;
+		m_srcClip = {};
+	}
+
+	void Sprite::setTexture(const sys::Texture* pTexture, const sys::Rect& clip)
+	{
+		m_pTexture = pTexture;
+		if (m_pTexture)
+		{
+			m_bSrcClip = true;
+			m_srcClip = clip;
+		}
+		else
+		{
+			m_bSrcClip = false;
+			m_srcClip = {};
+		}
+	}
+
 	void Sprite::draw(sys::Renderer& rdr)
 	{
-		//TODO
+		if (m_pTexture)
+		{
+			sys::Vec2 size;
+			if (m_bSrcClip)
+				size = {m_srcClip.w, m_srcClip.h};
+			else
+				size = {m_pTexture->m_width, m_pTexture->m_height};
+
+			size *= m_scale;
+
+			const sys::Rect destRect =
+			{
+				m_pos.x - 0.5f * size.x,
+				m_pos.y - 0.5f * size.y,
+				size.x,
+				size.y
+			};
+
+			rdr.drawTexture(*m_pTexture, m_bSrcClip ? &m_srcClip : nullptr, &destRect);
+		}
 	}
 }

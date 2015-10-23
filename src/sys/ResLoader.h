@@ -22,6 +22,8 @@
 
 #include "Logger.h"
 
+struct SDL_Surface;
+
 namespace sys
 {
 	class ResLoader final
@@ -29,6 +31,8 @@ namespace sys
 	public:
 		static ResLoader* createResLoader();
 		~ResLoader();
+
+		SDL_Surface* loadImage(const char* asset);
 
 	private:
 		ResLoader(std::size_t basePathLength, char* pPathBuffer) : m_basePathLength(basePathLength), m_pPathBuffer(pPathBuffer) {}

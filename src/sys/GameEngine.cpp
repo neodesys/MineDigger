@@ -31,6 +31,7 @@
 #include "SoundPlayer.h"
 #include "Renderer.h"
 #include "IMouseListener.h"
+#include "Vec2.h"
 
 namespace
 {
@@ -211,18 +212,27 @@ namespace sys
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				if (m_pMouseListener && (event.button.button == SDL_BUTTON_LEFT) && (event.button.clicks == 1))
-					m_pMouseListener->onMouseButtonDown(event.button.x, event.button.y);
+				if (m_pMouseListener && (event.button.button == SDL_BUTTON_LEFT))
+				{
+					const Vec2 pos = {event.button.x, event.button.y};
+					m_pMouseListener->onMouseButtonDown(pos);
+				}
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				if (m_pMouseListener && (event.button.button == SDL_BUTTON_LEFT) && (event.button.clicks == 1))
-					m_pMouseListener->onMouseButtonUp(event.button.x, event.button.y);
+				if (m_pMouseListener && (event.button.button == SDL_BUTTON_LEFT))
+				{
+					const Vec2 pos = {event.button.x, event.button.y};
+					m_pMouseListener->onMouseButtonUp(pos);
+				}
 				break;
 
 			case SDL_MOUSEMOTION:
 				if (m_pMouseListener)
-					m_pMouseListener->onMouseMove(event.motion.x, event.motion.y, (event.motion.state & SDL_BUTTON_LMASK));
+				{
+					const Vec2 pos = {event.motion.x, event.motion.y};
+					m_pMouseListener->onMouseMove(pos, (event.motion.state & SDL_BUTTON_LMASK));
+				}
 				break;
 			}
 		}

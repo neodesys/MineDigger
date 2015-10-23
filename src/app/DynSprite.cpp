@@ -19,12 +19,12 @@
 
 #include "DynSprite.h"
 
-#include "../sys/Renderer.h"
-
 namespace app
 {
-	void DynSprite::draw(sys::Renderer& rdr)
+	void DynSprite::updatePos(float dtCoeff, float dt2)
 	{
-		//TODO
+		m_moveVec *= dtCoeff;
+		m_moveVec += m_acceleration * dt2;
+		m_pos += m_moveVec;
 	}
 }

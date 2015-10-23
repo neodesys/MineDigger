@@ -21,16 +21,16 @@
 #define	_MINEDIGGER_H_
 
 #include "../app/IGame.h"
-#include "StartScreen.h"
-#include "PlayScreen.h"
-#include "ScoreScreen.h"
+#include "start/StartScreen.h"
+#include "play/PlayScreen.h"
+#include "score/ScoreScreen.h"
 
 namespace game
 {
 	class MineDigger final : public app::IGame
 	{
 	public:
-		MineDigger() : m_startScreen(*this), m_playScreen(*this), m_scoreScreen(*this) {}
+		MineDigger();
 		~MineDigger() override final;
 
 		const char* getGameName() override final;
@@ -51,19 +51,27 @@ namespace game
 
 		void switchToNextScreen();
 
+		const sys::Texture* getSharedBackgroundTex() const
+		{
+			return m_pBackgroundTex;
+		}
+
 	private:
 		MineDigger(const MineDigger&) = delete;
 		MineDigger& operator=(const MineDigger&) = delete;
 
-		StartScreen m_startScreen;
-		PlayScreen m_playScreen;
-		ScoreScreen m_scoreScreen;
+		start::StartScreen m_startScreen;
+		play::PlayScreen m_playScreen;
+		score::ScoreScreen m_scoreScreen;
 
 		sys::IDrawable* m_pLoadingDrawable = nullptr;
 		app::IGameScreen* m_pCurrentScreen = nullptr;
 
 		app::ResState getSharedResState(const sys::GameEngine* pEngine);
 		void cleanSharedRes(bool bForce);
+
+		//Shared resources
+		const sys::Texture* m_pBackgroundTex = nullptr;
 	};
 }
 

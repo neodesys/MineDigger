@@ -27,8 +27,27 @@ namespace app
 	class DynSprite : public Sprite
 	{
 	public:
-		//TODO
-		virtual void draw(sys::Renderer& rdr) override;
+		void setAcceleration(const sys::Vec2& v)
+		{
+			m_acceleration = v;
+		}
+
+		void setImpulse(const sys::Vec2& v)
+		{
+			m_moveVec = v;
+		}
+
+		//Update position using time corrected Verlet integration
+		//P(i+1) - P(i) = (P(i) - P(i-1)) * dt(i)/dt(i-1) + A(i) * dt(i)²
+		//with:
+		//  dtCoeff = dt(i)/dt(i-1)
+		//and:
+		//  dt2 = dt(i)²
+		virtual void updatePos(float dtCoeff, float dt2);
+
+	protected:
+		sys::Vec2 m_acceleration;
+		sys::Vec2 m_moveVec;
 	};
 }
 

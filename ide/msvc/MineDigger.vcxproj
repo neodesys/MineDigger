@@ -20,19 +20,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\app\app.cpp" />
+    <ClCompile Include="..\..\src\app\BackBoard.cpp" />
     <ClCompile Include="..\..\src\app\DynSprite.cpp" />
-    <ClCompile Include="..\..\src\app\FixedPlane.cpp" />
     <ClCompile Include="..\..\src\app\Sprite.cpp" />
-    <ClCompile Include="..\..\src\game\GemSprite.cpp" />
     <ClCompile Include="..\..\src\game\MineDigger.cpp" />
-    <ClCompile Include="..\..\src\game\PlayScreen.cpp" />
-    <ClCompile Include="..\..\src\game\ScoreScreen.cpp" />
-    <ClCompile Include="..\..\src\game\StartScreen.cpp" />
+    <ClCompile Include="..\..\src\game\play\GemBoardModel.cpp" />
+    <ClCompile Include="..\..\src\game\play\GemBoardView.cpp" />
+    <ClCompile Include="..\..\src\game\play\GemSprite.cpp" />
+    <ClCompile Include="..\..\src\game\play\PlayScreen.cpp" />
+    <ClCompile Include="..\..\src\game\score\ScoreScreen.cpp" />
+    <ClCompile Include="..\..\src\game\start\StartScreen.cpp" />
     <ClCompile Include="..\..\src\sys\GameEngine.cpp" />
     <ClCompile Include="..\..\src\sys\Logger.cpp" />
     <ClCompile Include="..\..\src\sys\Renderer.cpp" />
     <ClCompile Include="..\..\src\sys\ResLoader.cpp" />
     <ClCompile Include="..\..\src\sys\SoundPlayer.cpp" />
+    <ClCompile Include="..\..\src\sys\Texture.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -213,18 +216,20 @@ FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win64\*.dll" "$(OutDir)" /D /Y /Q 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\app\app.h" />
+    <ClInclude Include="..\..\src\app\BackBoard.h" />
     <ClInclude Include="..\..\src\app\DynSprite.h" />
-    <ClInclude Include="..\..\src\app\FixedPlane.h" />
     <ClInclude Include="..\..\src\app\IGame.h" />
     <ClInclude Include="..\..\src\app\IGameScreen.h" />
     <ClInclude Include="..\..\src\app\IResHolder.h" />
     <ClInclude Include="..\..\src\app\Sprite.h" />
-    <ClInclude Include="..\..\src\app\Vec2.h" />
-    <ClInclude Include="..\..\src\game\GemSprite.h" />
     <ClInclude Include="..\..\src\game\MineDigger.h" />
-    <ClInclude Include="..\..\src\game\PlayScreen.h" />
-    <ClInclude Include="..\..\src\game\ScoreScreen.h" />
-    <ClInclude Include="..\..\src\game\StartScreen.h" />
+    <ClInclude Include="..\..\src\game\play\GemBoardModel.h" />
+    <ClInclude Include="..\..\src\game\play\GemBoardView.h" />
+    <ClInclude Include="..\..\src\game\play\GemSprite.h" />
+    <ClInclude Include="..\..\src\game\play\PlayScreen.h" />
+    <ClInclude Include="..\..\src\game\score\ScoreScreen.h" />
+    <ClInclude Include="..\..\src\game\start\StartScreen.h" />
+    <ClInclude Include="..\..\src\sys\sys.h" />
     <ClInclude Include="..\..\src\sys\GameEngine.h" />
     <ClInclude Include="..\..\src\sys\IDrawable.h" />
     <ClInclude Include="..\..\src\sys\IMouseListener.h" />
@@ -232,7 +237,12 @@ FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win64\*.dll" "$(OutDir)" /D /Y /Q 
     <ClInclude Include="..\..\src\sys\Renderer.h" />
     <ClInclude Include="..\..\src\sys\ResLoader.h" />
     <ClInclude Include="..\..\src\sys\SoundPlayer.h" />
+    <ClInclude Include="..\..\src\sys\Texture.h" />
+    <ClInclude Include="..\..\src\sys\Vec2.h" />
     <ClInclude Include="..\..\src\precomp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\game\MineDigger.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,33 +13,30 @@
     <Filter Include="src\sys">
       <UniqueIdentifier>{b159ae18-120e-49bc-b8fa-5190c9cab0bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\score">
+      <UniqueIdentifier>{45b283c2-0a61-4228-9f25-eaa1fe235d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\play">
+      <UniqueIdentifier>{4d6489c6-2c48-4950-9618-a9aab377c12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\start">
+      <UniqueIdentifier>{a2541ef6-0960-4d4e-85b1-1cfbcf123cc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\app\app.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\app\DynSprite.cpp">
+    <ClCompile Include="..\..\src\app\BackBoard.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\app\FixedPlane.cpp">
+    <ClCompile Include="..\..\src\app\DynSprite.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\app\Sprite.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\GemSprite.cpp">
-      <Filter>src\game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\game\MineDigger.cpp">
-      <Filter>src\game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\game\PlayScreen.cpp">
-      <Filter>src\game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\game\ScoreScreen.cpp">
-      <Filter>src\game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\game\StartScreen.cpp">
       <Filter>src\game</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\sys\GameEngine.cpp">
@@ -57,19 +54,40 @@
     <ClCompile Include="..\..\src\sys\SoundPlayer.cpp">
       <Filter>src\sys</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\sys\Texture.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="precomp.cpp" />
+    <ClCompile Include="..\..\src\game\play\GemBoardModel.cpp">
+      <Filter>src\game\play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\play\GemBoardView.cpp">
+      <Filter>src\game\play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\play\GemSprite.cpp">
+      <Filter>src\game\play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\play\PlayScreen.cpp">
+      <Filter>src\game\play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\score\ScoreScreen.cpp">
+      <Filter>src\game\score</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\start\StartScreen.cpp">
+      <Filter>src\game\start</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\app\app.h">
       <Filter>src\app</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\DynSprite.h">
+    <ClInclude Include="..\..\src\app\BackBoard.h">
       <Filter>src\app</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\FixedPlane.h">
+    <ClInclude Include="..\..\src\app\DynSprite.h">
       <Filter>src\app</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\app\IGame.h">
@@ -84,23 +102,11 @@
     <ClInclude Include="..\..\src\app\Sprite.h">
       <Filter>src\app</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\Vec2.h">
-      <Filter>src\app</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\game\GemSprite.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\game\MineDigger.h">
       <Filter>src\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\game\PlayScreen.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\game\ScoreScreen.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\game\StartScreen.h">
-      <Filter>src\game</Filter>
+    <ClInclude Include="..\..\src\sys\sys.h">
+      <Filter>src\sys</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\sys\GameEngine.h">
       <Filter>src\sys</Filter>
@@ -123,8 +129,37 @@
     <ClInclude Include="..\..\src\sys\SoundPlayer.h">
       <Filter>src\sys</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\sys\Texture.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\Vec2.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\precomp.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\game\play\GemBoardModel.h">
+      <Filter>src\game\play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\play\GemBoardView.h">
+      <Filter>src\game\play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\play\GemSprite.h">
+      <Filter>src\game\play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\play\PlayScreen.h">
+      <Filter>src\game\play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\score\ScoreScreen.h">
+      <Filter>src\game\score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\start\StartScreen.h">
+      <Filter>src\game\start</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\game\MineDigger.cfg">
+      <Filter>src\game</Filter>
+    </None>
   </ItemGroup>
 </Project>

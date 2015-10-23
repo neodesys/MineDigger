@@ -22,14 +22,16 @@
 
 namespace sys
 {
+	class Vec2;
+
 	class IMouseListener
 	{
 	public:
 		virtual ~IMouseListener() = default;
 
-		virtual void onMouseButtonDown(int x, int y) = 0;
-		virtual void onMouseButtonUp(int x, int y) = 0;
-		virtual void onMouseMove(int x, int y, bool bDragging) = 0;
+		virtual void onMouseButtonDown(const Vec2& pos) = 0;
+		virtual void onMouseButtonUp(const Vec2& pos) = 0;
+		virtual void onMouseMove(const Vec2& pos, bool bDragging) = 0;
 	};
 }
 

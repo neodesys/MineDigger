@@ -24,8 +24,11 @@
 
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_hints.h>
 
 #include "IDrawable.h"
+#include "sys.h"
+#include "Texture.h"
 
 namespace sys
 {
@@ -46,18 +49,27 @@ namespace sys
 			return nullptr;
 		}
 
-		SDL_Renderer* pSDLRdr = SDL_CreateRenderer(pSDLWnd, -1, SDL_RENDERER_ACCELERATED);
+		SDL_Renderer* pSDLRdr = SDL_CreateRenderer(pSDLWnd, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
 		if (!pSDLRdr)
 		{
 			s_log.warning("Cannot create hardware accelerated SDL2 renderer (%s), falling back to software rendering...", SDL_GetError());
 
-			pSDLRdr = SDL_CreateRenderer(pSDLWnd, -1, SDL_RENDERER_SOFTWARE);
+			pSDLRdr = SDL_CreateRenderer(pSDLWnd, -1, SDL_RENDERER_SOFTWARE|SDL_RENDERER_PRESENTVSYNC);
 			if (!pSDLRdr)
 			{
 				SDL_DestroyWindow(pSDLWnd);
 				s_log.critical("Cannot create SDL2 renderer (%s)", SDL_GetError());
 				return nullptr;
 			}
+		}
+
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+		if (SDL_RenderSetLogicalSize(pSDLRdr, width, height))
+		{
+			SDL_DestroyRenderer(pSDLRdr);
+			SDL_DestroyWindow(pSDLWnd);
+			s_log.critical("Cannot set SDL2 renderer logical size to %d x %d (%s)", width, height, SDL_GetError());
+			return nullptr;
 		}
 
 		Renderer* pRdr = new(std::nothrow) Renderer(pSDLWnd, pSDLRdr);
@@ -111,24 +123,57 @@ namespace sys
 		return true;
 	}
 
+	SDL_Texture* Renderer::createSDLTextureFromSurface(SDL_Surface* pSDLSurf)
+	{
+		if (!pSDLSurf)
+		{
+			s_log.warning("Cannot create SDL2 texture from a null surface");
+			return nullptr;
+		}
+
+		assert(m_pSDLRdr);
+		SDL_Texture* pSDLTex = SDL_CreateTextureFromSurface(m_pSDLRdr, pSDLSurf);
+		if (pSDLTex)
+			return pSDLTex;
+
+		s_log.warning("Cannot create SDL2 texture from surface (%s)", SDL_GetError());
+		return nullptr;
+	}
+
 	void Renderer::renderFrame(IDrawable* p)
 	{
 		if (p)
 			p->draw(*this);
 		else
-			clearBackground(0, 0, 0, SDL_ALPHA_OPAQUE);
+			clearBackground(nullptr);
 
 		assert(m_pSDLRdr);
 		SDL_RenderPresent(m_pSDLRdr);
 	}
 
-	void Renderer::clearBackground(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a)
+	void Renderer::clearBackground(const Color* pColor)
 	{
 		assert(m_pSDLRdr);
-		if (SDL_SetRenderDrawColor(m_pSDLRdr, r, g, b, a))
-			s_log.info("Cannot set background color (%s)", SDL_GetError());
+
+		if ((pColor && SDL_SetRenderDrawColor(m_pSDLRdr, pColor->r, pColor->g, pColor->b, SDL_ALPHA_OPAQUE)) ||
+			(!pColor && SDL_SetRenderDrawColor(m_pSDLRdr, 0, 0, 0, SDL_ALPHA_OPAQUE)))
+			s_log.warning("Cannot set background color (%s)", SDL_GetError());
 
 		if (SDL_RenderClear(m_pSDLRdr))
-			s_log.info("Cannot clear background (%s)", SDL_GetError());
+			s_log.warning("Cannot clear background (%s)", SDL_GetError());
+	}
+
+	void Renderer::draw(IDrawable& d)
+	{
+		d.draw(*this);
+	}
+
+	void Renderer::drawTexture(const Texture& tex, const Rect* pSrcRect, const Rect* pDestRect)
+	{
+		assert(m_pSDLRdr);
+		assert(tex.m_pSDLTex);
+
+		if (SDL_RenderCopy(m_pSDLRdr, tex.m_pSDLTex, reinterpret_cast<const SDL_Rect*>(pSrcRect), reinterpret_cast<const SDL_Rect*>(pDestRect)))
+			s_log.warning("Cannot draw texture (%s)", SDL_GetError());
 	}
 }

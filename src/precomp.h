@@ -33,12 +33,12 @@
        gnu-compatible ones (gcc, mingw and clang) and Visual C++
 #endif
 
-#include <cstdint>
 #include <cstdarg>
 #include <ctime>
 #include <cassert>
 #include <new>
 #include <cmath>
+#include <random>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>

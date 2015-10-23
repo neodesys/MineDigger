@@ -17,14 +17,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "GemSprite.h"
+#ifndef _TEXTURE_H_
+#define	_TEXTURE_H_
 
-#include "../sys/Renderer.h"
+#include "Logger.h"
 
-namespace game
+struct SDL_Texture;
+
+namespace sys
 {
-	void GemSprite::draw(sys::Renderer& rdr)
+	class GameEngine;
+
+	class Texture final
 	{
-		//TODO
-	}
+	public:
+		static Texture* loadTexture(const char* asset, const GameEngine& engine);
+		~Texture();
+
+		const int m_width;
+		const int m_height;
+
+	private:
+		Texture(int width, int height, SDL_Texture* pSDLTex) : m_width(width), m_height(height), m_pSDLTex(pSDLTex) {}
+		Texture(const Texture&) = delete;
+		Texture& operator=(const Texture&) = delete;
+
+		SDL_Texture* const m_pSDLTex;
+		friend class Renderer;
+
+		static const Logger s_log;
+	};
 }
+
+#endif //_TEXTURE_H_

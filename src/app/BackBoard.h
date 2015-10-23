@@ -17,14 +17,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FixedPlane.h"
+#ifndef _BACKBOARD_H_
+#define	_BACKBOARD_H_
 
-#include "../sys/Renderer.h"
+#include "../sys/IDrawable.h"
+#include "../sys/sys.h"
+
+namespace sys
+{
+	class Texture;
+}
 
 namespace app
 {
-	void FixedPlane::draw(sys::Renderer& rdr)
+	class BackBoard : public sys::IDrawable
 	{
-		//TODO
-	}
+	public:
+		void setColor(unsigned char r, unsigned char g, unsigned char b)
+		{
+			m_backColor = {r, g, b};
+		}
+
+		void setTexture(const sys::Texture* pTexture)
+		{
+			m_pTexture = pTexture;
+		}
+
+		virtual void draw(sys::Renderer& rdr) override;
+
+	protected:
+		sys::Color m_backColor;
+		const sys::Texture* m_pTexture = nullptr;
+	};
 }
+
+#endif //_BACKBOARD_H_
