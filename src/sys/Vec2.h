@@ -22,6 +22,8 @@
 
 #include "sys.h"
 
+#include <cmath>
+
 namespace sys
 {
 	class Vec2 final

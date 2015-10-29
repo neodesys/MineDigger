@@ -17,16 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DynSprite.h"
+#include "NumberDrawer.h"
 
-#include "../sys/FrameInfo.h"
+#include "NumberPrintRes.h"
 
 namespace app
 {
-	void DynSprite::update(const sys::FrameInfo& frame)
+	bool NumberDrawer::getSpriteSize(float scale, int& w, int& h) const
 	{
-		m_moveVec *= frame.getDurationVar();
-		m_moveVec += m_acceleration * frame.getSquareDuration();
-		m_pos += m_moveVec;
+		if (m_pNumberPrintRes)
+		{
+			m_pNumberPrintRes->getNumberPrintSize(m_uDrawnValue, m_minDigits, scale, w, h);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	void NumberDrawer::drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const
+	{
+		if (m_pNumberPrintRes)
+		{
+			if (m_shadowColor.a)
+			{
+				sys::Rect shadowRect = {rect.x + m_shadowOffset[0], rect.y + m_shadowOffset[1], rect.w, rect.h};
+				m_pNumberPrintRes->printNumber(rdr, shadowRect, m_shadowColor, m_uDrawnValue, m_minDigits);
+			}
+
+			m_pNumberPrintRes->printNumber(rdr, rect, m_color, m_uDrawnValue, m_minDigits);
+		}
 	}
 }

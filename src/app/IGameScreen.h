@@ -21,12 +21,13 @@
 #define	_IGAMESCREEN_H_
 
 #include "IResHolder.h"
-#include "../sys/IDrawable.h"
 #include "../sys/IMouseListener.h"
+#include "../sys/IAnimated.h"
+#include "../sys/IDrawable.h"
 
 namespace app
 {
-	class IGameScreen : public IResHolder, public sys::IDrawable, public sys::IMouseListener
+	class IGameScreen : public IResHolder, public sys::IMouseListener, public sys::IAnimated, public sys::IDrawable
 	{
 	public:
 		virtual const char* getScreenName() = 0;
@@ -46,7 +47,7 @@ namespace app
 		//   - onGameScreenStart(), all screen states should be reset here
 		//   - main loop is running, processing at each iteration:
 		//       - inputs (through IMouseListener methods)
-		//       - updateAnimations(frameTime)
+		//       - update(frame)
 		//       - draw(rdr)
 		//   - onGameScreenEnd()
 		//
@@ -62,8 +63,6 @@ namespace app
 
 		virtual void onGameScreenStart() = 0;
 		virtual void onGameScreenEnd() = 0;
-
-		virtual void updateAnimations(unsigned long t) = 0; //t is in ms
 	};
 }
 

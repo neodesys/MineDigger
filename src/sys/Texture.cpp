@@ -19,6 +19,7 @@
 
 #include "Texture.h"
 
+#include <cassert>
 #include <new>
 
 #include <SDL2/SDL_render.h>
@@ -26,12 +27,13 @@
 #include "GameEngine.h"
 #include "ResLoader.h"
 #include "Renderer.h"
+#include "sys.h"
 
 namespace sys
 {
 	const Logger Texture::s_log("Texture");
 
-	Texture* Texture::loadTexture(const char* asset, const GameEngine& engine)
+	Texture* Texture::loadTexture(const GameEngine& engine, const char* asset)
 	{
 		SDL_Surface* pSDLSurf = engine.getResLoader().loadImage(asset);
 		if (!pSDLSurf)
@@ -58,8 +60,30 @@ namespace sys
 		return pTex;
 	}
 
+	Texture::Texture(int width, int height, SDL_Texture* pSDLTex) :
+		m_width(width), m_height(height), m_pSDLTex(pSDLTex)
+	{
+		assert(width >= 1);
+		assert(height >= 1);
+		assert(pSDLTex);
+	}
+
 	Texture::~Texture()
 	{
+		assert(m_pSDLTex);
 		SDL_DestroyTexture(m_pSDLTex);
+	}
+
+	bool Texture::setTextureColorMod(const Color& color)
+	{
+		assert(m_pSDLTex);
+		if (SDL_SetTextureColorMod(m_pSDLTex, color.r, color.g, color.b) ||
+			SDL_SetTextureAlphaMod(m_pSDLTex, color.a))
+		{
+			s_log.warning("Cannot set texture modulation color (%s)", SDL_GetError());
+			return false;
+		}
+
+		return true;
 	}
 }

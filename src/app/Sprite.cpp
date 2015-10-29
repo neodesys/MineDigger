@@ -19,54 +19,21 @@
 
 #include "Sprite.h"
 
-#include "../sys/Renderer.h"
-#include "../sys/Texture.h"
+#include "ISpriteDrawer.h"
 
 namespace app
 {
-	void Sprite::setTexture(const sys::Texture* pTexture)
-	{
-		m_pTexture = pTexture;
-		m_bSrcClip = false;
-		m_srcClip = {};
-	}
-
-	void Sprite::setTexture(const sys::Texture* pTexture, const sys::Rect& clip)
-	{
-		m_pTexture = pTexture;
-		if (m_pTexture)
-		{
-			m_bSrcClip = true;
-			m_srcClip = clip;
-		}
-		else
-		{
-			m_bSrcClip = false;
-			m_srcClip = {};
-		}
-	}
-
 	void Sprite::draw(sys::Renderer& rdr)
 	{
-		if (m_pTexture)
+		if (m_pDrawer)
 		{
-			sys::Vec2 size;
-			if (m_bSrcClip)
-				size = {m_srcClip.w, m_srcClip.h};
-			else
-				size = {m_pTexture->m_width, m_pTexture->m_height};
-
-			size *= m_scale;
-
-			const sys::Rect destRect =
+			sys::Rect rect;
+			if (m_pDrawer->getSpriteSize(m_scale, rect.w, rect.h))
 			{
-				m_pos.x - 0.5f * size.x,
-				m_pos.y - 0.5f * size.y,
-				size.x,
-				size.y
-			};
-
-			rdr.drawTexture(*m_pTexture, m_bSrcClip ? &m_srcClip : nullptr, &destRect);
+				rect.x = static_cast<int>(std::round(m_pos.x - m_hotspot.x * rect.w));
+				rect.y = static_cast<int>(std::round(m_pos.y - m_hotspot.y * rect.h));
+				m_pDrawer->drawSprite(rdr, rect);
+			}
 		}
 	}
 }

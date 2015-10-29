@@ -21,6 +21,7 @@
 #define	_GEMSPRITE_H_
 
 #include "../../app/DynSprite.h"
+#include "../../app/TextureDrawer.h"
 #include "GemBoardModel.h"
 
 namespace game
@@ -46,12 +47,20 @@ namespace game
 				float anchorSpringDampingCoeff;
 			};
 
-			GemSprite() = default;
-			void attachView(GemBoardView* pView);
+			GemSprite()
+			{
+				app::DynSprite::setSpriteDrawer(&m_textureDrawer);
+			}
+
+			void attachView(GemBoardView* pView)
+			{
+				unselect();
+				m_pView = pView;
+			}
 
 			enum struct State : unsigned char
 			{
-				RECYCLED = 0,
+				RECYCLED,
 				FALLING,
 				IN_PLACE,
 				SPRING_ATTACHED,
@@ -94,21 +103,22 @@ namespace game
 			void fallGem(int lowerRow);
 			void throwGemOut();
 
-			void updatePos(float dtCoeff, float dt2) override final;
+			void update(const sys::FrameInfo& frame) override final;
+
 			void draw(sys::Renderer& rdr) override final;
 
 		private:
 			GemSprite(const GemSprite&) = delete;
 			GemSprite& operator=(const GemSprite&) = delete;
 
-			void interruptSwap();
-
 			//Forbid access to base methods
-			void setAcceleration(const sys::Vec2& v);
-			void setImpulse(const sys::Vec2& v);
-			void setScale(float scale);
-			void setTexture(const sys::Texture* pTexture);
-			void setTexture(const sys::Texture* pTexture, const sys::Rect& clip);
+			void setAcceleration(const sys::Vec2&) = delete;
+			void setImpulse(const sys::Vec2&) = delete;
+			void setHotspot(const sys::Vec2&) = delete;
+			void setScale(float) = delete;
+			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+
+			app::TextureDrawer m_textureDrawer;
 
 			GemBoardView* m_pView = nullptr;
 
@@ -124,6 +134,8 @@ namespace game
 			sys::Vec2 m_selectMouseOffset;
 
 			sys::Vec2 m_targetPos;
+
+			void interruptSwap();
 		};
 	}
 }

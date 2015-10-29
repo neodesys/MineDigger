@@ -17,16 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DynSprite.h"
+#ifndef _ISPRITEDRAWER_H_
+#define	_ISPRITEDRAWER_H_
 
-#include "../sys/FrameInfo.h"
+namespace sys
+{
+	class Renderer;
+	class Rect;
+}
 
 namespace app
 {
-	void DynSprite::update(const sys::FrameInfo& frame)
+	class ISpriteDrawer
 	{
-		m_moveVec *= frame.getDurationVar();
-		m_moveVec += m_acceleration * frame.getSquareDuration();
-		m_pos += m_moveVec;
-	}
+	public:
+		virtual ~ISpriteDrawer() = default;
+
+		virtual bool getSpriteSize(float scale, int& w, int& h) const = 0;
+		virtual void drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const = 0;
+	};
 }
+
+#endif //_ISPRITEDRAWER_H_

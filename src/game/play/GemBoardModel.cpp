@@ -162,10 +162,9 @@ namespace game
 		GemType GemBoardModel::generateGem(int row, int col) const
 		{
 			static std::mt19937 s_randGenerator(std::random_device{}());
-			static std::uniform_int_distribution<unsigned short> s_randDistrib(0, static_cast<unsigned short>(GemType::NB_GEM_TYPES) - 1);
+			static std::uniform_int_distribution<unsigned short> s_randDistrib(0, GemType::NB_GEM_TYPES - 1);
 
-			unsigned short uType = s_randDistrib(s_randGenerator);
-			GemType type = static_cast<GemType>(uType);
+			GemType type = static_cast<GemType>(s_randDistrib(s_randGenerator));
 			assert(type < GemType::NB_GEM_TYPES);
 
 			int minRow = row;
@@ -177,8 +176,7 @@ namespace game
 			{
 				minRow = maxRow = row;
 				minCol = maxCol = col;
-				uType = (uType + 1) % static_cast<unsigned short>(GemType::NB_GEM_TYPES);
-				type = static_cast<GemType>(uType);
+				type = static_cast<GemType>((type + 1) % GemType::NB_GEM_TYPES);
 			}
 
 			return type;

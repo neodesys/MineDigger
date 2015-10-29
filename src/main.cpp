@@ -51,5 +51,5 @@ int main(int argc, char** argv)
 
 	//Run game
 	game::MineDigger game;
-	return static_cast<int>(app::run(game));
+	return app::run(game);
 }

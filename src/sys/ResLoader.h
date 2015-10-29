@@ -23,6 +23,8 @@
 #include "Logger.h"
 
 struct SDL_Surface;
+struct _TTF_Font;
+typedef struct _TTF_Font TTF_Font;
 
 namespace sys
 {
@@ -33,6 +35,7 @@ namespace sys
 		~ResLoader();
 
 		SDL_Surface* loadImage(const char* asset);
+		TTF_Font* loadFont(const char* asset, int pointSize, long fontFaceIdx);
 
 	private:
 		ResLoader(std::size_t basePathLength, char* pPathBuffer) : m_basePathLength(basePathLength), m_pPathBuffer(pPathBuffer) {}

@@ -77,7 +77,7 @@ namespace game
 			//TODO
 		}
 
-		void StartScreen::updateAnimations(unsigned long t)
+		void StartScreen::update(const sys::FrameInfo& frame)
 		{
 			//TODO
 		}

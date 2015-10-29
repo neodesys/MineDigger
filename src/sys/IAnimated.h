@@ -17,16 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DynSprite.h"
+#ifndef _IANIMATED_H_
+#define	_IANIMATED_H_
 
-#include "../sys/FrameInfo.h"
-
-namespace app
+namespace sys
 {
-	void DynSprite::update(const sys::FrameInfo& frame)
+	class FrameInfo;
+
+	class IAnimated
 	{
-		m_moveVec *= frame.getDurationVar();
-		m_moveVec += m_acceleration * frame.getSquareDuration();
-		m_pos += m_moveVec;
-	}
+	public:
+		virtual ~IAnimated() = default;
+
+		//It is guaranteed that frame parameter is always a valid FrameInfo:
+		//- getPrevTimestamp() > 0
+		//- getTimestamp() > getPrevTimestamp()
+		//- getDuration() > 0.f
+		//- getDurationVar() > 0.f
+		//- getSquareDuration() > 0.f
+		virtual void update(const FrameInfo& frame) = 0;
+	};
 }
+
+#endif //_IANIMATED_H_

@@ -17,16 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DynSprite.h"
+#include "FrameInfo.h"
 
-#include "../sys/FrameInfo.h"
-
-namespace app
+namespace sys
 {
-	void DynSprite::update(const sys::FrameInfo& frame)
+	bool FrameInfo::update(unsigned long t)
 	{
-		m_moveVec *= frame.getDurationVar();
-		m_moveVec += m_acceleration * frame.getSquareDuration();
-		m_pos += m_moveVec;
+		if (!m_uTimestamp)
+		{
+			m_uTimestamp = t;
+			return false;
+		}
+
+		if (t <= m_uTimestamp)
+			return false;
+
+		m_dt = static_cast<float>(t - m_uTimestamp) / 1000.f;
+		m_uPrevTimestamp = m_uTimestamp;
+		m_uTimestamp = t;
+
+		if (m_dtPrev <= 0.f)
+		{
+			m_dtPrev = m_dt;
+			return false;
+		}
+
+		m_dtVar = m_dt / m_dtPrev;
+		m_dtPrev = m_dt;
+		m_dt2 = m_dt * m_dt;
+
+		return true;
+	}
+
+	void FrameInfo::reset()
+	{
+		m_uTimestamp = m_uPrevTimestamp = 0;
+		m_dt = m_dtPrev = m_dt2 = 0.f;
+		m_dtVar = 1.f;
 	}
 }

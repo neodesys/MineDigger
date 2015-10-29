@@ -25,11 +25,29 @@
 #include "play/PlayScreen.h"
 #include "score/ScoreScreen.h"
 
+namespace sys
+{
+	class Font;
+}
+
 namespace game
 {
 	class MineDigger final : public app::IGame
 	{
 	public:
+		struct Config
+		{
+			const char* gameName;
+			int boardDimensions[2];
+
+			const char* backgroundAsset;
+
+			const char* fontAsset;
+			int fontPointSize;
+
+			play::PlayScreen::Config playScreenConfig;
+		};
+
 		MineDigger();
 		~MineDigger() override final;
 
@@ -49,6 +67,11 @@ namespace game
 		app::ResState getResState(const sys::GameEngine* pEngine) override final;
 		void cleanRes(bool bForce) override final;
 
+		const Config& getConfig() const
+		{
+			return m_config;
+		}
+
 		void switchToNextScreen();
 
 		const sys::Texture* getSharedBackgroundTex() const
@@ -56,9 +79,16 @@ namespace game
 			return m_pBackgroundTex;
 		}
 
+		const app::NumberPrintRes* getSharedNumberPrintRes() const
+		{
+			return m_pNumberPrintRes;
+		}
+
 	private:
 		MineDigger(const MineDigger&) = delete;
 		MineDigger& operator=(const MineDigger&) = delete;
+
+		const Config& m_config;
 
 		start::StartScreen m_startScreen;
 		play::PlayScreen m_playScreen;
@@ -72,6 +102,8 @@ namespace game
 
 		//Shared resources
 		const sys::Texture* m_pBackgroundTex = nullptr;
+		sys::Font* m_pFont = nullptr;
+		const app::NumberPrintRes* m_pNumberPrintRes = nullptr;
 	};
 }
 

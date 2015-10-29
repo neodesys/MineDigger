@@ -24,7 +24,7 @@ namespace game
 {
 	namespace play
 	{
-		enum struct GemType : unsigned char
+		enum GemType : unsigned char
 		{
 			BLUE_GEM = 0,
 			GREEN_GEM,

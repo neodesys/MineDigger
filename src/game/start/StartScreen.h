@@ -47,7 +47,7 @@ namespace game
 			void onMouseButtonUp(const sys::Vec2& pos) override final;
 			void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
 
-			void updateAnimations(unsigned long t) override final;
+			void update(const sys::FrameInfo& frame) override final;
 
 			void draw(sys::Renderer& rdr) override final;
 

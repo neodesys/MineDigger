@@ -18,6 +18,7 @@
  */
 
 #include "GemBoardView.h"
+#include "PlayScreen.h"
 
 #include <cassert>
 
@@ -25,12 +26,6 @@ namespace game
 {
 	namespace play
 	{
-		void GemSprite::attachView(GemBoardView* pView)
-		{
-			unselect();
-			m_pView = pView;
-		}
-
 		void GemSprite::setPos(const sys::Vec2& pos)
 		{
 			if (m_pView && m_bSelected)
@@ -77,11 +72,13 @@ namespace game
 			if (!m_pView)
 				return;
 
-			m_pTexture = m_pView->getGemTex(type);
-			if (m_pTexture &&
+			const sys::Texture* pTexture = m_pView->getPlayScreen().getGemTex(type);
+			if (pTexture &&
 				(row >= 0) && (row < GemBoardModel::NB_ROWS) &&
 				(col >= 0) && (col < GemBoardModel::NB_COLS))
 			{
+				m_textureDrawer.setTexture(pTexture);
+
 				m_modelRow = row;
 				m_modelCol = col;
 
@@ -98,8 +95,11 @@ namespace game
 			}
 			else
 			{
+				m_textureDrawer.setTexture(nullptr);
+
 				m_modelRow = m_modelCol = -1;
 				m_targetPos = m_pos = m_acceleration = {};
+
 				m_state = State::RECYCLED;
 			}
 
@@ -222,7 +222,7 @@ namespace game
 			}
 		}
 
-		void GemSprite::updatePos(float dtCoeff, float dt2)
+		void GemSprite::update(const sys::FrameInfo& frame)
 		{
 			if (!m_pView || m_bSelected)
 				return;
@@ -230,7 +230,7 @@ namespace game
 			switch (m_state)
 			{
 			case State::FALLING:
-				app::DynSprite::updatePos(dtCoeff, dt2);
+				app::DynSprite::update(frame);
 				if (m_pos.y > m_targetPos.y)
 				{
 					m_pos = m_targetPos;
@@ -257,7 +257,7 @@ namespace game
 						m_moveVec = offset * m_moveVec.dot(offset);
 
 						m_acceleration -= m_moveVec * config.anchorSpringDampingCoeff;
-						app::DynSprite::updatePos(dtCoeff, dt2);
+						app::DynSprite::update(frame);
 
 						if (offset.dot(m_targetPos - m_pos) >= 1.f)
 							return;
@@ -306,11 +306,11 @@ namespace game
 				break;
 
 			case State::THROWN_OUT:
-				app::DynSprite::updatePos(dtCoeff, dt2);
+				app::DynSprite::update(frame);
 				if (m_pos.y > m_targetPos.y)
 				{
 					m_pos = m_targetPos = m_moveVec = m_acceleration = {};
-					m_pTexture = nullptr;
+					m_textureDrawer.setTexture(nullptr);
 					m_state = State::RECYCLED;
 				}
 				break;

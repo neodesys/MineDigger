@@ -23,13 +23,10 @@
 #include "../sys/IDrawable.h"
 #include "../sys/Vec2.h"
 
-namespace sys
-{
-	class Texture;
-}
-
 namespace app
 {
+	class ISpriteDrawer;
+
 	class Sprite : public sys::IDrawable
 	{
 	public:
@@ -38,23 +35,34 @@ namespace app
 			m_pos = pos;
 		}
 
+		//Hotspot coordinates are relative to the sprite dimensions (between
+		//0.f and 1.f). Thus, {0.f, 0.f} represents the sprite upper-left corner
+		//and {1.f, 1.f} the sprite bottom-right corner. Default hotspot is
+		//at sprite center: {0.5f, 0.5f}.
+		void setHotspot(const sys::Vec2& hotspot)
+		{
+			m_hotspot = hotspot;
+		}
+
 		void setScale(float scale)
 		{
 			m_scale = scale;
 		}
 
-		void setTexture(const sys::Texture* pTexture);
-		void setTexture(const sys::Texture* pTexture, const sys::Rect& clip);
+		void setSpriteDrawer(const ISpriteDrawer* pDrawer)
+		{
+			m_pDrawer = pDrawer;
+		}
 
 		virtual void draw(sys::Renderer& rdr) override;
 
 	protected:
 		sys::Vec2 m_pos;
+		sys::Vec2 m_hotspot = {0.5f, 0.5f};
 		float m_scale = 1.f;
 
-		const sys::Texture* m_pTexture = nullptr;
-		bool m_bSrcClip = false;
-		sys::Rect m_srcClip;
+	private:
+		const ISpriteDrawer* m_pDrawer = nullptr;
 	};
 }
 

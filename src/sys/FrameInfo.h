@@ -17,40 +17,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _TEXTURE_H_
-#define	_TEXTURE_H_
-
-#include "Logger.h"
-
-struct SDL_Texture;
+#ifndef _FRAMEINFO_H_
+#define	_FRAMEINFO_H_
 
 namespace sys
 {
-	class GameEngine;
-	class Color;
-
-	class Texture final
+	class FrameInfo final
 	{
 	public:
-		static Texture* loadTexture(const GameEngine& engine, const char* asset);
-		~Texture();
+		bool update(unsigned long t);
+		void reset();
 
-		const int m_width;
-		const int m_height;
+		unsigned long getTimestamp() const
+		{
+			return m_uTimestamp;
+		}
 
-		bool setTextureColorMod(const Color& color);
+		unsigned long getPrevTimestamp() const
+		{
+			return m_uPrevTimestamp;
+		}
+
+		float getDuration() const
+		{
+			return m_dt;
+		}
+
+		float getDurationVar() const
+		{
+			return m_dtVar;
+		}
+
+		float getSquareDuration() const
+		{
+			return m_dt2;
+		}
 
 	private:
-		Texture(int width, int height, SDL_Texture* pSDLTex);
-		Texture(const Texture&) = delete;
-		Texture& operator=(const Texture&) = delete;
+		unsigned long m_uTimestamp = 0;     //in ms
+		unsigned long m_uPrevTimestamp = 0; //in ms
 
-		SDL_Texture* const m_pSDLTex;
-		friend class Renderer;
-		friend class Font;
-
-		static const Logger s_log;
+		float m_dt = 0.f;     //in sec
+		float m_dtPrev = 0.f; //in sec
+		float m_dtVar = 1.f;  //= dt / dtPrev
+		float m_dt2 = 0.f;    //= dt * dt
 	};
 }
 
-#endif //_TEXTURE_H_
+#endif //_FRAMEINFO_H_

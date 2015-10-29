@@ -20,17 +20,23 @@
 #include "MineDigger.h"
 
 #include "../sys/Texture.h"
+#include "../sys/Font.h"
+#include "../app/NumberPrintRes.h"
 
 namespace
 {
-	#include "MineDigger.cfg"
+	const game::MineDigger::Config GAME_CONFIG =
+	{
+		#include "MineDigger.cfg"
+	};
 }
 
 namespace game
 {
 	MineDigger::MineDigger() :
+		m_config(GAME_CONFIG),
 		m_startScreen(*this),
-		m_playScreen(*this, PLAYSCREEN_CONFIG),
+		m_playScreen(*this),
 		m_scoreScreen(*this) {}
 
 	MineDigger::~MineDigger()
@@ -41,17 +47,17 @@ namespace game
 
 	const char* MineDigger::getGameName()
 	{
-		return GAME_NAME;
+		return m_config.gameName;
 	}
 
 	int MineDigger::getBoardWidth()
 	{
-		return BOARD_DIMENSIONS[0];
+		return m_config.boardDimensions[0];
 	}
 
 	int MineDigger::getBoardHeight()
 	{
-		return BOARD_DIMENSIONS[1];
+		return m_config.boardDimensions[1];
 	}
 
 	bool MineDigger::createLoadingDrawable(const sys::GameEngine& engine)
@@ -93,32 +99,59 @@ namespace game
 		//app::run() automatically loads each screen resources when screen is
 		//attached and before starting its main loop.
 
-		app::ResState sharedResState = getSharedResState(pEngine);
-		if (sharedResState != app::ResState::ERROR)
+		switch (getSharedResState(pEngine))
 		{
-			app::ResState startResState = m_startScreen.getResState(pEngine);
-			if (startResState != app::ResState::ERROR)
-			{
-				app::ResState playResState = m_playScreen.getResState(pEngine);
-				if (playResState != app::ResState::ERROR)
-				{
-					app::ResState scoreResState = m_scoreScreen.getResState(pEngine);
-					if (scoreResState != app::ResState::ERROR)
-					{
-						if ((sharedResState == app::ResState::READY) &&
-							(startResState == app::ResState::READY) &&
-							(playResState == app::ResState::READY) &&
-							(scoreResState == app::ResState::READY))
-							return app::ResState::READY;
-						else
-							return app::ResState::LOADING;
-					}
-				}
-			}
+		case app::ResState::LOADING:
+			return app::ResState::LOADING;
+
+		case app::ResState::ERROR:
+			cleanRes(true);
+			return app::ResState::ERROR;
+
+		case app::ResState::READY:
+			break;
 		}
 
-		cleanRes(true);
-		return app::ResState::ERROR;
+		switch (m_startScreen.getResState(pEngine))
+		{
+		case app::ResState::LOADING:
+			return app::ResState::LOADING;
+
+		case app::ResState::ERROR:
+			cleanRes(true);
+			return app::ResState::ERROR;
+
+		case app::ResState::READY:
+			break;
+		}
+
+		switch (m_playScreen.getResState(pEngine))
+		{
+		case app::ResState::LOADING:
+			return app::ResState::LOADING;
+
+		case app::ResState::ERROR:
+			cleanRes(true);
+			return app::ResState::ERROR;
+
+		case app::ResState::READY:
+			break;
+		}
+
+		switch (m_scoreScreen.getResState(pEngine))
+		{
+		case app::ResState::LOADING:
+			return app::ResState::LOADING;
+
+		case app::ResState::ERROR:
+			cleanRes(true);
+			return app::ResState::ERROR;
+
+		case app::ResState::READY:
+			break;
+		}
+
+		return app::ResState::READY;
 	}
 
 	void MineDigger::cleanRes(bool bForce)
@@ -141,23 +174,64 @@ namespace game
 
 	app::ResState MineDigger::getSharedResState(const sys::GameEngine* pEngine)
 	{
-		if (m_pBackgroundTex)
-			return app::ResState::READY;
+		if (!m_pBackgroundTex)
+		{
+			if (pEngine)
+			{
+				m_pBackgroundTex = sys::Texture::loadTexture(*pEngine, m_config.backgroundAsset);
+				if (!m_pBackgroundTex)
+				{
+					cleanSharedRes(true);
+					return app::ResState::ERROR;
+				}
+			}
 
-		if (!pEngine)
 			return app::ResState::LOADING;
+		}
 
-		m_pBackgroundTex = sys::Texture::loadTexture(BACKGROUND_ASSET, *pEngine);
-		if (m_pBackgroundTex)
-			return app::ResState::READY;
+		if (!m_pFont)
+		{
+			if (pEngine)
+			{
+				m_pFont = sys::Font::loadFont(*pEngine, m_config.fontAsset, m_config.fontPointSize);
+				if (!m_pFont)
+				{
+					cleanSharedRes(true);
+					return app::ResState::ERROR;
+				}
+			}
 
-		return app::ResState::ERROR;
+			return app::ResState::LOADING;
+		}
+
+		if (!m_pNumberPrintRes)
+		{
+			if (pEngine)
+			{
+				m_pNumberPrintRes = app::NumberPrintRes::createNumberPrintRes(*pEngine, *m_pFont);
+				if (!m_pNumberPrintRes)
+				{
+					cleanSharedRes(true);
+					return app::ResState::ERROR;
+				}
+			}
+
+			return app::ResState::LOADING;
+		}
+
+		return app::ResState::READY;
 	}
 
 	void MineDigger::cleanSharedRes(bool bForce)
 	{
 		if (bForce)
 		{
+			delete m_pNumberPrintRes;
+			m_pNumberPrintRes = nullptr;
+
+			delete m_pFont;
+			m_pFont = nullptr;
+
 			delete m_pBackgroundTex;
 			m_pBackgroundTex = nullptr;
 		}

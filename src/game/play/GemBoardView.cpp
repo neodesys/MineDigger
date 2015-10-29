@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "GemBoardView.h"
+#include "PlayScreen.h"
 
 #include <cassert>
 
@@ -25,10 +25,11 @@ namespace game
 {
 	namespace play
 	{
-		GemBoardView::GemBoardView(const sys::Texture* const pGemTexArray[], const Config& config) :
-			m_pGemTexArray(pGemTexArray), m_config(config), m_model(*this)
+		GemBoardView::GemBoardView(PlayScreen& playScreen) :
+			m_playScreen(playScreen),
+			m_config(playScreen.getConfig().gemBoardConfig),
+			m_model(*this)
 		{
-			assert(pGemTexArray);
 			for (int i = 0; i < NB_SPRITES; ++i)
 				m_sprites[i].attachView(this);
 		}
@@ -98,13 +99,13 @@ namespace game
 			}
 		}
 
-		void GemBoardView::updateSpritesPos(float dtCoeff, float dt2)
+		void GemBoardView::update(const sys::FrameInfo& frame)
 		{
 			for (GemSprite* p = m_sprites + NB_SPRITES - 1; p >= m_sprites; --p)
-				p->updatePos(dtCoeff, dt2);
+				p->update(frame);
 		}
 
-		void GemBoardView::drawLayer(bool bFront, sys::Renderer& rdr)
+		void GemBoardView::drawLayer(sys::Renderer& rdr, bool bFront)
 		{
 			if (!bFront)
 			{
@@ -128,14 +129,6 @@ namespace game
 				if (m_pDraggedSprite)
 					m_pDraggedSprite->draw(rdr);
 			}
-		}
-
-		const sys::Texture* GemBoardView::getGemTex(GemType type) const
-		{
-			if (type < GemType::NB_GEM_TYPES)
-				return m_pGemTexArray[static_cast<std::size_t>(type)];
-			else
-				return nullptr;
 		}
 
 		GemSprite* GemBoardView::getSprite(int row, int col)
@@ -281,6 +274,7 @@ namespace game
 					m_pSelectedSprite = nullptr;
 
 				pSprite->throwGemOut();
+				m_playScreen.addGemPoints();
 			}
 		}
 

@@ -17,16 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DynSprite.h"
+#ifndef _TEXTUREDRAWER_H_
+#define	_TEXTUREDRAWER_H_
 
-#include "../sys/FrameInfo.h"
+#include "ISpriteDrawer.h"
+#include "../sys/sys.h"
+
+namespace sys
+{
+	class Texture;
+}
 
 namespace app
 {
-	void DynSprite::update(const sys::FrameInfo& frame)
+	class TextureDrawer : public ISpriteDrawer
 	{
-		m_moveVec *= frame.getDurationVar();
-		m_moveVec += m_acceleration * frame.getSquareDuration();
-		m_pos += m_moveVec;
-	}
+	public:
+		void setTexture(const sys::Texture* pTexture);
+		void setTexture(const sys::Texture* pTexture, const sys::Rect& clip);
+
+		virtual bool getSpriteSize(float scale, int& w, int& h) const override;
+		virtual void drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const override;
+
+	protected:
+		const sys::Texture* m_pTexture = nullptr;
+		bool m_bSrcClip = false;
+		sys::Rect m_srcClip;
+	};
 }
+
+#endif //_TEXTUREDRAWER_H_

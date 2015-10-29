@@ -31,9 +31,13 @@ namespace game
 {
 	namespace play
 	{
-		PlayScreen::PlayScreen(MineDigger& game, const Config& config) :
-			m_game(game), m_config(config),
-			m_gemBoardView(m_pGemTexArray, config.gemBoardConfig) {}
+		PlayScreen::PlayScreen(MineDigger& game) :
+			m_game(game),
+			m_config(game.getConfig().playScreenConfig),
+			m_gemBoardView(*this)
+		{
+			m_gemBoardTop.setSpriteDrawer(&m_gemBoardTopDrawer);
+		}
 
 		PlayScreen::~PlayScreen()
 		{
@@ -47,27 +51,21 @@ namespace game
 
 		app::ResState PlayScreen::getResState(const sys::GameEngine* pEngine)
 		{
-			for (int i = 0; i < static_cast<int>(GemType::NB_GEM_TYPES); ++i)
+			for (int i = 0; i < GemType::NB_GEM_TYPES; ++i)
 			{
 				if (!m_pGemTexArray[i])
 				{
-					if (!pEngine)
-						return app::ResState::LOADING;
-
-					m_pGemTexArray[i] = sys::Texture::loadTexture(m_config.gemResArray[i], *pEngine);
-					if (!m_pGemTexArray[i])
+					if (pEngine)
 					{
-						cleanRes(true);
-						return app::ResState::ERROR;
+						m_pGemTexArray[i] = sys::Texture::loadTexture(*pEngine, m_config.gemResArray[i]);
+						if (!m_pGemTexArray[i])
+						{
+							cleanRes(true);
+							return app::ResState::ERROR;
+						}
 					}
 
-					for (int j = i + 1; j < static_cast<int>(GemType::NB_GEM_TYPES); ++j)
-					{
-						if (!m_pGemTexArray[j])
-							return app::ResState::LOADING;
-					}
-
-					return app::ResState::READY;
+					return app::ResState::LOADING;
 				}
 			}
 
@@ -78,7 +76,7 @@ namespace game
 		{
 			if (bForce)
 			{
-				for (int i = 0; i < static_cast<int>(GemType::NB_GEM_TYPES); ++i)
+				for (int i = 0; i < GemType::NB_GEM_TYPES; ++i)
 				{
 					delete m_pGemTexArray[i];
 					m_pGemTexArray[i] = nullptr;
@@ -88,34 +86,35 @@ namespace game
 
 		void PlayScreen::onGameScreenStart()
 		{
-			m_startTime = 0;
-			m_lastFrameTime = 0;
-			m_lastDeltaTime = 0.f;
 			m_background.setTexture(m_game.getSharedBackgroundTex());
-			m_gemBoardTop.setTexture(m_game.getSharedBackgroundTex(), m_config.gemBoardTopClip);
-			m_gemBoardTop.setPos(m_config.gemBoardTopPos);
+
 			m_gemBoardView.getModel().resetBoard(true);
+
+			m_gemBoardTopDrawer.setTexture(m_game.getSharedBackgroundTex(), m_config.gemBoardTopClip);
+			m_gemBoardTop.setPos(m_config.gemBoardTopPos);
+
+			m_countdown.setPos(m_config.countdownPos);
+			m_countdown.setScale(m_config.countdownScale);
+			m_countdown.setNumberPrintRes(m_game.getSharedNumberPrintRes());
+			m_countdown.setColor(m_config.countdownColor);
+			m_countdown.setShadowColor(m_config.countdownShadowColor);
+			m_countdown.setShadowOffset(m_config.countdownShadowOffset[0], m_config.countdownShadowOffset[1]);
+			m_countdown.start(m_config.uCountdownDuration);
+
+			m_scoreDisplay.setPos(m_config.scoreDisplayPos);
+			m_scoreDisplay.setScale(m_config.scoreDisplayScale);
+			m_scoreDisplay.setNumberPrintRes(m_game.getSharedNumberPrintRes());
+			m_scoreDisplay.setMinDigits(m_config.scoreDisplayMinDigits);
+			m_scoreDisplay.setColor(m_config.scoreDisplayColor);
+			m_scoreDisplay.setShadowColor(m_config.scoreDisplayShadowColor);
+			m_scoreDisplay.setShadowOffset(m_config.scoreDisplayShadowOffset[0], m_config.scoreDisplayShadowOffset[1]);
+			m_scoreDisplay.setScoreSpeed(m_config.scoreDisplaySpeed);
+			m_scoreDisplay.resetScore();
 		}
 
 		void PlayScreen::onGameScreenEnd()
 		{
-			//As m_background and m_gemBoardView are private within PlayScreen,
-			//they can't be drawn or updated outside of PlayScreen main loop.
-			//Therefore, it is not compulsory to clean up anything here.
-			//Correct pointers to resources will be set again on the next
-			//PlayScreen::onGameScreenStart() call right before usage.
-			//
-			//Nevertheless, to enforce global sanity we reset all PlayScreen
-			//variables to their default values in order to always guaranty
-			//a neutral screen state outside of the screen main loop.
-
-			m_gemBoardView.getModel().resetBoard(false);
-			m_gemBoardTop.setPos({});
-			m_gemBoardTop.setTexture(nullptr);
-			m_background.setTexture(nullptr);
-			m_startTime = 0;
-			m_lastFrameTime = 0;
-			m_lastDeltaTime = 0.f;
+			//Empty method
 		}
 
 		void PlayScreen::onMouseButtonDown(const sys::Vec2& pos)
@@ -133,45 +132,32 @@ namespace game
 			m_gemBoardView.onMouseMove(pos, bDragging);
 		}
 
-		void PlayScreen::updateAnimations(unsigned long t)
+		void PlayScreen::update(const sys::FrameInfo& frame)
 		{
-			if (!m_lastFrameTime)
-			{
-				m_lastFrameTime = t;
-				return;
-			}
+			m_gemBoardView.update(frame);
+			m_countdown.update(frame);
+			m_scoreDisplay.update(frame);
 
-			if (t <= m_lastFrameTime)
-				return;
-
-			const float dt = static_cast<float>(t - m_lastFrameTime) / 1000.f;
-			m_lastFrameTime = t;
-
-			if (m_lastDeltaTime <= 0)
-			{
-				m_lastDeltaTime = dt;
-				return;
-			}
-
-			//If game has finished, go to next screen
-			if (!m_startTime)
-				m_startTime = t;
-			else if ((t > m_startTime) && (t - m_startTime > m_config.uMaxPlayTime))
+			if (!m_countdown.getCurrentValue())
 				m_game.switchToNextScreen();
-
-			const float dtCoeff = dt / m_lastDeltaTime;
-			const float dt2 = dt * dt;
-			m_lastDeltaTime = dt;
-
-			m_gemBoardView.updateSpritesPos(dtCoeff, dt2);
 		}
 
 		void PlayScreen::draw(sys::Renderer& rdr)
 		{
 			rdr.draw(m_background);
-			m_gemBoardView.drawLayer(false, rdr);
+			m_gemBoardView.drawLayer(rdr, false);
 			rdr.draw(m_gemBoardTop);
-			m_gemBoardView.drawLayer(true, rdr);
+			rdr.draw(m_countdown);
+			rdr.draw(m_scoreDisplay);
+			m_gemBoardView.drawLayer(rdr, true);
+		}
+
+		const sys::Texture* PlayScreen::getGemTex(GemType type) const
+		{
+			if (type < GemType::NB_GEM_TYPES)
+				return m_pGemTexArray[type];
+			else
+				return nullptr;
 		}
 	}
 }

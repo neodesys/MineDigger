@@ -20,8 +20,6 @@
 #ifndef _SYS_H_
 #define	_SYS_H_
 
-#include <cmath>
-
 namespace sys
 {
 	//WARNING: Rect MUST begin exactly as SDL_Rect structure.
@@ -31,11 +29,6 @@ namespace sys
 		Rect() = default;
 		Rect(int x, int y) : x(x), y(y) {}
 		Rect(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
-		Rect(float x, float y, float w, float h) :
-			x(static_cast<int>(std::round(x))),
-			y(static_cast<int>(std::round(y))),
-			w(static_cast<int>(std::round(w))),
-			h(static_cast<int>(std::round(h))) {}
 
 		int x = 0;
 		int y = 0;

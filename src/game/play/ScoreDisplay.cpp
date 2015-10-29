@@ -17,16 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DynSprite.h"
+#include "ScoreDisplay.h"
 
-#include "../sys/FrameInfo.h"
+#include "../../sys/FrameInfo.h"
 
-namespace app
+namespace game
 {
-	void DynSprite::update(const sys::FrameInfo& frame)
+	namespace play
 	{
-		m_moveVec *= frame.getDurationVar();
-		m_moveVec += m_acceleration * frame.getSquareDuration();
-		m_pos += m_moveVec;
+		void ScoreDisplay::resetScore()
+		{
+			m_uScore = 0;
+			m_drawnScore = 0.f;
+			m_numberDrawer.setDrawnValue(0);
+		}
+
+		void ScoreDisplay::update(const sys::FrameInfo& frame)
+		{
+			if (m_drawnScore < m_uScore)
+			{
+				m_drawnScore += frame.getDuration() * m_scoreSpeed;
+				if (m_drawnScore < m_uScore)
+					m_numberDrawer.setDrawnValue(static_cast<unsigned int>(m_drawnScore));
+				else
+				{
+					m_drawnScore = static_cast<float>(m_uScore);
+					m_numberDrawer.setDrawnValue(m_uScore);
+				}
+			}
+		}
 	}
 }

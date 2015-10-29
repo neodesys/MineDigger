@@ -24,6 +24,7 @@
 #include <SDL2/SDL_rwops.h>
 #include <SDL2/SDL_filesystem.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 namespace
 {
@@ -129,6 +130,16 @@ namespace sys
 			return pSDLSurf;
 
 		s_log.warning("Cannot load \"%s\" image (%s)", asset ? asset : "", IMG_GetError());
+		return nullptr;
+	}
+
+	TTF_Font* ResLoader::loadFont(const char* asset, int pointSize, long fontFaceIdx)
+	{
+		TTF_Font* pSDLFont = TTF_OpenFontIndex(getAssetFullPath(asset), pointSize, fontFaceIdx);
+		if (pSDLFont)
+			return pSDLFont;
+
+		s_log.warning("Cannot load \"%s\" font (%s)", asset ? asset : "", TTF_GetError());
 		return nullptr;
 	}
 

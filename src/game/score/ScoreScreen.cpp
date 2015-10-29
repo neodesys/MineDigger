@@ -77,7 +77,7 @@ namespace game
 			//TODO
 		}
 
-		void ScoreScreen::updateAnimations(unsigned long t)
+		void ScoreScreen::update(const sys::FrameInfo& frame)
 		{
 			//TODO
 		}

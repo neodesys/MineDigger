@@ -33,11 +33,26 @@
     <ClCompile Include="..\..\src\app\DynSprite.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\app\NumberDrawer.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\NumberPrintRes.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\app\Sprite.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\TextureDrawer.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\MineDigger.cpp">
       <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\Font.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\FrameInfo.cpp">
+      <Filter>src\sys</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\sys\GameEngine.cpp">
       <Filter>src\sys</Filter>
@@ -61,6 +76,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="precomp.cpp" />
+    <ClCompile Include="..\..\src\game\play\Countdown.cpp">
+      <Filter>src\game\play</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\game\play\GemBoardModel.cpp">
       <Filter>src\game\play</Filter>
     </ClCompile>
@@ -71,6 +89,9 @@
       <Filter>src\game\play</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\play\PlayScreen.cpp">
+      <Filter>src\game\play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\play\ScoreDisplay.cpp">
       <Filter>src\game\play</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\score\ScoreScreen.cpp">
@@ -99,7 +120,19 @@
     <ClInclude Include="..\..\src\app\IResHolder.h">
       <Filter>src\app</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\app\ISpriteDrawer.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\NumberDrawer.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\NumberPrintRes.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\app\Sprite.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\TextureDrawer.h">
       <Filter>src\app</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\MineDigger.h">
@@ -108,7 +141,16 @@
     <ClInclude Include="..\..\src\sys\sys.h">
       <Filter>src\sys</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\sys\Font.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\FrameInfo.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\sys\GameEngine.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\IAnimated.h">
       <Filter>src\sys</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\sys\IDrawable.h">
@@ -138,6 +180,9 @@
     <ClInclude Include="..\..\src\precomp.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\game\play\Countdown.h">
+      <Filter>src\game\play</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\game\play\GemBoardModel.h">
       <Filter>src\game\play</Filter>
     </ClInclude>
@@ -148,6 +193,9 @@
       <Filter>src\game\play</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\play\PlayScreen.h">
+      <Filter>src\game\play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\play\ScoreDisplay.h">
       <Filter>src\game\play</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\score\ScoreScreen.h">

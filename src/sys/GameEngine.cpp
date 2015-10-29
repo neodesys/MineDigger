@@ -168,6 +168,10 @@ namespace sys
 
 	GameEngine::~GameEngine()
 	{
+		assert(m_pRenderer);
+		assert(m_pSoundPlayer);
+		assert(m_pResLoader);
+
 		delete m_pRenderer;
 		delete m_pSoundPlayer;
 		delete m_pResLoader;

@@ -23,6 +23,8 @@
 #include "../../app/IGameScreen.h"
 #include "../../app/BackBoard.h"
 #include "GemBoardView.h"
+#include "Countdown.h"
+#include "ScoreDisplay.h"
 
 namespace game
 {
@@ -35,16 +37,32 @@ namespace game
 		public:
 			struct Config
 			{
-				const char* gemResArray[static_cast<std::size_t>(GemType::NB_GEM_TYPES)];
+				const char* gemResArray[GemType::NB_GEM_TYPES];
 
 				GemBoardView::Config gemBoardConfig;
+
 				sys::Rect gemBoardTopClip;
 				sys::Vec2 gemBoardTopPos;
 
-				unsigned long uMaxPlayTime; //in ms
+				sys::Vec2 countdownPos;
+				float countdownScale;
+				sys::Color countdownColor;
+				sys::Color countdownShadowColor;
+				int countdownShadowOffset[2];
+				unsigned int uCountdownDuration; //in sec
+
+				sys::Vec2 scoreDisplayPos;
+				float scoreDisplayScale;
+				int scoreDisplayMinDigits;
+				sys::Color scoreDisplayColor;
+				sys::Color scoreDisplayShadowColor;
+				int scoreDisplayShadowOffset[2];
+				float scoreDisplaySpeed; //in points per sec
+
+				unsigned int uGemScorePoints;
 			};
 
-			PlayScreen(MineDigger& game, const Config& config);
+			PlayScreen(MineDigger& game);
 			~PlayScreen() override final;
 
 			const char* getScreenName() override final;
@@ -59,9 +77,21 @@ namespace game
 			void onMouseButtonUp(const sys::Vec2& pos) override final;
 			void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
 
-			void updateAnimations(unsigned long t) override final;
+			void update(const sys::FrameInfo& frame) override final;
 
 			void draw(sys::Renderer& rdr) override final;
+
+			const Config& getConfig() const
+			{
+				return m_config;
+			}
+
+			const sys::Texture* getGemTex(GemType type) const;
+
+			void addGemPoints()
+			{
+				m_scoreDisplay.addScore(m_config.uGemScorePoints);
+			}
 
 		private:
 			PlayScreen(const PlayScreen&) = delete;
@@ -72,14 +102,13 @@ namespace game
 
 			app::BackBoard m_background;
 			GemBoardView m_gemBoardView;
+			app::TextureDrawer m_gemBoardTopDrawer;
 			app::Sprite m_gemBoardTop;
-
-			unsigned long m_startTime = 0;
-			unsigned long m_lastFrameTime = 0;
-			float m_lastDeltaTime = 0.f;
+			Countdown m_countdown;
+			ScoreDisplay m_scoreDisplay;
 
 			//Screen resources
-			const sys::Texture* m_pGemTexArray[static_cast<std::size_t>(GemType::NB_GEM_TYPES)] = {};
+			const sys::Texture* m_pGemTexArray[GemType::NB_GEM_TYPES] = {};
 		};
 	}
 }

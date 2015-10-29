@@ -27,7 +27,9 @@ namespace game
 {
 	namespace play
 	{
-		class GemBoardView final : public sys::IMouseListener
+		class PlayScreen;
+
+		class GemBoardView final : public sys::IMouseListener, public sys::IAnimated
 		{
 		public:
 			class Config final
@@ -51,17 +53,20 @@ namespace game
 				GemSprite::Config spriteConfig = {};
 			};
 
-			//pGemTexArray must be valid with a size of GemType::NB_GEM_TYPES
-			GemBoardView(const sys::Texture* const pGemTexArray[], const Config& config);
+			GemBoardView(PlayScreen& playScreen);
 
 			void onMouseButtonDown(const sys::Vec2& pos) override final;
 			void onMouseButtonUp(const sys::Vec2& pos) override final;
 			void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
 
-			void updateSpritesPos(float dtCoeff, float dt2);
-			void drawLayer(bool bFront, sys::Renderer& rdr);
+			void update(const sys::FrameInfo& frame) override final;
 
-			const sys::Texture* getGemTex(GemType type) const;
+			void drawLayer(sys::Renderer& rdr, bool bFront);
+
+			const PlayScreen& getPlayScreen() const
+			{
+				return m_playScreen;
+			}
 
 			const Config& getConfig() const
 			{
@@ -92,7 +97,7 @@ namespace game
 			GemBoardView(const GemBoardView&) = delete;
 			GemBoardView& operator=(const GemBoardView&) = delete;
 
-			const sys::Texture* const* const m_pGemTexArray;
+			PlayScreen& m_playScreen;
 			const Config& m_config;
 
 			static constexpr int NB_SPRITES = GemBoardModel::NB_ROWS * GemBoardModel::NB_COLS * 2;

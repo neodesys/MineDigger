@@ -23,6 +23,7 @@
 #include "IGameScreen.h"
 #include "../sys/GameEngine.h"
 #include "../sys/Renderer.h"
+#include "../sys/FrameInfo.h"
 
 namespace app
 {
@@ -86,6 +87,7 @@ namespace app
 					}
 
 					//Manage game life-cycle
+					sys::FrameInfo frameInfo;
 					IGameScreen* pCurrentScreen = nullptr;
 					while (!bQuit)
 					{
@@ -146,6 +148,7 @@ namespace app
 									if (resState == ResState::READY)
 									{
 										pCurrentScreen = pGameScreen;
+										frameInfo.reset();
 										pCurrentScreen->onGameScreenStart();
 										pEngine->setMouseListener(pCurrentScreen);
 										log.info("Starting screen main loop...");
@@ -170,7 +173,9 @@ namespace app
 							{
 								if (pCurrentScreen)
 								{
-									pCurrentScreen->updateAnimations(pEngine->getTicks());
+									if (frameInfo.update(pEngine->getTicks()))
+										pCurrentScreen->update(frameInfo);
+
 									pEngine->getRenderer().renderFrame(pCurrentScreen);
 								}
 								else

@@ -21,10 +21,11 @@
 #define	_DYNSPRITE_H_
 
 #include "Sprite.h"
+#include "../sys/IAnimated.h"
 
 namespace app
 {
-	class DynSprite : public Sprite
+	class DynSprite : public Sprite, public sys::IAnimated
 	{
 	public:
 		void setAcceleration(const sys::Vec2& v)
@@ -37,13 +38,9 @@ namespace app
 			m_moveVec = v;
 		}
 
-		//Update position using time corrected Verlet integration
+		//Position is updated using time corrected Verlet integration:
 		//P(i+1) - P(i) = (P(i) - P(i-1)) * dt(i)/dt(i-1) + A(i) * dt(i)²
-		//with:
-		//  dtCoeff = dt(i)/dt(i-1)
-		//and:
-		//  dt2 = dt(i)²
-		virtual void updatePos(float dtCoeff, float dt2);
+		virtual void update(const sys::FrameInfo& frame) override;
 
 	protected:
 		sys::Vec2 m_acceleration;

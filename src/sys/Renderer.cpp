@@ -87,6 +87,9 @@ namespace sys
 
 	Renderer::~Renderer()
 	{
+		assert(m_pSDLRdr);
+		assert(m_pSDLWnd);
+
 		SDL_DestroyRenderer(m_pSDLRdr);
 		SDL_DestroyWindow(m_pSDLWnd);
 	}
@@ -125,9 +128,9 @@ namespace sys
 
 	SDL_Texture* Renderer::createSDLTextureFromSurface(SDL_Surface* pSDLSurf)
 	{
-		if (!pSDLSurf)
+		if (!pSDLSurf || (pSDLSurf->w < 1) || (pSDLSurf->h < 1))
 		{
-			s_log.warning("Cannot create SDL2 texture from a null surface");
+			s_log.warning("Cannot create SDL2 texture from a null or empty surface");
 			return nullptr;
 		}
 
