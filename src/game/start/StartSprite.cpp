@@ -16,38 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "StartSprite.h"
 
-#ifndef _SYS_H_
-#define	_SYS_H_
-
-namespace sys
+namespace game
 {
-	//WARNING: Rect MUST begin exactly as SDL_Rect structure.
-	class Rect
+	namespace start
 	{
-	public:
-		Rect() = default;
-		Rect(int x, int y) : x(x), y(y) {}
-		Rect(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
+		bool StartSprite::isLeftUpOut() const
+		{
+			int w = 0;
+			int h = 0;
+			if (m_textureDrawer.getSpriteSize(m_scale, w, h))
+			{
+				if ((m_pos.x + 0.5f * w < 0.f) || (m_pos.y + 0.5f * h < 0.f))
+					return true;
+			}
 
-		int x = 0;
-		int y = 0;
-		int w = 0;
-		int h = 0;
-	};
-
-	class Color
-	{
-	public:
-		Color() = default;
-		Color(unsigned char r, unsigned char g, unsigned char b) : r(r), g(g), b(b) {}
-		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : r(r), g(g), b(b), a(a) {}
-
-		unsigned char r = 0;
-		unsigned char g = 0;
-		unsigned char b = 0;
-		unsigned char a = 255;
-	};
+			return false;
+		}
+	}
 }
-
-#endif //_SYS_H_

@@ -33,6 +33,7 @@ namespace sys
 	class Texture;
 	class Rect;
 	class Color;
+	enum struct BlendMode : unsigned char;
 
 	class Renderer final
 	{
@@ -59,6 +60,9 @@ namespace sys
 		//If pSrcRect is null, source texture is not clipped.
 		//If pDestRect is null, destination is stretched to the entire viewport
 		void drawTexture(const Texture& tex, const Rect* pSrcRect, const Rect* pDestRect);
+
+		//If pDestRect is null, the entire viewport is painted
+		void drawColoredRect(const Color& color, BlendMode mode, const Rect* pDestRect);
 
 	private:
 		Renderer(SDL_Window* pSDLWnd, SDL_Renderer* pSDLRdr) : m_pSDLWnd(pSDLWnd), m_pSDLRdr(pSDLRdr) {}

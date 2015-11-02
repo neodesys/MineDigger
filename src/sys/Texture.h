@@ -29,6 +29,14 @@ namespace sys
 	class GameEngine;
 	class Color;
 
+	enum struct BlendMode : unsigned char
+	{
+		NO_BLEND,
+		ALPHA_BLEND,
+		ADDITIVE,
+		COLOR_MOD
+	};
+
 	class Texture final
 	{
 	public:
@@ -39,6 +47,10 @@ namespace sys
 		const int m_height;
 
 		bool setTextureColorMod(const Color& color);
+		Color getTextureColorMod() const;
+
+		bool setTextureBlendMode(BlendMode mode);
+		BlendMode getTextureBlendMode() const;
 
 	private:
 		Texture(int width, int height, SDL_Texture* pSDLTex);

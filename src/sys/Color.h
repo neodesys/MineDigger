@@ -17,22 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "SoundPlayer.h"
-
-#include <new>
+#ifndef _COLOR_H_
+#define	_COLOR_H_
 
 namespace sys
 {
-	const Logger SoundPlayer::s_log("SoundPlayer");
-
-	SoundPlayer* SoundPlayer::createSoundPlayer()
+	class Color
 	{
-		//TODO
-		return new(std::nothrow) SoundPlayer();
-	}
+	public:
+		Color() = default;
+		Color(unsigned char r, unsigned char g, unsigned char b) : r(r), g(g), b(b) {}
+		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : r(r), g(g), b(b), a(a) {}
 
-	SoundPlayer::~SoundPlayer()
-	{
-		//TODO
-	}
+		unsigned char r = 0;
+		unsigned char g = 0;
+		unsigned char b = 0;
+		unsigned char a = 255;
+	};
 }
+
+#endif //_COLOR_H_

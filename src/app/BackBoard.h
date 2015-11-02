@@ -21,7 +21,7 @@
 #define	_BACKBOARD_H_
 
 #include "../sys/IDrawable.h"
-#include "../sys/sys.h"
+#include "../sys/Color.h"
 
 namespace sys
 {

@@ -25,7 +25,7 @@
 namespace sys
 {
 	class ResLoader;
-	class SoundPlayer;
+	class AudioMixer;
 	class Renderer;
 	class IMouseListener;
 
@@ -40,9 +40,9 @@ namespace sys
 			return *m_pResLoader;
 		}
 
-		SoundPlayer& getSoundPlayer() const
+		AudioMixer& getAudioMixer() const
 		{
-			return *m_pSoundPlayer;
+			return *m_pAudioMixer;
 		}
 
 		Renderer& getRenderer() const
@@ -61,7 +61,7 @@ namespace sys
 		bool processEvents() const;
 
 	private:
-		GameEngine(ResLoader* pResLoader, SoundPlayer* pSoundPlayer, Renderer* pRenderer) : m_pResLoader(pResLoader), m_pSoundPlayer(pSoundPlayer), m_pRenderer(pRenderer) {}
+		GameEngine(ResLoader* pResLoader, AudioMixer* pAudioMixer, Renderer* pRenderer) : m_pResLoader(pResLoader), m_pAudioMixer(pAudioMixer), m_pRenderer(pRenderer) {}
 		GameEngine(const GameEngine&) = delete;
 		GameEngine& operator=(const GameEngine&) = delete;
 
@@ -71,7 +71,7 @@ namespace sys
 		static void shutSDL2();
 
 		ResLoader* const m_pResLoader;
-		SoundPlayer* const m_pSoundPlayer;
+		AudioMixer* const m_pAudioMixer;
 		Renderer* const m_pRenderer;
 
 		IMouseListener* m_pMouseListener = nullptr;

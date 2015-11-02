@@ -27,7 +27,7 @@
 #include "GameEngine.h"
 #include "ResLoader.h"
 #include "Renderer.h"
-#include "sys.h"
+#include "Color.h"
 
 namespace sys
 {
@@ -76,14 +76,93 @@ namespace sys
 
 	bool Texture::setTextureColorMod(const Color& color)
 	{
+		bool bRet = true;
+
 		assert(m_pSDLTex);
-		if (SDL_SetTextureColorMod(m_pSDLTex, color.r, color.g, color.b) ||
-			SDL_SetTextureAlphaMod(m_pSDLTex, color.a))
+		if (SDL_SetTextureColorMod(m_pSDLTex, color.r, color.g, color.b))
 		{
+			bRet = false;
 			s_log.warning("Cannot set texture modulation color (%s)", SDL_GetError());
+		}
+
+		if (SDL_SetTextureAlphaMod(m_pSDLTex, color.a))
+		{
+			bRet = false;
+			s_log.warning("Cannot set texture modulation alpha (%s)", SDL_GetError());
+		}
+
+		return bRet;
+	}
+
+	Color Texture::getTextureColorMod() const
+	{
+		Color ret = {255, 255, 255, 255};
+
+		assert(m_pSDLTex);
+		if (SDL_GetTextureColorMod(m_pSDLTex, &ret.r, &ret.g, &ret.b))
+			s_log.warning("Cannot get texture modulation color information (%s)", SDL_GetError());
+
+		if (SDL_GetTextureAlphaMod(m_pSDLTex, &ret.a))
+			s_log.warning("Cannot get texture modulation alpha information (%s)", SDL_GetError());
+
+		return ret;
+	}
+
+	bool Texture::setTextureBlendMode(BlendMode mode)
+	{
+		SDL_BlendMode sdlMode = SDL_BLENDMODE_NONE;
+		switch (mode)
+		{
+		case BlendMode::NO_BLEND:
+			break;
+
+		case BlendMode::ALPHA_BLEND:
+			sdlMode = SDL_BLENDMODE_BLEND;
+			break;
+
+		case BlendMode::ADDITIVE:
+			sdlMode = SDL_BLENDMODE_ADD;
+			break;
+
+		case BlendMode::COLOR_MOD:
+			sdlMode = SDL_BLENDMODE_MOD;
+			break;
+		}
+
+		assert(m_pSDLTex);
+		if (SDL_SetTextureBlendMode(m_pSDLTex, sdlMode))
+		{
+			s_log.warning("Cannot set texture blend mode (%s)", SDL_GetError());
 			return false;
 		}
 
 		return true;
+	}
+
+	BlendMode Texture::getTextureBlendMode() const
+	{
+		SDL_BlendMode sdlMode = SDL_BLENDMODE_NONE;
+
+		assert(m_pSDLTex);
+		if (SDL_GetTextureBlendMode(m_pSDLTex, &sdlMode))
+		{
+			s_log.warning("Cannot get texture blend mode information (%s)", SDL_GetError());
+			return BlendMode::NO_BLEND;
+		}
+
+		switch (sdlMode)
+		{
+		case SDL_BLENDMODE_BLEND:
+			return BlendMode::ALPHA_BLEND;
+
+		case SDL_BLENDMODE_ADD:
+			return BlendMode::ADDITIVE;
+
+		case SDL_BLENDMODE_MOD:
+			return BlendMode::COLOR_MOD;
+
+		default:
+			return BlendMode::NO_BLEND;
+		}
 	}
 }

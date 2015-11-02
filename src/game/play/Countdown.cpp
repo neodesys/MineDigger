@@ -20,6 +20,7 @@
 #include "Countdown.h"
 
 #include "../../sys/FrameInfo.h"
+#include "../../sys/AudioSample.h"
 
 namespace game
 {
@@ -38,7 +39,7 @@ namespace game
 			}
 
 			m_numberDrawer.setMinDigits(minDigits);
-			m_numberDrawer.setDrawnValue(m_uCurrentValue);
+			m_numberDrawer.setNumber(m_uCurrentValue);
 		}
 
 		void Countdown::update(const sys::FrameInfo& frame)
@@ -55,12 +56,19 @@ namespace game
 
 			t = (t - m_uStartTimestamp) / 1000;
 
+			unsigned int uPrevValue = m_uCurrentValue;
 			if (t >= m_uDuration)
 				m_uCurrentValue = 0;
 			else
 				m_uCurrentValue = m_uDuration - t;
 
-			m_numberDrawer.setDrawnValue(m_uCurrentValue);
+			if (m_uCurrentValue != uPrevValue)
+			{
+				m_numberDrawer.setNumber(m_uCurrentValue);
+
+				if (m_pCountdownSample && (m_uCurrentValue <= 10))
+					m_pCountdownSample->play();
+			}
 		}
 	}
 }

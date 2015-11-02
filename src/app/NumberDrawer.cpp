@@ -19,15 +19,16 @@
 
 #include "NumberDrawer.h"
 
-#include "NumberPrintRes.h"
+#include "NumberStamp.h"
+#include "../sys/Rect.h"
 
 namespace app
 {
 	bool NumberDrawer::getSpriteSize(float scale, int& w, int& h) const
 	{
-		if (m_pNumberPrintRes)
+		if (m_pNumberStamp)
 		{
-			m_pNumberPrintRes->getNumberPrintSize(m_uDrawnValue, m_minDigits, scale, w, h);
+			m_pNumberStamp->getNumberPrintSize(m_uNumber, m_minDigits, scale, w, h);
 			return true;
 		}
 		else
@@ -36,15 +37,15 @@ namespace app
 
 	void NumberDrawer::drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const
 	{
-		if (m_pNumberPrintRes)
+		if (m_pNumberStamp)
 		{
 			if (m_shadowColor.a)
 			{
 				sys::Rect shadowRect = {rect.x + m_shadowOffset[0], rect.y + m_shadowOffset[1], rect.w, rect.h};
-				m_pNumberPrintRes->printNumber(rdr, shadowRect, m_shadowColor, m_uDrawnValue, m_minDigits);
+				m_pNumberStamp->printNumber(rdr, shadowRect, m_shadowColor, m_uNumber, m_minDigits);
 			}
 
-			m_pNumberPrintRes->printNumber(rdr, rect, m_color, m_uDrawnValue, m_minDigits);
+			m_pNumberStamp->printNumber(rdr, rect, m_color, m_uNumber, m_minDigits);
 		}
 	}
 }

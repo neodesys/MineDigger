@@ -192,6 +192,10 @@ namespace game
 
 				bFirstFound = true;
 			}
+
+			sys::AudioSample* pSample = m_playScreen.getCancelSample();
+			if (pSample)
+				pSample->play();
 		}
 
 		void GemBoardView::onValidateSwap(int rowA, int colA, int rowB, int colB)
@@ -322,7 +326,13 @@ namespace game
 					(m_model.getGem(rowA, colA) != m_model.getGem(rowB, colB)) &&
 					m_pSelectedSprite->trySwapGem(rowA, colA))
 				{
-					if (!m_pDraggedSprite->trySwapGem(rowB, colB))
+					if (m_pDraggedSprite->trySwapGem(rowB, colB))
+					{
+						sys::AudioSample* pSample = m_playScreen.getSwapSample();
+						if (pSample)
+							pSample->play();
+					}
+					else
 					{
 						m_pSelectedSprite->cancelMove();
 						m_pDraggedSprite->unselect();

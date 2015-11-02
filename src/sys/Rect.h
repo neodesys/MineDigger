@@ -17,26 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SOUNDPLAYER_H_
-#define	_SOUNDPLAYER_H_
-
-#include "Logger.h"
+#ifndef _RECT_H_
+#define	_RECT_H_
 
 namespace sys
 {
-	class SoundPlayer final
+	//WARNING: Rect MUST begin exactly as SDL_Rect structure.
+	class Rect
 	{
 	public:
-		static SoundPlayer* createSoundPlayer();
-		~SoundPlayer();
+		Rect() = default;
+		Rect(int x, int y) : x(x), y(y) {}
+		Rect(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
 
-	private:
-		SoundPlayer() = default;
-		SoundPlayer(const SoundPlayer&) = delete;
-		SoundPlayer& operator=(const SoundPlayer&) = delete;
-
-		static const Logger s_log;
+		int x = 0;
+		int y = 0;
+		int w = 0;
+		int h = 0;
 	};
 }
 
-#endif //_SOUNDPLAYER_H_
+#endif //_RECT_H_

@@ -22,6 +22,14 @@
 
 #include "../../app/IGameScreen.h"
 #include "../../app/BackBoard.h"
+#include "../../sys/AudioSample.h"
+#include "ScoreSprite.h"
+#include "BackButton.h"
+
+namespace sys
+{
+	class Music;
+}
 
 namespace game
 {
@@ -32,7 +40,38 @@ namespace game
 		class ScoreScreen final : public app::IGameScreen
 		{
 		public:
-			ScoreScreen(MineDigger& game) : m_game(game) {}
+			struct Config
+			{
+				const char* scoreBackAsset;
+				const char* scoreAsset;
+
+				const char* scoreMusicAsset;
+				const char* exploseSampleAsset;
+				const char* victorySampleAsset;
+
+				sys::Color explosionColor;
+				float explosionSpeedinMs; //in color units per ms
+
+				sys::Rect scoreClip;
+				sys::Vec2 scoreNumberStampOffset;
+				int scoreMinDigits;
+				sys::Color scoreColor;
+				sys::Color scoreShadowColor;
+				int scoreShadowOffset[2];
+				sys::Vec2 scoreInitialPos;
+				sys::Vec2 scoreFinalPos;
+				unsigned long uScoreAnimDuration; //in ms
+
+				sys::Vec2 backButtonPos;
+				sys::Rect backButtonClip;
+				sys::Rect backButtonOverlayClip;
+				unsigned int uBackButtonOverlayImgCount;
+				unsigned int uBackButtonOverlayImgStride;
+
+				sys::Rect backButtonRect;
+			};
+
+			ScoreScreen(MineDigger& game);
 			~ScoreScreen() override final;
 
 			const char* getScreenName() override final;
@@ -40,8 +79,8 @@ namespace game
 			app::ResState getResState(const sys::GameEngine* pEngine) override final;
 			void cleanRes(bool bForce) override final;
 
-			void onGameScreenStart() override final;
-			void onGameScreenEnd() override final;
+			void onGameScreenStart(sys::AudioMixer& mixer) override final;
+			void onGameScreenEnd(sys::AudioMixer& mixer) override final;
 
 			void onMouseButtonDown(const sys::Vec2& pos) override final;
 			void onMouseButtonUp(const sys::Vec2& pos) override final;
@@ -51,12 +90,45 @@ namespace game
 
 			void draw(sys::Renderer& rdr) override final;
 
+			void setFinalScore(unsigned int uFinalScore)
+			{
+				m_scoreSprite.setFinalScore(uFinalScore);
+			}
+
+			void playButtonSample() const;
+			void playAgain();
+
 		private:
 			ScoreScreen(const ScoreScreen&) = delete;
 			ScoreScreen& operator=(const ScoreScreen&) = delete;
 
 			MineDigger& m_game;
+			const Config& m_config;
+
+			enum struct AnimState : unsigned char
+			{
+				EXPLODE,
+				WAITING_SCORE,
+				BACK_BUTTON
+			};
+
+			AnimState m_animState = AnimState::EXPLODE;
+			unsigned long m_uAnimStartTimestamp = 0;
+
+			sys::Color m_explosionColor;
+			float m_explosionSpeedinMs = 1.f; //in color units per ms
+
 			app::BackBoard m_background;
+			ScoreSprite m_scoreSprite;
+			BackButton m_backButton;
+
+			//Screen resources
+			const sys::Texture* m_pScoreBackTex = nullptr;
+			const sys::Texture* m_pScoreTex = nullptr;
+			sys::Music* m_pScoreMusic = nullptr;
+			sys::AudioSample* m_pExploseSample = nullptr;
+			sys::AudioSample* m_pVictorySample = nullptr;
+			sys::AudioSample::Tracker m_sampleTracker;
 		};
 	}
 }

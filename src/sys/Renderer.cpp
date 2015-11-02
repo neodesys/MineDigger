@@ -27,7 +27,7 @@
 #include <SDL2/SDL_hints.h>
 
 #include "IDrawable.h"
-#include "sys.h"
+#include "Color.h"
 #include "Texture.h"
 
 namespace sys
@@ -178,5 +178,55 @@ namespace sys
 
 		if (SDL_RenderCopy(m_pSDLRdr, tex.m_pSDLTex, reinterpret_cast<const SDL_Rect*>(pSrcRect), reinterpret_cast<const SDL_Rect*>(pDestRect)))
 			s_log.warning("Cannot draw texture (%s)", SDL_GetError());
+	}
+
+	void Renderer::drawColoredRect(const Color& color, BlendMode mode, const Rect* pDestRect)
+	{
+		SDL_BlendMode sdlMode = SDL_BLENDMODE_NONE;
+		switch (mode)
+		{
+		case BlendMode::NO_BLEND:
+			break;
+
+		case BlendMode::ALPHA_BLEND:
+			sdlMode = SDL_BLENDMODE_BLEND;
+			break;
+
+		case BlendMode::ADDITIVE:
+			sdlMode = SDL_BLENDMODE_ADD;
+			break;
+
+		case BlendMode::COLOR_MOD:
+			sdlMode = SDL_BLENDMODE_MOD;
+			break;
+		}
+
+		assert(m_pSDLRdr);
+		SDL_BlendMode sdlOldMode = SDL_BLENDMODE_NONE;
+		if (SDL_GetRenderDrawBlendMode(m_pSDLRdr, &sdlOldMode))
+		{
+			sdlMode = sdlOldMode;
+			s_log.warning("Cannot get renderer blend mode information (%s)", SDL_GetError());
+		}
+		else if (sdlMode != sdlOldMode)
+		{
+			if (SDL_SetRenderDrawBlendMode(m_pSDLRdr, sdlMode))
+			{
+				sdlMode = sdlOldMode;
+				s_log.warning("Cannot set renderer blend mode (%s)", SDL_GetError());
+			}
+		}
+
+		if (SDL_SetRenderDrawColor(m_pSDLRdr, color.r, color.g, color.b, color.a))
+			s_log.warning("Cannot set rect color (%s)", SDL_GetError());
+
+		if (SDL_RenderFillRect(m_pSDLRdr, reinterpret_cast<const SDL_Rect*>(pDestRect)))
+			s_log.warning("Cannot paint rect (%s)", SDL_GetError());
+
+		if (sdlMode != sdlOldMode)
+		{
+			if (SDL_SetRenderDrawBlendMode(m_pSDLRdr, sdlOldMode))
+				s_log.warning("Cannot restore renderer blend mode (%s)", SDL_GetError());
+		}
 	}
 }

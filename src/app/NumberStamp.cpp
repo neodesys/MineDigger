@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "NumberPrintRes.h"
+#include "NumberStamp.h"
 
 #include <cassert>
 #include <new>
@@ -26,13 +26,13 @@
 #include "../sys/Font.h"
 #include "../sys/Texture.h"
 #include "../sys/Renderer.h"
-#include "../sys/sys.h"
+#include "../sys/Rect.h"
 
 namespace app
 {
-	const sys::Logger NumberPrintRes::s_log("NumberPrintRes");
+	const sys::Logger NumberStamp::s_log("NumberStamp");
 
-	NumberPrintRes* NumberPrintRes::createNumberPrintRes(const sys::GameEngine& engine, sys::Font& font)
+	NumberStamp* NumberStamp::createNumberStamp(const sys::GameEngine& engine, sys::Font& font)
 	{
 		//Compute each digit size
 		int printAdvance = 0;
@@ -88,8 +88,8 @@ namespace app
 		if (!pTexture)
 			return nullptr;
 
-		NumberPrintRes* pPrintRes = new(std::nothrow) NumberPrintRes(pTexture);
-		if (!pPrintRes)
+		NumberStamp* pStamp = new(std::nothrow) NumberStamp(pTexture);
+		if (!pStamp)
 		{
 			delete pTexture;
 			s_log.critical("Out of memory");
@@ -97,27 +97,27 @@ namespace app
 		}
 
 		//Set digits data
-		pPrintRes->m_printAdvance = printAdvance;
-		pPrintRes->m_digitsHeight = font.getFontHeight();
+		pStamp->m_printAdvance = printAdvance;
+		pStamp->m_digitsHeight = font.getFontHeight();
 
 		int offset = 0;
 		for (int i = 0; i < 10; ++i)
 		{
-			pPrintRes->m_digitWidth[i] = s_digitWidth[i];
-			pPrintRes->m_digitOffset[i] = offset;
+			pStamp->m_digitWidth[i] = s_digitWidth[i];
+			pStamp->m_digitOffset[i] = offset;
 			offset += s_digitWidth[i];
 		}
 
-		return pPrintRes;
+		return pStamp;
 	}
 
-	NumberPrintRes::~NumberPrintRes()
+	NumberStamp::~NumberStamp()
 	{
 		assert(m_pTexture);
 		delete m_pTexture;
 	}
 
-	void NumberPrintRes::getNumberPrintSize(unsigned int n, int minDigits, float scale, int& w, int& h) const
+	void NumberStamp::getNumberPrintSize(unsigned int n, int minDigits, float scale, int& w, int& h) const
 	{
 		assert(m_pTexture);
 
@@ -142,7 +142,7 @@ namespace app
 		}
 	}
 
-	void NumberPrintRes::printNumber(sys::Renderer& rdr, const sys::Rect& rect, const sys::Color& color, unsigned int n, int minDigits) const
+	void NumberStamp::printNumber(sys::Renderer& rdr, const sys::Rect& rect, const sys::Color& color, unsigned int n, int minDigits) const
 	{
 		assert(m_pTexture);
 		if ((rect.w <= 0) || (rect.h <= 0) ||

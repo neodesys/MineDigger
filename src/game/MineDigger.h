@@ -45,7 +45,12 @@ namespace game
 			const char* fontAsset;
 			int fontPointSize;
 
+			const char* successSampleAsset;
+			const char* buttonSampleAsset;
+
+			start::StartScreen::Config startScreenConfig;
 			play::PlayScreen::Config playScreenConfig;
+			score::ScoreScreen::Config scoreScreenConfig;
 		};
 
 		MineDigger();
@@ -59,8 +64,8 @@ namespace game
 		sys::IDrawable* getLoadingDrawable() override final;
 		void destroyLoadingDrawable() override final;
 
-		void onGameStart() override final;
-		void onGameEnd() override final;
+		void onGameStart(sys::AudioMixer& mixer) override final;
+		void onGameEnd(sys::AudioMixer& mixer) override final;
 
 		app::IGameScreen* getCurrentGameScreen() override final;
 
@@ -79,9 +84,19 @@ namespace game
 			return m_pBackgroundTex;
 		}
 
-		const app::NumberPrintRes* getSharedNumberPrintRes() const
+		const app::NumberStamp* getSharedNumberStamp() const
 		{
-			return m_pNumberPrintRes;
+			return m_pNumberStamp;
+		}
+
+		sys::AudioSample* getSharedSuccessSample() const
+		{
+			return m_pSuccessSample;
+		}
+
+		sys::AudioSample* getSharedButtonSample() const
+		{
+			return m_pButtonSample;
 		}
 
 	private:
@@ -94,7 +109,6 @@ namespace game
 		play::PlayScreen m_playScreen;
 		score::ScoreScreen m_scoreScreen;
 
-		sys::IDrawable* m_pLoadingDrawable = nullptr;
 		app::IGameScreen* m_pCurrentScreen = nullptr;
 
 		app::ResState getSharedResState(const sys::GameEngine* pEngine);
@@ -103,7 +117,9 @@ namespace game
 		//Shared resources
 		const sys::Texture* m_pBackgroundTex = nullptr;
 		sys::Font* m_pFont = nullptr;
-		const app::NumberPrintRes* m_pNumberPrintRes = nullptr;
+		const app::NumberStamp* m_pNumberStamp = nullptr;
+		sys::AudioSample* m_pSuccessSample = nullptr;
+		sys::AudioSample* m_pButtonSample = nullptr;
 	};
 }
 

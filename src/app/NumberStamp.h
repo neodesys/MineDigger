@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _NUMBERPRINTRES_H_
-#define	_NUMBERPRINTRES_H_
+#ifndef _NUMBERSTAMP_H_
+#define	_NUMBERSTAMP_H_
 
 #include "../sys/Logger.h"
 
@@ -34,19 +34,19 @@ namespace sys
 
 namespace app
 {
-	class NumberPrintRes final
+	class NumberStamp final
 	{
 	public:
-		static NumberPrintRes* createNumberPrintRes(const sys::GameEngine& engine, sys::Font& font);
-		~NumberPrintRes();
+		static NumberStamp* createNumberStamp(const sys::GameEngine& engine, sys::Font& font);
+		~NumberStamp();
 
 		void getNumberPrintSize(unsigned int n, int minDigits, float scale, int& w, int& h) const;
 		void printNumber(sys::Renderer& rdr, const sys::Rect& rect, const sys::Color& color, unsigned int n, int minDigits) const;
 
 	private:
-		NumberPrintRes(sys::Texture* pTexture) : m_pTexture(pTexture) {}
-		NumberPrintRes(const NumberPrintRes&) = delete;
-		NumberPrintRes& operator=(const NumberPrintRes&) = delete;
+		NumberStamp(sys::Texture* pTexture) : m_pTexture(pTexture) {}
+		NumberStamp(const NumberStamp&) = delete;
+		NumberStamp& operator=(const NumberStamp&) = delete;
 
 		sys::Texture* const m_pTexture;
 
@@ -59,4 +59,4 @@ namespace app
 	};
 }
 
-#endif //_NUMBERPRINTRES_H_
+#endif //_NUMBERSTAMP_H_

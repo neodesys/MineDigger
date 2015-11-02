@@ -25,6 +25,9 @@
 struct SDL_Surface;
 struct _TTF_Font;
 typedef struct _TTF_Font TTF_Font;
+struct Mix_Chunk;
+struct _Mix_Music;
+typedef struct _Mix_Music Mix_Music;
 
 namespace sys
 {
@@ -35,14 +38,18 @@ namespace sys
 		~ResLoader();
 
 		SDL_Surface* loadImage(const char* asset);
+
 		TTF_Font* loadFont(const char* asset, int pointSize, long fontFaceIdx);
 
+		Mix_Chunk* loadSample(const char* asset);
+		Mix_Music* loadMusic(const char* asset);
+
 	private:
-		ResLoader(std::size_t basePathLength, char* pPathBuffer) : m_basePathLength(basePathLength), m_pPathBuffer(pPathBuffer) {}
+		ResLoader(std::size_t uBasePathLength, char* pPathBuffer) : m_uBasePathLength(uBasePathLength), m_pPathBuffer(pPathBuffer) {}
 		ResLoader(const ResLoader&) = delete;
 		ResLoader& operator=(const ResLoader&) = delete;
 
-		const std::size_t m_basePathLength;
+		const std::size_t m_uBasePathLength;
 		char* const m_pPathBuffer;
 
 		static const Logger s_log;

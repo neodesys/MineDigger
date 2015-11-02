@@ -25,6 +25,7 @@
 #include <SDL2/SDL_filesystem.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 namespace
 {
@@ -55,7 +56,7 @@ namespace sys
 		//    application bundle resources directory;
 		//  - eventually by looking for a subdirectory "res/" in the same
 		//    folder as the executable file (Windows/Linux).
-		std::size_t basePathLength = 0;
+		std::size_t uBasePathLength = 0;
 		char* pPathBuffer = nullptr;
 
 		SDL_RWops* pFile = SDL_RWFromFile(ASSETS_CHECK_FILE, "r");
@@ -68,8 +69,8 @@ namespace sys
 				return nullptr;
 			}
 
-			basePathLength = SDL_strlen(pBasePath);
-			pPathBuffer = static_cast<char*>(SDL_malloc(basePathLength + sizeof(ASSETS_RES_SUBDIR) + ASSET_MAX_PATH_LENGTH));
+			uBasePathLength = SDL_strlen(pBasePath);
+			pPathBuffer = static_cast<char*>(SDL_malloc(uBasePathLength + sizeof(ASSETS_RES_SUBDIR) + ASSET_MAX_PATH_LENGTH));
 			if (!pPathBuffer)
 			{
 				SDL_free(pBasePath);
@@ -77,17 +78,17 @@ namespace sys
 				return nullptr;
 			}
 
-			SDL_memcpy(pPathBuffer, pBasePath, basePathLength + 1);
+			SDL_memcpy(pPathBuffer, pBasePath, uBasePathLength + 1);
 			SDL_free(pBasePath);
 
-			SDL_memcpy(pPathBuffer + basePathLength, ASSETS_CHECK_FILE, sizeof(ASSETS_CHECK_FILE));
+			SDL_memcpy(pPathBuffer + uBasePathLength, ASSETS_CHECK_FILE, sizeof(ASSETS_CHECK_FILE));
 			pFile = SDL_RWFromFile(pPathBuffer, "r");
 			if (!pFile)
 			{
-				SDL_memcpy(pPathBuffer + basePathLength, ASSETS_RES_SUBDIR, sizeof(ASSETS_RES_SUBDIR));
-				basePathLength += sizeof(ASSETS_RES_SUBDIR) - 1;
+				SDL_memcpy(pPathBuffer + uBasePathLength, ASSETS_RES_SUBDIR, sizeof(ASSETS_RES_SUBDIR));
+				uBasePathLength += sizeof(ASSETS_RES_SUBDIR) - 1;
 
-				SDL_memcpy(pPathBuffer + basePathLength, ASSETS_CHECK_FILE, sizeof(ASSETS_CHECK_FILE));
+				SDL_memcpy(pPathBuffer + uBasePathLength, ASSETS_CHECK_FILE, sizeof(ASSETS_CHECK_FILE));
 				pFile = SDL_RWFromFile(pPathBuffer, "r");
 				if (!pFile)
 				{
@@ -99,7 +100,7 @@ namespace sys
 		}
 		SDL_RWclose(pFile);
 
-		ResLoader* pLoader = new(std::nothrow) ResLoader(basePathLength, pPathBuffer);
+		ResLoader* pLoader = new(std::nothrow) ResLoader(uBasePathLength, pPathBuffer);
 		if (!pLoader)
 		{
 			SDL_free(pPathBuffer);
@@ -109,7 +110,7 @@ namespace sys
 
 		if (pPathBuffer)
 		{
-			pPathBuffer[basePathLength] = '\0';
+			pPathBuffer[uBasePathLength] = '\0';
 			s_log.info("Resource loader created with base path %s", pPathBuffer);
 		}
 		else
@@ -143,16 +144,36 @@ namespace sys
 		return nullptr;
 	}
 
+	Mix_Chunk* ResLoader::loadSample(const char* asset)
+	{
+		Mix_Chunk* pSDLSample = Mix_LoadWAV(getAssetFullPath(asset));
+		if (pSDLSample)
+			return pSDLSample;
+
+		s_log.warning("Cannot load \"%s\" audio sample (%s)", asset ? asset : "", Mix_GetError());
+		return nullptr;
+	}
+
+	Mix_Music* ResLoader::loadMusic(const char* asset)
+	{
+		Mix_Music* pSDLMusic = Mix_LoadMUS(getAssetFullPath(asset));
+		if (pSDLMusic)
+			return pSDLMusic;
+
+		s_log.warning("Cannot load \"%s\" music (%s)", asset ? asset : "", Mix_GetError());
+		return nullptr;
+	}
+
 	const char* ResLoader::getAssetFullPath(const char* asset)
 	{
 		if (asset && (asset[0] != '\0'))
 		{
-			std::size_t length = SDL_strlen(asset);
-			if (length <= ASSET_MAX_PATH_LENGTH)
+			std::size_t uLength = SDL_strlen(asset);
+			if (uLength <= ASSET_MAX_PATH_LENGTH)
 			{
 				if (m_pPathBuffer)
 				{
-					SDL_memcpy(m_pPathBuffer + m_basePathLength, asset, length + 1);
+					SDL_memcpy(m_pPathBuffer + m_uBasePathLength, asset, uLength + 1);
 					return m_pPathBuffer;
 				}
 				else

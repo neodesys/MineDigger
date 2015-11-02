@@ -24,6 +24,11 @@
 #include "../../app/NumberDrawer.h"
 #include "../../sys/IAnimated.h"
 
+namespace sys
+{
+	class AudioSample;
+}
+
 namespace game
 {
 	namespace play
@@ -36,9 +41,14 @@ namespace game
 				app::Sprite::setSpriteDrawer(&m_numberDrawer);
 			}
 
-			void setNumberPrintRes(const app::NumberPrintRes* pNumberPrintRes)
+			void setNumberStamp(const app::NumberStamp* pNumberStamp)
 			{
-				m_numberDrawer.setNumberPrintRes(pNumberPrintRes);
+				m_numberDrawer.setNumberStamp(pNumberStamp);
+			}
+
+			void setCountdownSample(sys::AudioSample* pSample)
+			{
+				m_pCountdownSample = pSample;
 			}
 
 			void setColor(const sys::Color& color)
@@ -74,6 +84,8 @@ namespace game
 			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
 			app::NumberDrawer m_numberDrawer;
+
+			sys::AudioSample* m_pCountdownSample = nullptr;
 
 			unsigned long m_uStartTimestamp = 0;
 			unsigned int m_uDuration = 0;

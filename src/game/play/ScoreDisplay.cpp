@@ -20,6 +20,7 @@
 #include "ScoreDisplay.h"
 
 #include "../../sys/FrameInfo.h"
+#include "../../sys/AudioMixer.h"
 
 namespace game
 {
@@ -29,7 +30,7 @@ namespace game
 		{
 			m_uScore = 0;
 			m_drawnScore = 0.f;
-			m_numberDrawer.setDrawnValue(0);
+			m_numberDrawer.setNumber(0);
 		}
 
 		void ScoreDisplay::update(const sys::FrameInfo& frame)
@@ -38,12 +39,15 @@ namespace game
 			{
 				m_drawnScore += frame.getDuration() * m_scoreSpeed;
 				if (m_drawnScore < m_uScore)
-					m_numberDrawer.setDrawnValue(static_cast<unsigned int>(m_drawnScore));
+					m_numberDrawer.setNumber(static_cast<unsigned int>(m_drawnScore));
 				else
 				{
 					m_drawnScore = static_cast<float>(m_uScore);
-					m_numberDrawer.setDrawnValue(m_uScore);
+					m_numberDrawer.setNumber(m_uScore);
 				}
+
+				if (m_pSuccessSample && (m_successSampleTracker.getStatus() == sys::AudioStatus::STOPPED))
+					m_pSuccessSample->play(0, &m_successSampleTracker);
 			}
 		}
 	}

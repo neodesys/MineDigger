@@ -25,6 +25,11 @@
 #include "../sys/IAnimated.h"
 #include "../sys/IDrawable.h"
 
+namespace sys
+{
+	class AudioMixer;
+}
+
 namespace app
 {
 	class IGameScreen : public IResHolder, public sys::IMouseListener, public sys::IAnimated, public sys::IDrawable
@@ -44,12 +49,15 @@ namespace app
 		//     over until it returns READY
 		//
 		//2- Screen main loop:
-		//   - onGameScreenStart(), all screen states should be reset here
+		//   - onGameScreenStart(mixer), all screen states and audio volumes
+		//     should be reset here
 		//   - main loop is running, processing at each iteration:
 		//       - inputs (through IMouseListener methods)
 		//       - update(frame)
 		//       - draw(rdr)
-		//   - onGameScreenEnd()
+		//   - onGameScreenEnd(mixer), screen states cleanup and
+		//     stopping/pausing audio samples/music should be performed here
+		//     if necessary
 		//
 		//3- Resources cleaning:
 		//   - cleanRes(false), must be transitive and also call all embedded
@@ -61,8 +69,8 @@ namespace app
 		//Notice: one-screen games should implement IGame and IGameScreen
 		//        interfaces in the same object
 
-		virtual void onGameScreenStart() = 0;
-		virtual void onGameScreenEnd() = 0;
+		virtual void onGameScreenStart(sys::AudioMixer& mixer) = 0;
+		virtual void onGameScreenEnd(sys::AudioMixer& mixer) = 0;
 	};
 }
 

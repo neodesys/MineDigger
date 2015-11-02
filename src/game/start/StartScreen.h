@@ -22,6 +22,13 @@
 
 #include "../../app/IGameScreen.h"
 #include "../../app/BackBoard.h"
+#include "StartBoard.h"
+
+namespace sys
+{
+	class Music;
+	class AudioSample;
+}
 
 namespace game
 {
@@ -32,7 +39,35 @@ namespace game
 		class StartScreen final : public app::IGameScreen
 		{
 		public:
-			StartScreen(MineDigger& game) : m_game(game) {}
+			struct Config
+			{
+				const char* diggerAsset;
+				const char* startBoardAsset;
+
+				const char* startMusicAsset;
+				const char* startSampleAsset;
+
+				sys::Rect startBoardTopClip;
+				sys::Vec2 startBoardTopPos;
+
+				sys::Vec2 diggerPos;
+				sys::Vec2 diggerOutImpulse;
+				sys::Vec2 diggerOutAcceleration;
+
+				sys::Vec2 startBoardPos;
+				sys::Vec2 startBoardOutImpulse;
+				sys::Vec2 startBoardOutAcceleration;
+
+				sys::Rect startBoardClip;
+				sys::Rect startBoardOverlayClip;
+				unsigned int uStartBoardOverlayImgCount;
+				unsigned int uStartBoardOverlayImgStride;
+				sys::Vec2 startBoardOverlayOffset;
+
+				sys::Rect startButtonRect;
+			};
+
+			StartScreen(MineDigger& game);
 			~StartScreen() override final;
 
 			const char* getScreenName() override final;
@@ -40,8 +75,8 @@ namespace game
 			app::ResState getResState(const sys::GameEngine* pEngine) override final;
 			void cleanRes(bool bForce) override final;
 
-			void onGameScreenStart() override final;
-			void onGameScreenEnd() override final;
+			void onGameScreenStart(sys::AudioMixer& mixer) override final;
+			void onGameScreenEnd(sys::AudioMixer& mixer) override final;
 
 			void onMouseButtonDown(const sys::Vec2& pos) override final;
 			void onMouseButtonUp(const sys::Vec2& pos) override final;
@@ -51,12 +86,29 @@ namespace game
 
 			void draw(sys::Renderer& rdr) override final;
 
+			void playButtonSample() const;
+			void launchGame();
+
 		private:
 			StartScreen(const StartScreen&) = delete;
 			StartScreen& operator=(const StartScreen&) = delete;
 
 			MineDigger& m_game;
+			const Config& m_config;
+
+			bool m_bLaunchingGame = false;
+
 			app::BackBoard m_background;
+			app::TextureDrawer m_startBoardTopDrawer;
+			app::Sprite m_startBoardTop;
+			StartSprite m_digger;
+			StartBoard m_startBoard;
+
+			//Screen resources
+			const sys::Texture* m_pDiggerTex = nullptr;
+			const sys::Texture* m_pStartBoardTex = nullptr;
+			sys::Music* m_pStartMusic = nullptr;
+			sys::AudioSample* m_pStartSample = nullptr;
 		};
 	}
 }

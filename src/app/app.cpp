@@ -73,7 +73,7 @@ namespace app
 								}
 								else if (resState == ResState::READY)
 								{
-									game.onGameStart();
+									game.onGameStart(pEngine->getAudioMixer());
 									bGameStarted = true;
 									break;
 								}
@@ -82,7 +82,7 @@ namespace app
 					}
 					else
 					{
-						game.onGameStart();
+						game.onGameStart(pEngine->getAudioMixer());
 						bGameStarted = true;
 					}
 
@@ -103,7 +103,7 @@ namespace app
 								//it may be re-used later depending on the
 								//specific game logic and structure
 								pEngine->setMouseListener(nullptr);
-								pCurrentScreen->onGameScreenEnd();
+								pCurrentScreen->onGameScreenEnd(pEngine->getAudioMixer());
 								pCurrentScreen->cleanRes(false);
 								pCurrentScreen = nullptr;
 							}
@@ -149,7 +149,7 @@ namespace app
 									{
 										pCurrentScreen = pGameScreen;
 										frameInfo.reset();
-										pCurrentScreen->onGameScreenStart();
+										pCurrentScreen->onGameScreenStart(pEngine->getAudioMixer());
 										pEngine->setMouseListener(pCurrentScreen);
 										log.info("Starting screen main loop...");
 									}
@@ -188,12 +188,12 @@ namespace app
 					if (pCurrentScreen)
 					{
 						pEngine->setMouseListener(nullptr);
-						pCurrentScreen->onGameScreenEnd();
+						pCurrentScreen->onGameScreenEnd(pEngine->getAudioMixer());
 						pCurrentScreen->cleanRes(true);
 					}
 
 					if (bGameStarted)
-						game.onGameEnd();
+						game.onGameEnd(pEngine->getAudioMixer());
 				}
 				else
 				{

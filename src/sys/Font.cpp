@@ -28,7 +28,7 @@
 #include "ResLoader.h"
 #include "Renderer.h"
 #include "Texture.h"
-#include "sys.h"
+#include "Rect.h"
 
 namespace sys
 {

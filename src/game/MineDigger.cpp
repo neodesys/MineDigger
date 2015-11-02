@@ -21,14 +21,11 @@
 
 #include "../sys/Texture.h"
 #include "../sys/Font.h"
-#include "../app/NumberPrintRes.h"
+#include "../app/NumberStamp.h"
 
 namespace
 {
-	const game::MineDigger::Config GAME_CONFIG =
-	{
-		#include "MineDigger.cfg"
-	};
+	#include "MineDigger.cfg"
 }
 
 namespace game
@@ -62,27 +59,27 @@ namespace game
 
 	bool MineDigger::createLoadingDrawable(const sys::GameEngine& engine)
 	{
-		//TODO: build something smoother than a black loading screen
+		//For this particular game there is no need for a loading drawable as
+		//resources loading is too fast
 		return true;
 	}
 
 	sys::IDrawable* MineDigger::getLoadingDrawable()
 	{
-		return m_pLoadingDrawable;
+		return nullptr;
 	}
 
 	void MineDigger::destroyLoadingDrawable()
 	{
-		delete m_pLoadingDrawable;
-		m_pLoadingDrawable = nullptr;
+		//Empty method
 	}
 
-	void MineDigger::onGameStart()
+	void MineDigger::onGameStart(sys::AudioMixer& mixer)
 	{
 		m_pCurrentScreen = &m_startScreen;
 	}
 
-	void MineDigger::onGameEnd()
+	void MineDigger::onGameEnd(sys::AudioMixer& mixer)
 	{
 		m_pCurrentScreen = nullptr;
 	}
@@ -167,7 +164,10 @@ namespace game
 		if (m_pCurrentScreen == &m_startScreen)
 			m_pCurrentScreen = &m_playScreen;
 		else if (m_pCurrentScreen == &m_playScreen)
+		{
+			m_scoreScreen.setFinalScore(m_playScreen.getFinalScore());
 			m_pCurrentScreen = &m_scoreScreen;
+		}
 		else
 			m_pCurrentScreen = &m_startScreen;
 	}
@@ -204,12 +204,42 @@ namespace game
 			return app::ResState::LOADING;
 		}
 
-		if (!m_pNumberPrintRes)
+		if (!m_pNumberStamp)
 		{
 			if (pEngine)
 			{
-				m_pNumberPrintRes = app::NumberPrintRes::createNumberPrintRes(*pEngine, *m_pFont);
-				if (!m_pNumberPrintRes)
+				m_pNumberStamp = app::NumberStamp::createNumberStamp(*pEngine, *m_pFont);
+				if (!m_pNumberStamp)
+				{
+					cleanSharedRes(true);
+					return app::ResState::ERROR;
+				}
+			}
+
+			return app::ResState::LOADING;
+		}
+
+		if (!m_pSuccessSample)
+		{
+			if (pEngine)
+			{
+				m_pSuccessSample = sys::AudioSample::loadSample(*pEngine, m_config.successSampleAsset);
+				if (!m_pSuccessSample)
+				{
+					cleanSharedRes(true);
+					return app::ResState::ERROR;
+				}
+			}
+
+			return app::ResState::LOADING;
+		}
+
+		if (!m_pButtonSample)
+		{
+			if (pEngine)
+			{
+				m_pButtonSample = sys::AudioSample::loadSample(*pEngine, m_config.buttonSampleAsset);
+				if (!m_pButtonSample)
 				{
 					cleanSharedRes(true);
 					return app::ResState::ERROR;
@@ -226,8 +256,14 @@ namespace game
 	{
 		if (bForce)
 		{
-			delete m_pNumberPrintRes;
-			m_pNumberPrintRes = nullptr;
+			delete m_pButtonSample;
+			m_pButtonSample = nullptr;
+
+			delete m_pSuccessSample;
+			m_pSuccessSample = nullptr;
+
+			delete m_pNumberStamp;
+			m_pNumberStamp = nullptr;
 
 			delete m_pFont;
 			m_pFont = nullptr;

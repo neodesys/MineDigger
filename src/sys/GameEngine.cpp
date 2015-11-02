@@ -28,7 +28,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "ResLoader.h"
-#include "SoundPlayer.h"
+#include "AudioMixer.h"
 #include "Renderer.h"
 #include "IMouseListener.h"
 #include "Vec2.h"
@@ -49,7 +49,7 @@ namespace sys
 	bool GameEngine::initSDL2()
 	{
 		//Init SDL core
-		if (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_EVENTS))
+		if (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_AUDIO))
 		{
 			s_log.critical("Cannot initialize SDL2 core (%s)", SDL_GetError());
 			return false;
@@ -132,8 +132,8 @@ namespace sys
 			return nullptr;
 		}
 
-		SoundPlayer* pSoundPlayer = SoundPlayer::createSoundPlayer();
-		if (!pSoundPlayer)
+		AudioMixer* pAudioMixer = AudioMixer::createAudioMixer();
+		if (!pAudioMixer)
 		{
 			delete pResLoader;
 			shutSDL2();
@@ -143,17 +143,17 @@ namespace sys
 		Renderer* pRenderer = Renderer::createRenderer(wndName, width, height);
 		if (!pRenderer)
 		{
-			delete pSoundPlayer;
+			delete pAudioMixer;
 			delete pResLoader;
 			shutSDL2();
 			return nullptr;
 		}
 
-		GameEngine* pEngine = new(std::nothrow) GameEngine(pResLoader, pSoundPlayer, pRenderer);
+		GameEngine* pEngine = new(std::nothrow) GameEngine(pResLoader, pAudioMixer, pRenderer);
 		if (!pEngine)
 		{
 			delete pRenderer;
-			delete pSoundPlayer;
+			delete pAudioMixer;
 			delete pResLoader;
 			shutSDL2();
 
@@ -169,11 +169,11 @@ namespace sys
 	GameEngine::~GameEngine()
 	{
 		assert(m_pRenderer);
-		assert(m_pSoundPlayer);
+		assert(m_pAudioMixer);
 		assert(m_pResLoader);
 
 		delete m_pRenderer;
-		delete m_pSoundPlayer;
+		delete m_pAudioMixer;
 		delete m_pResLoader;
 
 		s_log.info("Game engine destroyed");
@@ -191,7 +191,7 @@ namespace sys
 	{
 		assert(m_pRenderer);
 		assert(m_pResLoader);
-		assert(m_pSoundPlayer);
+		assert(m_pAudioMixer);
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))

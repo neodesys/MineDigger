@@ -36,7 +36,10 @@
     <ClCompile Include="..\..\src\app\NumberDrawer.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\app\NumberPrintRes.cpp">
+    <ClCompile Include="..\..\src\app\NumberStamp.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\PathSprite.cpp">
       <Filter>src\app</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\app\Sprite.cpp">
@@ -47,6 +50,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\game\MineDigger.cpp">
       <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\AudioMixer.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sys\AudioSample.cpp">
+      <Filter>src\sys</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\sys\Font.cpp">
       <Filter>src\sys</Filter>
@@ -60,13 +69,13 @@
     <ClCompile Include="..\..\src\sys\Logger.cpp">
       <Filter>src\sys</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\sys\Music.cpp">
+      <Filter>src\sys</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\sys\Renderer.cpp">
       <Filter>src\sys</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\sys\ResLoader.cpp">
-      <Filter>src\sys</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\sys\SoundPlayer.cpp">
       <Filter>src\sys</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\sys\Texture.cpp">
@@ -94,10 +103,25 @@
     <ClCompile Include="..\..\src\game\play\ScoreDisplay.cpp">
       <Filter>src\game\play</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\game\play\SparkSprite.cpp">
+      <Filter>src\game\play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\score\BackButton.cpp">
+      <Filter>src\game\score</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\game\score\ScoreScreen.cpp">
       <Filter>src\game\score</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\game\score\ScoreSprite.cpp">
+      <Filter>src\game\score</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\start\StartBoard.cpp">
+      <Filter>src\game\start</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\game\start\StartScreen.cpp">
+      <Filter>src\game\start</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\start\StartSprite.cpp">
       <Filter>src\game\start</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,7 +150,10 @@
     <ClInclude Include="..\..\src\app\NumberDrawer.h">
       <Filter>src\app</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\NumberPrintRes.h">
+    <ClInclude Include="..\..\src\app\NumberStamp.h">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\PathSprite.h">
       <Filter>src\app</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\app\Sprite.h">
@@ -138,7 +165,13 @@
     <ClInclude Include="..\..\src\game\MineDigger.h">
       <Filter>src\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\sys\sys.h">
+    <ClInclude Include="..\..\src\sys\AudioMixer.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\AudioSample.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\Color.h">
       <Filter>src\sys</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\sys\Font.h">
@@ -162,13 +195,16 @@
     <ClInclude Include="..\..\src\sys\Logger.h">
       <Filter>src\sys</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\sys\Music.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sys\Rect.h">
+      <Filter>src\sys</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\sys\Renderer.h">
       <Filter>src\sys</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\sys\ResLoader.h">
-      <Filter>src\sys</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\sys\SoundPlayer.h">
       <Filter>src\sys</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\sys\Texture.h">
@@ -198,10 +234,25 @@
     <ClInclude Include="..\..\src\game\play\ScoreDisplay.h">
       <Filter>src\game\play</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\game\play\SparkSprite.h">
+      <Filter>src\game\play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\score\BackButton.h">
+      <Filter>src\game\score</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\game\score\ScoreScreen.h">
       <Filter>src\game\score</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\game\score\ScoreSprite.h">
+      <Filter>src\game\score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\start\StartBoard.h">
+      <Filter>src\game\start</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\game\start\StartScreen.h">
+      <Filter>src\game\start</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\start\StartSprite.h">
       <Filter>src\game\start</Filter>
     </ClInclude>
   </ItemGroup>

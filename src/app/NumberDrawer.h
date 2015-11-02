@@ -21,23 +21,23 @@
 #define	_NUMBERDRAWER_H_
 
 #include "ISpriteDrawer.h"
-#include "../sys/sys.h"
+#include "../sys/Color.h"
 
 namespace app
 {
-	class NumberPrintRes;
+	class NumberStamp;
 
 	class NumberDrawer : public ISpriteDrawer
 	{
 	public:
-		void setNumberPrintRes(const NumberPrintRes* pNumberPrintRes)
+		void setNumberStamp(const NumberStamp* pNumberStamp)
 		{
-			m_pNumberPrintRes = pNumberPrintRes;
+			m_pNumberStamp = pNumberStamp;
 		}
 
-		void setDrawnValue(unsigned int uDrawnValue)
+		void setNumber(unsigned int uNumber)
 		{
-			m_uDrawnValue = uDrawnValue;
+			m_uNumber = uNumber;
 		}
 
 		void setMinDigits(int minDigits)
@@ -65,9 +65,9 @@ namespace app
 		virtual void drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const override;
 
 	protected:
-		const NumberPrintRes* m_pNumberPrintRes = nullptr;
+		const NumberStamp* m_pNumberStamp = nullptr;
 
-		unsigned int m_uDrawnValue = 0;
+		unsigned int m_uNumber = 0;
 		int m_minDigits = 0;
 
 		sys::Color m_color;

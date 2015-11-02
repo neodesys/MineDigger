@@ -20,7 +20,7 @@
 #ifndef _VEC2_H_
 #define	_VEC2_H_
 
-#include "sys.h"
+#include "Rect.h"
 
 #include <cmath>
 

@@ -21,6 +21,7 @@
 
 #include "../../sys/Renderer.h"
 #include "../../sys/Texture.h"
+#include "../../sys/Music.h"
 
 namespace
 {
@@ -37,6 +38,7 @@ namespace game
 			m_gemBoardView(*this)
 		{
 			m_gemBoardTop.setSpriteDrawer(&m_gemBoardTopDrawer);
+			m_sparkSprite.setAnimPath(m_config.pSparkAnimPath, m_config.uSparkAnimPathLength);
 		}
 
 		PlayScreen::~PlayScreen()
@@ -57,7 +59,7 @@ namespace game
 				{
 					if (pEngine)
 					{
-						m_pGemTexArray[i] = sys::Texture::loadTexture(*pEngine, m_config.gemResArray[i]);
+						m_pGemTexArray[i] = sys::Texture::loadTexture(*pEngine, m_config.gemAssetArray[i]);
 						if (!m_pGemTexArray[i])
 						{
 							cleanRes(true);
@@ -69,6 +71,81 @@ namespace game
 				}
 			}
 
+			if (!m_pSparkTex)
+			{
+				if (pEngine)
+				{
+					m_pSparkTex = sys::Texture::loadTexture(*pEngine, m_config.sparkAsset);
+					if (!m_pSparkTex)
+					{
+						cleanRes(true);
+						return app::ResState::ERROR;
+					}
+				}
+
+				return app::ResState::LOADING;
+			}
+
+			if (!m_pPlayMusic)
+			{
+				if (pEngine)
+				{
+					m_pPlayMusic = sys::Music::loadMusic(*pEngine, m_config.playMusicAsset);
+					if (!m_pPlayMusic)
+					{
+						cleanRes(true);
+						return app::ResState::ERROR;
+					}
+				}
+
+				return app::ResState::LOADING;
+			}
+
+			if (!m_pSwapSample)
+			{
+				if (pEngine)
+				{
+					m_pSwapSample = sys::AudioSample::loadSample(*pEngine, m_config.swapSampleAsset);
+					if (!m_pSwapSample)
+					{
+						cleanRes(true);
+						return app::ResState::ERROR;
+					}
+				}
+
+				return app::ResState::LOADING;
+			}
+
+			if (!m_pCancelSample)
+			{
+				if (pEngine)
+				{
+					m_pCancelSample = sys::AudioSample::loadSample(*pEngine, m_config.cancelSampleAsset);
+					if (!m_pCancelSample)
+					{
+						cleanRes(true);
+						return app::ResState::ERROR;
+					}
+				}
+
+				return app::ResState::LOADING;
+			}
+
+			if (!m_pCountdownSample)
+			{
+				if (pEngine)
+				{
+					m_pCountdownSample = sys::AudioSample::loadSample(*pEngine, m_config.countdownSampleAsset);
+					if (!m_pCountdownSample)
+					{
+						cleanRes(true);
+						return app::ResState::ERROR;
+					}
+				}
+
+				return app::ResState::LOADING;
+			}
+
 			return app::ResState::READY;
 		}
 
@@ -76,6 +153,21 @@ namespace game
 		{
 			if (bForce)
 			{
+				delete m_pCountdownSample;
+				m_pCountdownSample = nullptr;
+
+				delete m_pCancelSample;
+				m_pCancelSample = nullptr;
+
+				delete m_pSwapSample;
+				m_pSwapSample = nullptr;
+
+				delete m_pPlayMusic;
+				m_pPlayMusic = nullptr;
+
+				delete m_pSparkTex;
+				m_pSparkTex = nullptr;
+
 				for (int i = 0; i < GemType::NB_GEM_TYPES; ++i)
 				{
 					delete m_pGemTexArray[i];
@@ -84,18 +176,23 @@ namespace game
 			}
 		}
 
-		void PlayScreen::onGameScreenStart()
+		void PlayScreen::onGameScreenStart(sys::AudioMixer& mixer)
 		{
 			m_background.setTexture(m_game.getSharedBackgroundTex());
 
 			m_gemBoardView.getModel().resetBoard(true);
 
-			m_gemBoardTopDrawer.setTexture(m_game.getSharedBackgroundTex(), m_config.gemBoardTopClip);
+			m_gemBoardTopDrawer.setTexture(m_game.getSharedBackgroundTex(), &m_config.gemBoardTopClip);
 			m_gemBoardTop.setPos(m_config.gemBoardTopPos);
+
+			m_sparkSprite.setTexture(m_pSparkTex, m_config.uSparkAnimSubImagesCount, m_config.uSparkAnimSubImagesStride);
+			m_sparkSprite.setImageAnimSpeed(m_config.uSparkAnimSubImagesSpeed);
+			m_sparkSprite.startAnim();
 
 			m_countdown.setPos(m_config.countdownPos);
 			m_countdown.setScale(m_config.countdownScale);
-			m_countdown.setNumberPrintRes(m_game.getSharedNumberPrintRes());
+			m_countdown.setNumberStamp(m_game.getSharedNumberStamp());
+			m_countdown.setCountdownSample(m_pCountdownSample);
 			m_countdown.setColor(m_config.countdownColor);
 			m_countdown.setShadowColor(m_config.countdownShadowColor);
 			m_countdown.setShadowOffset(m_config.countdownShadowOffset[0], m_config.countdownShadowOffset[1]);
@@ -103,18 +200,23 @@ namespace game
 
 			m_scoreDisplay.setPos(m_config.scoreDisplayPos);
 			m_scoreDisplay.setScale(m_config.scoreDisplayScale);
-			m_scoreDisplay.setNumberPrintRes(m_game.getSharedNumberPrintRes());
+			m_scoreDisplay.setNumberStamp(m_game.getSharedNumberStamp());
+			m_scoreDisplay.setSuccessSample(m_game.getSharedSuccessSample());
 			m_scoreDisplay.setMinDigits(m_config.scoreDisplayMinDigits);
 			m_scoreDisplay.setColor(m_config.scoreDisplayColor);
 			m_scoreDisplay.setShadowColor(m_config.scoreDisplayShadowColor);
 			m_scoreDisplay.setShadowOffset(m_config.scoreDisplayShadowOffset[0], m_config.scoreDisplayShadowOffset[1]);
 			m_scoreDisplay.setScoreSpeed(m_config.scoreDisplaySpeed);
 			m_scoreDisplay.resetScore();
+
+			if (m_pPlayMusic)
+				m_pPlayMusic->play();
 		}
 
-		void PlayScreen::onGameScreenEnd()
+		void PlayScreen::onGameScreenEnd(sys::AudioMixer& mixer)
 		{
-			//Empty method
+			mixer.stopAllSamples();
+			mixer.stopMusic();
 		}
 
 		void PlayScreen::onMouseButtonDown(const sys::Vec2& pos)
@@ -135,6 +237,7 @@ namespace game
 		void PlayScreen::update(const sys::FrameInfo& frame)
 		{
 			m_gemBoardView.update(frame);
+			m_sparkSprite.update(frame);
 			m_countdown.update(frame);
 			m_scoreDisplay.update(frame);
 
@@ -147,6 +250,7 @@ namespace game
 			rdr.draw(m_background);
 			m_gemBoardView.drawLayer(rdr, false);
 			rdr.draw(m_gemBoardTop);
+			rdr.draw(m_sparkSprite);
 			rdr.draw(m_countdown);
 			rdr.draw(m_scoreDisplay);
 			m_gemBoardView.drawLayer(rdr, true);

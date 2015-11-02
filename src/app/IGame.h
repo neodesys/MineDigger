@@ -25,6 +25,7 @@
 namespace sys
 {
 	class IDrawable;
+	class AudioMixer;
 }
 
 namespace app
@@ -52,11 +53,13 @@ namespace app
 		//     until it returns READY
 		//
 		//2- Game main loop:
-		//   - onGameStart(), all game states should be reset here
+		//   - onGameStart(mixer), all game states and audio volumes should be
+		//     reset here
 		//   - main loop is running, calling getCurrentGameScreen() at the
 		//     beginning of each iteration, switching active game screen on
 		//     change (see IGameScreen)
-		//   - onGameEnd()
+		//   - onGameEnd(mixer), game states cleanup and stopping/pausing audio
+		//     samples/music should be performed here if necessary
 		//
 		//3- Resources cleaning:
 		//   - cleanRes(true), must be transitive and also call all embedded
@@ -67,8 +70,8 @@ namespace app
 		virtual sys::IDrawable* getLoadingDrawable() = 0;
 		virtual void destroyLoadingDrawable() = 0;
 
-		virtual void onGameStart() = 0;
-		virtual void onGameEnd() = 0;
+		virtual void onGameStart(sys::AudioMixer& mixer) = 0;
+		virtual void onGameEnd(sys::AudioMixer& mixer) = 0;
 
 		virtual IGameScreen* getCurrentGameScreen() = 0;
 	};
