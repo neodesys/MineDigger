@@ -1,0 +1,41 @@
+--- Android.mk
++++ Android.mk
+@@ -6,17 +6,17 @@
+ 
+ # Enable this if you want to support loading MOD music via modplug
+ # The library path should be a relative path to this directory.
+-SUPPORT_MOD_MODPLUG := true
++SUPPORT_MOD_MODPLUG := false
+ MODPLUG_LIBRARY_PATH := external/libmodplug-0.8.8.4
+ 
+ # Enable this if you want to support loading MOD music via mikmod
+ # The library path should be a relative path to this directory.
+-SUPPORT_MOD_MIKMOD := true
++SUPPORT_MOD_MIKMOD := false
+ MIKMOD_LIBRARY_PATH := external/libmikmod-3.1.12
+ 
+ # Enable this if you want to support loading MP3 music via SMPEG
+ # The library path should be a relative path to this directory.
+-SUPPORT_MP3_SMPEG := true
++SUPPORT_MP3_SMPEG := false
+ SMPEG_LIBRARY_PATH := external/smpeg2-2.0.0
+ 
+ # Enable this if you want to support loading OGG Vorbis music via Tremor
+@@ -26,7 +26,7 @@
+ VORBIS_LIBRARY_PATH := external/libvorbisidec-1.2.1
+ 
+ 
+-LOCAL_C_INCLUDES := $(LOCAL_PATH)
++LOCAL_C_INCLUDES := $(LOCAL_PATH) ../SDL2-2.0.3/include
+ LOCAL_CFLAGS := -DWAV_MUSIC
+ 
+ LOCAL_SRC_FILES := $(notdir $(filter-out %/playmus.c %/playwave.c, $(wildcard $(LOCAL_PATH)/*.c)))
+@@ -111,3 +111,8 @@
+ LOCAL_EXPORT_C_INCLUDES += $(LOCAL_C_INCLUDES)
+ 
+ include $(BUILD_SHARED_LIBRARY)
++
++LOCAL_MODULE := SDL2_mixer_static
++LOCAL_MODULE_FILENAME := libSDL2_mixer
++LOCAL_LDLIBS := 
++include $(BUILD_STATIC_LIBRARY)

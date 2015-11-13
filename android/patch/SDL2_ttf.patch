@@ -1,0 +1,20 @@
+--- Android.mk
++++ Android.mk
+@@ -6,7 +6,7 @@
+ 
+ FREETYPE_LIBRARY_PATH := external/freetype-2.4.12
+ 
+-LOCAL_C_INCLUDES := $(LOCAL_PATH)
++LOCAL_C_INCLUDES := $(LOCAL_PATH) ../SDL2-2.0.3/include
+ 
+ LOCAL_SRC_FILES := SDL_ttf.c \
+ 
+@@ -64,3 +64,8 @@
+ LOCAL_EXPORT_C_INCLUDES += $(LOCAL_C_INCLUDES)
+ 
+ include $(BUILD_SHARED_LIBRARY)
++
++LOCAL_MODULE := SDL2_ttf_static
++LOCAL_MODULE_FILENAME := libSDL2_ttf
++LOCAL_LDLIBS := 
++include $(BUILD_STATIC_LIBRARY)

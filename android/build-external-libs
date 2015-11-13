@@ -1,0 +1,215 @@
+#!/bin/bash
+#------------------------------------------------------------------------------#
+# MineDigger
+# Pre-build Android static libraries for SDL2
+#
+# Copyright (C) 2015, Loïc Le Page
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#------------------------------------------------------------------------------#
+
+#------------------------------------------------------------------------------#
+# System constants
+#------------------------------------------------------------------------------#
+
+readonly EXT_DIR="../ext"
+
+readonly EXT_MODULES=(SDL2 SDL2_image SDL2_mixer SDL2_ttf)
+
+readonly PATCH_DIR="patch"
+readonly DEST_DIR="app/prebuild"
+
+readonly ANDROID_ABI="all"
+readonly ANDROID_VERSION="12"
+
+readonly ZENITY=`which zenity`
+readonly NDK_BUILD=`which ndk-build`
+readonly NPROC=`which nproc`
+
+#Debug output, it can be set to:
+# /dev/null   to hide all debug information
+# /dev/stdout to show debug information on standard output
+# /any/file   to redirect debug information to a file
+#
+#Debug output value can be set in environment (using export)
+#to override current script value
+if [ -n "$DEBUG_STREAM" ]; then
+	typeset -r DEBUG_STREAM
+else
+	readonly DEBUG_STREAM=/dev/null
+fi
+
+#------------------------------------------------------------------------------#
+# chooseModules function
+#------------------------------------------------------------------------------#
+
+function chooseModules()
+{
+	local MODULES=""
+
+	local i
+	for ((i = 0; i < ${#EXT_MODULES[@]}; ++i)); do
+		MODULES+=" TRUE ${EXT_MODULES[$i]}"
+	done
+
+	MODULES=`$ZENITY --list --title="Choose external modules to build" --window-icon="question" --checklist --column="Build" --column="Module" --separator=" " --text="Please select the external modules to build for Android"$MODULES 2>/dev/null`;
+
+	_MODULES_TO_BUILD=()
+
+	local MOD
+	for MOD in $MODULES; do
+		for ((i = 0; i < ${#EXT_MODULES[@]}; ++i)); do
+			if [ "${EXT_MODULES[$i]}" = "$MOD" ]; then
+				_MODULES_TO_BUILD+=($i)
+				break
+			fi
+		done
+	done
+
+	return 0
+}
+
+#------------------------------------------------------------------------------#
+# selectSources function
+#------------------------------------------------------------------------------#
+
+function selectSources()
+{
+	_SRC_DIRS=()
+
+	local ROOT_DIR=`$ZENITY --file-selection --title="Please select directory containing all external modules sources" --window-icon="question" --directory --filename="$EXT_DIR" 2>/dev/null`
+	if [ -z "$ROOT_DIR" -o ! -d "$ROOT_DIR" ]; then
+		echo -e "\033[1;31mInvalid external sources root directory\033[0m" >&2
+		return 1
+	fi
+
+	local i
+	for ((i = 0; i < ${#EXT_MODULES[@]}; ++i)); do
+		local MOD=${EXT_MODULES[$i]}
+		local SUBDIR=`find "$EXT_DIR" -mindepth 1 -maxdepth 1 -type d -regex "$EXT_DIR/$MOD-[0-9.]+" -printf "%f\n" -quit 2>/dev/null`
+		if [ -z "$SUBDIR" -o ! -d "$EXT_DIR/$SUBDIR" ]; then
+			echo -e "\033[1;31mCannot find current version for external module $MOD\033[0m" >&2
+			return 2
+		fi
+
+		if [ ! -d "$ROOT_DIR/$SUBDIR" -o ! -f "$ROOT_DIR/$SUBDIR/Android.mk" ]; then
+			echo -e "\033[1;31mCannot find sources directory for external module $SUBDIR in $ROOT_DIR\033[0m" >&2
+			return 3
+		fi
+
+		_SRC_DIRS+=("$ROOT_DIR/$SUBDIR")
+	done
+
+	return 0
+}
+
+#------------------------------------------------------------------------------#
+# buildAndroidLibs function
+# Arguments: index of the module to build in EXT_MODULES array
+#------------------------------------------------------------------------------#
+
+function buildAndroidLibs()
+{
+	if [ -z "$1" -o $1 -lt 0 -o $1 -ge ${#EXT_MODULES[@]} ]; then
+		echo -e "\033[1;31mInvalid external module to build\033[0m" >&2
+		return 1
+	fi
+
+	if [ -z "$_SRC_DIRS" -o ${#_SRC_DIRS[@]} -ne ${#EXT_MODULES[@]} ]; then
+		echo -e "\033[1;31mInvalid external sources directories\033[0m" >&2
+		return 2
+	fi
+
+	local MODULE=${EXT_MODULES[$1]}
+	local SRC_DIR="${_SRC_DIRS[$1]}"
+
+	#Patch external sources
+	if [ -f "$PATCH_DIR/${MODULE}.patch" ]; then
+		if ! patch -bd "$SRC_DIR" -r - <"$PATCH_DIR/${MODULE}.patch" &>$DEBUG_STREAM; then
+			rm -f "$SRC_DIR/Android.mk.orig"
+			echo -e "\033[1;31mCannot apply sources patch to $SRC_DIR\033[0m" >&2
+			return 3
+		fi
+	fi
+
+	#Create Application.mk file
+	trap 'rm -f "$SRC_DIR/Application.mk"; mv -f "$SRC_DIR/Android.mk.orig" "$SRC_DIR/Android.mk" 2>/dev/null; rm -rf "$SRC_DIR/obj"; exit 0' SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGTERM
+
+	cat <<-EOF > "$SRC_DIR/Application.mk"
+		APP_BUILD_SCRIPT := Android.mk
+		APP_OPTIM := release
+		APP_ABI := $ANDROID_ABI
+		APP_PLATFORM := android-$ANDROID_VERSION
+		APP_MODULES := ${MODULE}_static
+	EOF
+
+	#Build Android libraries
+	local RET=0
+
+	local NJOBS=1
+	if [ -n "$NPROC" -a -x "$NPROC" ]; then
+		NJOBS=`$NPROC 2>/dev/null`
+	fi
+
+	if $NDK_BUILD -B -j $NJOBS -C "$SRC_DIR" NDK_PROJECT_PATH="." NDK_APPLICATION_MK="Application.mk" clean all 2>$DEBUG_STREAM; then
+
+		#Copy libraries to destination
+		local DIR
+		for DIR in `find "$SRC_DIR/obj/local" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"`; do
+			local SRC_LIB="$SRC_DIR/obj/local/$DIR/lib${MODULE}.a"
+			if [ -f "$SRC_LIB" ]; then
+				mkdir -p "$DEST_DIR/$DIR"
+				cp -f "$SRC_LIB" "$DEST_DIR/$DIR/"
+			fi
+		done
+	else
+		echo -e "\033[1;31mCannot build Android libraries for $MODULE\033[0m" >&2
+		RET=4
+	fi
+
+	rm -f "$SRC_DIR/Application.mk"
+	mv -f "$SRC_DIR/Android.mk.orig" "$SRC_DIR/Android.mk" 2>$DEBUG_STREAM
+	rm -rf "$SRC_DIR/obj"
+
+	return $RET
+}
+
+#------------------------------------------------------------------------------#
+# Script entry point
+#------------------------------------------------------------------------------#
+
+if [ -z "$ZENITY" -o ! -x "$ZENITY" ]; then
+	echo -e "\033[1;31mCannot find zenity command\033[0m" >&2
+	exit 1
+fi
+
+if [ -z "$NDK_BUILD" -o ! -x "$NDK_BUILD" ]; then
+	echo -e "\033[1;31mCannot find ndk-build command\033[0m" >&2
+	exit 2
+fi
+
+RETCODE=0
+if chooseModules && [ -n "$_MODULES_TO_BUILD" ]; then
+	if ! selectSources; then
+		RETCODE=3
+	else
+		for MOD_IDX in ${_MODULES_TO_BUILD[@]}; do
+			if ! buildAndroidLibs $MOD_IDX; then
+				RETCODE=4
+			fi
+		done
+	fi
+fi
+
+exit $RETCODE

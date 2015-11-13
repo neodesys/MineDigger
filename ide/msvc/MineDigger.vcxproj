@@ -142,6 +142,7 @@
     <PreBuildEvent>
       <Command>ECHO Copying resources files...
 XCOPY ..\..\res "$(OutDir)res\" /S /D /Y /Q &gt;nul
+DEL /F /S /Q "$(OutDir)res\*_wide.*" &gt;nul
 ECHO Copying runtime DLL for x86 architecture...
 FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win32\*.dll" "$(OutDir)" /D /Y /Q &gt;nul
 </Command>
@@ -166,6 +167,7 @@ FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win32\*.dll" "$(OutDir)" /D /Y /Q 
     <PreBuildEvent>
       <Command>ECHO Copying resources files...
 XCOPY ..\..\res "$(OutDir)res\" /S /D /Y /Q &gt;nul
+DEL /F /S /Q "$(OutDir)res\*_wide.*" &gt;nul
 ECHO Copying runtime DLL for x64 architecture...
 FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win64\*.dll" "$(OutDir)" /D /Y /Q &gt;nul
 </Command>
@@ -195,6 +197,7 @@ FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win64\*.dll" "$(OutDir)" /D /Y /Q 
     <PreBuildEvent>
       <Command>ECHO Copying resources files...
 XCOPY ..\..\res "$(OutDir)res\" /S /D /Y /Q &gt;nul
+DEL /F /S /Q "$(OutDir)res\*_wide.*" &gt;nul
 ECHO Copying runtime DLL for x86 architecture...
 FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win32\*.dll" "$(OutDir)" /D /Y /Q &gt;nul
 </Command>
@@ -224,6 +227,7 @@ FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win32\*.dll" "$(OutDir)" /D /Y /Q 
     <PreBuildEvent>
       <Command>ECHO Copying resources files...
 XCOPY ..\..\res "$(OutDir)res\" /S /D /Y /Q &gt;nul
+DEL /F /S /Q "$(OutDir)res\*_wide.*" &gt;nul
 ECHO Copying runtime DLL for x64 architecture...
 FOR /D %%x IN (..\..\ext\*) DO XCOPY "%%x\bin\win64\*.dll" "$(OutDir)" /D /Y /Q &gt;nul
 </Command>

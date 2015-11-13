@@ -35,28 +35,28 @@ namespace app
 	NumberStamp* NumberStamp::createNumberStamp(const sys::GameEngine& engine, sys::Font& font)
 	{
 		//Compute each digit size
-		int printAdvance = 0;
-		if (!font.getGlyphMetrics(u'0', nullptr, &printAdvance))
+		int spaceAdvance = 0;
+		if (!font.getGlyphMetrics(u' ', nullptr, &spaceAdvance))
 			return nullptr;
 
-		if (printAdvance <= 0)
+		if (spaceAdvance <= 0)
 		{
-			s_log.warning("Glyph '0' has a null or negative width");
+			s_log.warning("Glyph ' ' has a null or negative width");
 			return nullptr;
 		}
 
 		static int s_digitWidth[10] = {};
-		s_digitWidth[0] = printAdvance;
+		int printAdvance = spaceAdvance;
 		if (font.isFontMonospace())
 		{
 			//All digits have the same width
-			for (int i = 1; i < 10; ++i)
+			for (int i = 0; i < 10; ++i)
 				s_digitWidth[i] = printAdvance;
 		}
 		else
 		{
 			//Each digit may have a different width
-			for (int i = 1; i < 10; ++i)
+			for (int i = 0; i < 10; ++i)
 			{
 				int advance = 0;
 				if (!font.getGlyphMetrics(u'0' + i, nullptr, &advance))
@@ -80,7 +80,7 @@ namespace app
 		if (bKerning)
 			font.enableKerning(false);
 
-		sys::Texture* pTexture = font.createTextTexture(engine, "0123456789");
+		sys::Texture* pTexture = font.createTextTexture(engine, "0 1 2 3 4 5 6 7 8 9");
 
 		if (bKerning)
 			font.enableKerning(true);
@@ -105,7 +105,7 @@ namespace app
 		{
 			pStamp->m_digitWidth[i] = s_digitWidth[i];
 			pStamp->m_digitOffset[i] = offset;
-			offset += s_digitWidth[i];
+			offset += s_digitWidth[i] + spaceAdvance;
 		}
 
 		return pStamp;

@@ -24,7 +24,7 @@ namespace app
 {
 	class IGame;
 
-	enum RetCode : char
+	enum RetCode : short
 	{
 		SUCCESS = 0,
 		ERR_NO_ENGINE = -1,

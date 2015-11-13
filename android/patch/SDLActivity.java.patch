@@ -1,0 +1,156 @@
+--- SDL2-2.0.3/android-project/src/org/libsdl/app/SDLActivity.java
++++ android/app/src/main/java/org/libsdl/app/SDLActivity.java
+@@ -1,11 +1,62 @@
++/*
++  Simple DirectMedia Layer
++  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
++
++  This software is provided 'as-is', without any express or implied
++  warranty.  In no event will the authors be held liable for any damages
++  arising from the use of this software.
++
++  Permission is granted to anyone to use this software for any purpose,
++  including commercial applications, and to alter it and redistribute it
++  freely, subject to the following restrictions:
++
++  1. The origin of this software must not be misrepresented; you must not
++     claim that you wrote the original software. If you use this software
++     in a product, an acknowledgment in the product documentation would be
++     appreciated but is not required.
++  2. Altered source versions must be plainly marked as such, and must not be
++     misrepresented as being the original software.
++  3. This notice may not be removed or altered from any source distribution.
++*/
++/*
++  WARNING: this file has been modified from the original source code to
++  delete or replace deprecated features with Java 1.8.
++  Default native libraries loading has also been removed.
++  See: android/patch/SDLActivity.java.patch for details.
++*/
+ package org.libsdl.app;
+ 
++import android.app.Activity;
++import android.content.Context;
++import android.graphics.Canvas;
++import android.graphics.PixelFormat;
++import android.hardware.Sensor;
++import android.hardware.SensorEvent;
++import android.hardware.SensorEventListener;
++import android.hardware.SensorManager;
++import android.media.AudioFormat;
++import android.media.AudioManager;
++import android.media.AudioTrack;
++import android.os.Build;
++import android.os.Bundle;
++import android.os.Handler;
++import android.os.Message;
+ import android.util.Log;
++import android.view.Display;
++import android.view.InputDevice;
++import android.view.KeyEvent;
++import android.view.MotionEvent;
++import android.view.Surface;
++import android.view.SurfaceHolder;
++import android.view.SurfaceView;
++import android.view.View;
++import android.view.ViewGroup;
++import android.view.WindowManager;
+ import android.view.inputmethod.BaseInputConnection;
+ import android.view.inputmethod.EditorInfo;
+ import android.view.inputmethod.InputConnection;
+ import android.view.inputmethod.InputMethodManager;
+-import android.widget.AbsoluteLayout;
++import android.widget.RelativeLayout;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.Collections;
+@@ -36,16 +87,6 @@
+     // Audio
+     protected static AudioTrack mAudioTrack;
+ 
+-    // Load the .so
+-    static {
+-        System.loadLibrary("SDL2");
+-        //System.loadLibrary("SDL2_image");
+-        //System.loadLibrary("SDL2_mixer");
+-        //System.loadLibrary("SDL2_net");
+-        //System.loadLibrary("SDL2_ttf");
+-        System.loadLibrary("main");
+-    }
+-
+ 
+     public static void initialize() {
+         // The static nature of the singleton and Android quirkyness force us to initialize everything here
+@@ -83,7 +124,7 @@
+             mJoystickHandler = new SDLJoystickHandler();
+         }
+ 
+-        mLayout = new AbsoluteLayout(this);
++        mLayout = new RelativeLayout(this);
+         mLayout.addView(mSurface);
+ 
+         setContentView(mLayout);
+@@ -353,8 +394,9 @@
+ 
+         @Override
+         public void run() {
+-            AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(
+-                    w, h + HEIGHT_PADDING, x, y);
++            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h + HEIGHT_PADDING);
++            params.leftMargin = x;
++            params.topMargin = y;
+ 
+             if (mTextEdit == null) {
+                 mTextEdit = new DummyEdit(getContext());
+@@ -383,7 +425,7 @@
+ 
+     // Audio
+     public static int audioInit(int sampleRate, boolean is16Bit, boolean isStereo, int desiredFrames) {
+-        int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO : AudioFormat.CHANNEL_CONFIGURATION_MONO;
++        int channelConfig = isStereo ? AudioFormat.CHANNEL_OUT_STEREO : AudioFormat.CHANNEL_OUT_MONO;
+         int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
+         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
+ 
+@@ -551,7 +593,6 @@
+     @Override
+     public void surfaceCreated(SurfaceHolder holder) {
+         Log.v("SDL", "surfaceCreated()");
+-        holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+     }
+ 
+     // Called when we lose the surface
+@@ -572,23 +613,6 @@
+ 
+         int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
+         switch (format) {
+-        case PixelFormat.A_8:
+-            Log.v("SDL", "pixel format A_8");
+-            break;
+-        case PixelFormat.LA_88:
+-            Log.v("SDL", "pixel format LA_88");
+-            break;
+-        case PixelFormat.L_8:
+-            Log.v("SDL", "pixel format L_8");
+-            break;
+-        case PixelFormat.RGBA_4444:
+-            Log.v("SDL", "pixel format RGBA_4444");
+-            sdlFormat = 0x15421002; // SDL_PIXELFORMAT_RGBA4444
+-            break;
+-        case PixelFormat.RGBA_5551:
+-            Log.v("SDL", "pixel format RGBA_5551");
+-            sdlFormat = 0x15441002; // SDL_PIXELFORMAT_RGBA5551
+-            break;
+         case PixelFormat.RGBA_8888:
+             Log.v("SDL", "pixel format RGBA_8888");
+             sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
+@@ -597,10 +621,6 @@
+             Log.v("SDL", "pixel format RGBX_8888");
+             sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
+             break;
+-        case PixelFormat.RGB_332:
+-            Log.v("SDL", "pixel format RGB_332");
+-            sdlFormat = 0x14110801; // SDL_PIXELFORMAT_RGB332
+-            break;
+         case PixelFormat.RGB_565:
+             Log.v("SDL", "pixel format RGB_565");
+             sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565

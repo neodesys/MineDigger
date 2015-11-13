@@ -45,4 +45,10 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
+//On some platforms (Android) round isn't present in the std namespace
+namespace std
+{
+	using ::round;
+}
+
 #endif //_PRECOMP_H_

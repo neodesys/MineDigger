@@ -55,7 +55,9 @@ SRC_DIR=src
 BUILD_DIR=build
 BIN_DIR=bin
 EXT_DIR=ext
+
 RES_DIR=res
+RES_EXCLUDE=*_wide.*
 
 SRC_PRECOMP_HEADER=precomp.h
 
@@ -132,11 +134,13 @@ ifeq ($(PLATFORM),mingw)
     all: $(TARGET) $(RES_DIR) $(EXT_DLL)
 	@$(MKDIR) $(TARGET_DIR)
 	@$(CP) -r $(RES_DIR) $(TARGET_DIR)/
+	@$(RM) $(TARGET_DIR)/$(RES_DIR)/$(RES_EXCLUDE)
 	@$(CP) $(EXT_DLL) $(TARGET_DIR)/
 else
     all: $(TARGET) $(RES_DIR)
 	@$(MKDIR) $(TARGET_DIR)
 	@$(CP) -r $(RES_DIR) $(TARGET_DIR)/
+	@$(RM) $(TARGET_DIR)/$(RES_DIR)/$(RES_EXCLUDE)
 endif
 
 clean:

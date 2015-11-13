@@ -1,0 +1,3 @@
+rootProject.name = 'MineDigger-Android'
+include ':app'
+project(':app').name = 'MineDigger'

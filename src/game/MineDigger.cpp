@@ -23,6 +23,10 @@
 #include "../sys/Font.h"
 #include "../app/NumberStamp.h"
 
+#ifdef __ANDROID__
+#define WIDE_SCREEN 1
+#endif //__ANDROID__
+
 namespace
 {
 	#include "MineDigger.cfg"

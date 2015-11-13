@@ -37,7 +37,11 @@ namespace
 {
 	const SDL_Keycode FULLSCREEN_KEY = SDLK_F11;
 
+#ifdef __ANDROID__
+	const SDL_Keycode QUIT_KEY = SDLK_AC_BACK;
+#else
 	const SDL_Keycode QUIT_KEY = SDLK_ESCAPE;
+#endif //__ANDROID__
 
 	bool s_bEngineAlreadyCreated = false;
 }
@@ -184,14 +188,23 @@ namespace sys
 
 	unsigned long GameEngine::getTicks() const
 	{
-		return SDL_GetTicks();
+		unsigned long t = SDL_GetTicks();
+		if (t > m_uSystemTicksOffset)
+			return t - m_uSystemTicksOffset;
+		else
+			return 0;
 	}
 
-	bool GameEngine::processEvents() const
+	bool GameEngine::processEvents()
 	{
 		assert(m_pRenderer);
 		assert(m_pResLoader);
 		assert(m_pAudioMixer);
+
+		if (m_bGameMustQuit)
+			return false;
+
+		assert(!m_uSystemPauseTimestamp);
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -199,8 +212,64 @@ namespace sys
 			switch(event.type)
 			{
 			case SDL_QUIT:
+				m_bGameMustQuit = true;
 				s_log.info("Quit requested");
 				return false;
+
+			case SDL_WINDOWEVENT:
+				if (event.window.event == SDL_WINDOWEVENT_MINIMIZED)
+				{
+					//System must enter paused state because window has been
+					//minimized or application has been sent to background on
+					//portable devices (Android/iOS)
+					m_uSystemPauseTimestamp = event.window.timestamp;
+					if (!m_uSystemPauseTimestamp)
+					{
+						m_uSystemPauseTimestamp = SDL_GetTicks();
+						if (!m_uSystemPauseTimestamp)
+							m_uSystemPauseTimestamp = 1;
+					}
+
+					m_pAudioMixer->pauseAllSamples();
+					m_pAudioMixer->pauseMusic();
+					s_log.info("System paused");
+
+					//Block game main loop here until system is resumed or
+					//application has quit
+					while (m_uSystemPauseTimestamp)
+					{
+						SDL_Delay(100);
+
+						while (m_uSystemPauseTimestamp && SDL_PollEvent(&event))
+						{
+							switch (event.type)
+							{
+							case SDL_QUIT:
+								m_bGameMustQuit = true;
+								s_log.info("Quit requested");
+								return false;
+
+							case SDL_WINDOWEVENT:
+								if (event.window.event == SDL_WINDOWEVENT_RESTORED)
+								{
+									unsigned long t = event.window.timestamp;
+									if (!t)
+										t = SDL_GetTicks();
+
+									if (t > m_uSystemPauseTimestamp)
+										m_uSystemTicksOffset += t - m_uSystemPauseTimestamp;
+
+									m_uSystemPauseTimestamp = 0;
+									m_pAudioMixer->resumeMusic();
+									m_pAudioMixer->resumeAllSamples();
+									s_log.info("System resumed");
+								}
+								break;
+							}
+						}
+					}
+				}
+				break;
 
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym)
@@ -210,7 +279,12 @@ namespace sys
 					break;
 
 				case QUIT_KEY:
-					s_log.info("Quit requested from keyboard");
+					m_bGameMustQuit = true;
+#ifdef __ANDROID__
+					s_log.info("Quit requested from back button");
+#else
+					s_log.info("Quit requested from ESC key");
+#endif //__ANDROID__
 					return false;
 				}
 				break;

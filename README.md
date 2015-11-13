@@ -14,7 +14,7 @@ About the game
 --------------
 
 MineDigger is a small prototype of a classical 2D sprite-based board game for
-desktop computers (Linux and Windows).
+desktop computers (Linux and Windows) and mobiles (Android).
 
 It's an hypercasual match-3 game like Bejeweled or CandyCrush in its simplest
 expression (no metagame, no levels, no evolution, just a single and simple core
@@ -150,6 +150,74 @@ copied into the right sub-directory during the build process.
 Calling `make clean-all` cleans all builds intermediate and output files for
 all configurations.
 
+### Android
+
+To build the game for Android, you will need:
+
+- A Linux host or, at least, a Linux-like environment such as
+  [Cygwin](https://www.cygwin.com/) under a Windows host
+- [Java JDK](http://openjdk.java.net/install/) (version 7 and above)
+- [Android SDK](https://developer.android.com/sdk/index.html#Other) (version
+  23.0.1 and above)
+- [Android NDK](http://developer.android.com/ndk/downloads/index.html) (version
+  r10e and above)
+- [SDL2 sources](https://www.libsdl.org/release/SDL2-2.0.3.zip) (version 2.0.3)
+- [SDL2_image sources](https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.0.zip)
+  (version 2.0.0)
+- [SDL2_mixer sources](https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.zip)
+  (version 2.0.0)
+- [SDL2_ttf sources](https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.zip)
+  (version 2.0.12)
+
+First of all you need to prebuild SDL2 static libraries for Android:
+
+- extract all SDL2 sources into the same temporary directory under their
+  respective folders. You will be asked to select this root temporary directory
+  during the build process,
+- you should obtain the same sub-folders names as in the project */ext*
+  directory,
+- then go into the project */android* directory and call the
+  `build-external-libs` script.
+
+```
+$ cd android
+$ ./build-external-libs
+```
+
+The script will ask you for the base path where you extracted the SDL2 sources
+and will use them to build all SDL2 static libraries into the
+*/android/app/prebuild* directory.
+
+Once the SDL2 static libraries have been built, you can build the game itself.  
+Create a *local.properties* file into the */android* directory with paths to
+your Android SDK and NDK installations.
+
+*/android/local.properties*
+
+```
+sdk.dir=/usr/local/apps/android-sdk
+ndk.dir=/usr/local/apps/android-ndk
+```
+
+If you want to sign a release version of the game for Android, you will also
+need to create a keystore with your signing key.  
+This is not needed for building debug versions only.
+
+```
+$ keytool -genkey -v -keystore minedigger.keystore -alias release -keyalg RSA -keysize 4096 -validity 10000
+```
+
+Enventually, to build the game, you just need to call `gradlew` command with
+`assembleDebug` or `assembleRelease` target.
+
+```
+$ ./gradlew assembleDebug
+$ ./gradlew assembleRelease
+```
+
+You can call `./gradlew clean` to clean all targets and output files for
+Android.
+
 --------------------------------------------------------------------------------
 
 Run the game
@@ -174,6 +242,11 @@ You can change the default verbosity from the command line using the `-l` or
 - `warn` or `warning` for logging *warning* and *critical* messages only
 - `crit` or `critical` for logging *critical* messages only
 
+During the game you can switch between windowed and fullscreen modes by
+pressing the `F11` key.
+
+Pressing the `ESC` key quits the game.
+
 --------------------------------------------------------------------------------
 
 Source code organization
@@ -182,6 +255,9 @@ Source code organization
 ### Folders
 
 Repository root folder contains the following sub-directories:
+
+- */android* contains all configuration files needed to build the game for
+  Android.
 
 - */ext* contains any external library source code and/or binaries. Each
   third-party library is provided in its own sub-directory containing its

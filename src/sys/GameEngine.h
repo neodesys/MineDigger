@@ -58,7 +58,7 @@ namespace sys
 		}
 
 		//Returns false on "quit" event
-		bool processEvents() const;
+		bool processEvents();
 
 	private:
 		GameEngine(ResLoader* pResLoader, AudioMixer* pAudioMixer, Renderer* pRenderer) : m_pResLoader(pResLoader), m_pAudioMixer(pAudioMixer), m_pRenderer(pRenderer) {}
@@ -73,6 +73,11 @@ namespace sys
 		ResLoader* const m_pResLoader;
 		AudioMixer* const m_pAudioMixer;
 		Renderer* const m_pRenderer;
+
+		bool m_bGameMustQuit = false;
+
+		unsigned long m_uSystemPauseTimestamp = 0;
+		unsigned long m_uSystemTicksOffset = 0;
 
 		IMouseListener* m_pMouseListener = nullptr;
 	};
