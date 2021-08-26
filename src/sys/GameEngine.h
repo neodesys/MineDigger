@@ -18,69 +18,72 @@
  */
 
 #ifndef _GAMEENGINE_H_
-#define	_GAMEENGINE_H_
+#define _GAMEENGINE_H_
 
 #include "Logger.h"
 
 namespace sys
 {
-	class ResLoader;
-	class AudioMixer;
-	class Renderer;
-	class IMouseListener;
+    class ResLoader;
+    class AudioMixer;
+    class Renderer;
+    class IMouseListener;
 
-	class GameEngine final
-	{
-	public:
-		static GameEngine* createGameEngine(const char* wndName, int width, int height);
-		~GameEngine();
+    class GameEngine final
+    {
+      public:
+        static GameEngine* createGameEngine(const char* wndName, int width, int height);
+        ~GameEngine();
 
-		ResLoader& getResLoader() const
-		{
-			return *m_pResLoader;
-		}
+        ResLoader& getResLoader() const
+        {
+            return *m_pResLoader;
+        }
 
-		AudioMixer& getAudioMixer() const
-		{
-			return *m_pAudioMixer;
-		}
+        AudioMixer& getAudioMixer() const
+        {
+            return *m_pAudioMixer;
+        }
 
-		Renderer& getRenderer() const
-		{
-			return *m_pRenderer;
-		}
+        Renderer& getRenderer() const
+        {
+            return *m_pRenderer;
+        }
 
-		unsigned long getTicks() const; //in ms
+        unsigned long getTicks() const; // in ms
 
-		void setMouseListener(IMouseListener* pMouseListener)
-		{
-			m_pMouseListener = pMouseListener;
-		}
+        void setMouseListener(IMouseListener* pMouseListener)
+        {
+            m_pMouseListener = pMouseListener;
+        }
 
-		//Returns false on "quit" event
-		bool processEvents();
+        // Returns false on "quit" event
+        bool processEvents();
 
-	private:
-		GameEngine(ResLoader* pResLoader, AudioMixer* pAudioMixer, Renderer* pRenderer) : m_pResLoader(pResLoader), m_pAudioMixer(pAudioMixer), m_pRenderer(pRenderer) {}
-		GameEngine(const GameEngine&) = delete;
-		GameEngine& operator=(const GameEngine&) = delete;
+      private:
+        GameEngine(ResLoader* pResLoader, AudioMixer* pAudioMixer, Renderer* pRenderer)
+            : m_pResLoader(pResLoader), m_pAudioMixer(pAudioMixer), m_pRenderer(pRenderer)
+        {
+        }
+        GameEngine(const GameEngine&) = delete;
+        GameEngine& operator=(const GameEngine&) = delete;
 
-		static const Logger s_log;
+        static const Logger s_log;
 
-		static bool initSDL2();
-		static void shutSDL2();
+        static bool initSDL2();
+        static void shutSDL2();
 
-		ResLoader* const m_pResLoader;
-		AudioMixer* const m_pAudioMixer;
-		Renderer* const m_pRenderer;
+        ResLoader* const m_pResLoader;
+        AudioMixer* const m_pAudioMixer;
+        Renderer* const m_pRenderer;
 
-		bool m_bGameMustQuit = false;
+        bool m_bGameMustQuit = false;
 
-		unsigned long m_uSystemPauseTimestamp = 0;
-		unsigned long m_uSystemTicksOffset = 0;
+        unsigned long m_uSystemPauseTimestamp = 0;
+        unsigned long m_uSystemTicksOffset = 0;
 
-		IMouseListener* m_pMouseListener = nullptr;
-	};
-}
+        IMouseListener* m_pMouseListener = nullptr;
+    };
+} // namespace sys
 
-#endif //_GAMEENGINE_H_
+#endif // _GAMEENGINE_H_

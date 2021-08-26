@@ -20,37 +20,39 @@
 package com.neodesys.minedigger;
 
 import android.view.View;
+import java.lang.SuppressWarnings;
 import org.libsdl.app.SDLActivity;
 
 public class MainActivity extends SDLActivity
 {
-	static
-	{
-		System.loadLibrary("MineDigger");
-	}
+    static
+    {
+        System.loadLibrary("MineDigger");
+    }
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus)
-	{
-		super.onWindowFocusChanged(hasFocus);
+    @SuppressWarnings("InlinedApi")
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
 
-		if (hasFocus)
-		{
-			View rootView = findViewById(android.R.id.content);
-			if (rootView != null)
-			{
-				rootView = rootView.getRootView();
-				if (rootView != null)
-				{
-					rootView.setSystemUiVisibility(
-						View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-				}
-			}
-		}
-	}
+        if (hasFocus)
+        {
+            View rootView = findViewById(android.R.id.content);
+            if (rootView != null)
+            {
+                rootView = rootView.getRootView();
+                if (rootView != null)
+                {
+                    rootView.setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                }
+            }
+        }
+    }
 }

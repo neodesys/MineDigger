@@ -18,7 +18,7 @@
  */
 
 #ifndef _TEXTURE_H_
-#define	_TEXTURE_H_
+#define _TEXTURE_H_
 
 #include "Logger.h"
 
@@ -26,43 +26,43 @@ struct SDL_Texture;
 
 namespace sys
 {
-	class GameEngine;
-	class Color;
+    class GameEngine;
+    class Color;
 
-	enum struct BlendMode : unsigned char
-	{
-		NO_BLEND,
-		ALPHA_BLEND,
-		ADDITIVE,
-		COLOR_MOD
-	};
+    enum struct BlendMode : unsigned char
+    {
+        NO_BLEND,
+        ALPHA_BLEND,
+        ADDITIVE,
+        COLOR_MOD
+    };
 
-	class Texture final
-	{
-	public:
-		static Texture* loadTexture(const GameEngine& engine, const char* asset);
-		~Texture();
+    class Texture final
+    {
+      public:
+        static Texture* loadTexture(const GameEngine& engine, const char* asset);
+        ~Texture();
 
-		const int m_width;
-		const int m_height;
+        const int m_width;
+        const int m_height;
 
-		bool setTextureColorMod(const Color& color);
-		Color getTextureColorMod() const;
+        bool setTextureColorMod(const Color& color);
+        Color getTextureColorMod() const;
 
-		bool setTextureBlendMode(BlendMode mode);
-		BlendMode getTextureBlendMode() const;
+        bool setTextureBlendMode(BlendMode mode);
+        BlendMode getTextureBlendMode() const;
 
-	private:
-		Texture(int width, int height, SDL_Texture* pSDLTex);
-		Texture(const Texture&) = delete;
-		Texture& operator=(const Texture&) = delete;
+      private:
+        Texture(int width, int height, SDL_Texture* pSDLTex);
+        Texture(const Texture&) = delete;
+        Texture& operator=(const Texture&) = delete;
 
-		SDL_Texture* const m_pSDLTex;
-		friend class Renderer;
-		friend class Font;
+        SDL_Texture* const m_pSDLTex;
+        friend class Renderer;
+        friend class Font;
 
-		static const Logger s_log;
-	};
-}
+        static const Logger s_log;
+    };
+} // namespace sys
 
-#endif //_TEXTURE_H_
+#endif // _TEXTURE_H_

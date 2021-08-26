@@ -18,50 +18,50 @@
  */
 
 #ifndef _FRAMEINFO_H_
-#define	_FRAMEINFO_H_
+#define _FRAMEINFO_H_
 
 namespace sys
 {
-	class FrameInfo final
-	{
-	public:
-		bool update(unsigned long t);
-		void reset();
+    class FrameInfo final
+    {
+      public:
+        bool update(unsigned long t);
+        void reset();
 
-		unsigned long getTimestamp() const
-		{
-			return m_uTimestamp;
-		}
+        unsigned long getTimestamp() const
+        {
+            return m_uTimestamp;
+        }
 
-		unsigned long getPrevTimestamp() const
-		{
-			return m_uPrevTimestamp;
-		}
+        unsigned long getPrevTimestamp() const
+        {
+            return m_uPrevTimestamp;
+        }
 
-		float getDuration() const
-		{
-			return m_dt;
-		}
+        float getDuration() const
+        {
+            return m_dt;
+        }
 
-		float getDurationVar() const
-		{
-			return m_dtVar;
-		}
+        float getDurationVar() const
+        {
+            return m_dtVar;
+        }
 
-		float getSquareDuration() const
-		{
-			return m_dt2;
-		}
+        float getSquareDuration() const
+        {
+            return m_dt2;
+        }
 
-	private:
-		unsigned long m_uTimestamp = 0;     //in ms
-		unsigned long m_uPrevTimestamp = 0; //in ms
+      private:
+        unsigned long m_uTimestamp = 0;     // in ms
+        unsigned long m_uPrevTimestamp = 0; // in ms
 
-		float m_dt = 0.f;     //in sec
-		float m_dtPrev = 0.f; //in sec
-		float m_dtVar = 1.f;  //= dt / dtPrev
-		float m_dt2 = 0.f;    //= dt * dt
-	};
-}
+        float m_dt = 0.f;     // in sec
+        float m_dtPrev = 0.f; // in sec
+        float m_dtVar = 1.f;  // = dt / dtPrev
+        float m_dt2 = 0.f;    // = dt * dt
+    };
+} // namespace sys
 
-#endif //_FRAMEINFO_H_
+#endif // _FRAMEINFO_H_

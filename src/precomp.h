@@ -20,11 +20,11 @@
 #ifndef _PRECOMP_H_
 #define _PRECOMP_H_
 
-#ifdef __GNUC__ //GNU-compatible compilers: g++, mingw and clang
+#ifdef __GNUC__ // GNU-compatible compilers: g++, mingw and clang
 #if __cplusplus < 201103L
 #error You must use a C++11 compatible compiler
-#endif //__cplusplus < 201103L
-#elif defined(_MSC_VER) //Visual C++ compiler
+#endif                  // __cplusplus < 201103L
+#elif defined(_MSC_VER) // Visual C++ compiler
 #if _MSC_VER < 1900
 #error You must use a C++11 compatible compiler
 #endif //_MSC_VER < 1900
@@ -33,11 +33,11 @@
        gnu-compatible ones (gcc, mingw and clang) and Visual C++
 #endif
 
+#include <cassert>
+#include <cmath>
 #include <cstdarg>
 #include <ctime>
-#include <cassert>
 #include <new>
-#include <cmath>
 #include <random>
 
 #include <SDL2/SDL.h>
@@ -45,10 +45,10 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
-//On some platforms (Android) round isn't present in the std namespace
+// On some platforms (Android) round isn't present in the std namespace
 namespace std
 {
-	using ::round;
+    using ::round;
 }
 
-#endif //_PRECOMP_H_
+#endif // _PRECOMP_H_

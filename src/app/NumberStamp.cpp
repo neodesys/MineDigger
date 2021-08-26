@@ -20,168 +20,168 @@
 #include "NumberStamp.h"
 
 #include <cassert>
-#include <new>
 #include <cmath>
+#include <new>
 
 #include "../sys/Font.h"
-#include "../sys/Texture.h"
-#include "../sys/Renderer.h"
 #include "../sys/Rect.h"
+#include "../sys/Renderer.h"
+#include "../sys/Texture.h"
 
 namespace app
 {
-	const sys::Logger NumberStamp::s_log("NumberStamp");
+    const sys::Logger NumberStamp::s_log("NumberStamp");
 
-	NumberStamp* NumberStamp::createNumberStamp(const sys::GameEngine& engine, sys::Font& font)
-	{
-		//Compute each digit size
-		int spaceAdvance = 0;
-		if (!font.getGlyphMetrics(u' ', nullptr, &spaceAdvance))
-			return nullptr;
+    NumberStamp* NumberStamp::createNumberStamp(const sys::GameEngine& engine, sys::Font& font)
+    {
+        // Compute each digit size
+        int spaceAdvance = 0;
+        if (!font.getGlyphMetrics(u' ', nullptr, &spaceAdvance))
+            return nullptr;
 
-		if (spaceAdvance <= 0)
-		{
-			s_log.warning("Glyph ' ' has a null or negative width");
-			return nullptr;
-		}
+        if (spaceAdvance <= 0)
+        {
+            s_log.warning("Glyph ' ' has a null or negative width");
+            return nullptr;
+        }
 
-		static int s_digitWidth[10] = {};
-		int printAdvance = spaceAdvance;
-		if (font.isFontMonospace())
-		{
-			//All digits have the same width
-			for (int i = 0; i < 10; ++i)
-				s_digitWidth[i] = printAdvance;
-		}
-		else
-		{
-			//Each digit may have a different width
-			for (int i = 0; i < 10; ++i)
-			{
-				int advance = 0;
-				if (!font.getGlyphMetrics(u'0' + i, nullptr, &advance))
-					return nullptr;
+        static int s_digitWidth[10] = {};
+        int printAdvance = spaceAdvance;
+        if (font.isFontMonospace())
+        {
+            // All digits have the same width
+            for (int i = 0; i < 10; ++i)
+                s_digitWidth[i] = printAdvance;
+        }
+        else
+        {
+            // Each digit may have a different width
+            for (int i = 0; i < 10; ++i)
+            {
+                int advance = 0;
+                if (!font.getGlyphMetrics(u'0' + i, nullptr, &advance))
+                    return nullptr;
 
-				if (advance <= 0)
-				{
-					s_log.warning("Glyph '%c' has a null or negative width", '0' + i);
-					return nullptr;
-				}
+                if (advance <= 0)
+                {
+                    s_log.warning("Glyph '%c' has a null or negative width", '0' + i);
+                    return nullptr;
+                }
 
-				s_digitWidth[i] = advance;
+                s_digitWidth[i] = advance;
 
-				if (advance > printAdvance)
-					printAdvance = advance;
-			}
-		}
+                if (advance > printAdvance)
+                    printAdvance = advance;
+            }
+        }
 
-		//Create digits texture
-		bool bKerning = font.isKerningEnabled();
-		if (bKerning)
-			font.enableKerning(false);
+        // Create digits texture
+        bool bKerning = font.isKerningEnabled();
+        if (bKerning)
+            font.enableKerning(false);
 
-		sys::Texture* pTexture = font.createTextTexture(engine, "0 1 2 3 4 5 6 7 8 9");
+        sys::Texture* pTexture = font.createTextTexture(engine, "0 1 2 3 4 5 6 7 8 9");
 
-		if (bKerning)
-			font.enableKerning(true);
+        if (bKerning)
+            font.enableKerning(true);
 
-		if (!pTexture)
-			return nullptr;
+        if (!pTexture)
+            return nullptr;
 
-		NumberStamp* pStamp = new(std::nothrow) NumberStamp(pTexture);
-		if (!pStamp)
-		{
-			delete pTexture;
-			s_log.critical("Out of memory");
-			return nullptr;
-		}
+        NumberStamp* pStamp = new (std::nothrow) NumberStamp(pTexture);
+        if (!pStamp)
+        {
+            delete pTexture;
+            s_log.critical("Out of memory");
+            return nullptr;
+        }
 
-		//Set digits data
-		pStamp->m_printAdvance = printAdvance;
-		pStamp->m_digitsHeight = font.getFontHeight();
+        // Set digits data
+        pStamp->m_printAdvance = printAdvance;
+        pStamp->m_digitsHeight = font.getFontHeight();
 
-		int offset = 0;
-		for (int i = 0; i < 10; ++i)
-		{
-			pStamp->m_digitWidth[i] = s_digitWidth[i];
-			pStamp->m_digitOffset[i] = offset;
-			offset += s_digitWidth[i] + spaceAdvance;
-		}
+        int offset = 0;
+        for (int i = 0; i < 10; ++i)
+        {
+            pStamp->m_digitWidth[i] = s_digitWidth[i];
+            pStamp->m_digitOffset[i] = offset;
+            offset += s_digitWidth[i] + spaceAdvance;
+        }
 
-		return pStamp;
-	}
+        return pStamp;
+    }
 
-	NumberStamp::~NumberStamp()
-	{
-		assert(m_pTexture);
-		delete m_pTexture;
-	}
+    NumberStamp::~NumberStamp()
+    {
+        assert(m_pTexture);
+        delete m_pTexture;
+    }
 
-	void NumberStamp::getNumberPrintSize(unsigned int n, int minDigits, float scale, int& w, int& h) const
-	{
-		assert(m_pTexture);
+    void NumberStamp::getNumberPrintSize(unsigned int n, int minDigits, float scale, int& w, int& h) const
+    {
+        assert(m_pTexture);
 
-		w = h = 0;
-		if (scale > 0.f)
-		{
-			int nbChars = 0;
-			while (n)
-			{
-				nbChars++;
-				n /= 10;
-			}
+        w = h = 0;
+        if (scale > 0.f)
+        {
+            int nbChars = 0;
+            while (n)
+            {
+                nbChars++;
+                n /= 10;
+            }
 
-			if (nbChars < minDigits)
-				nbChars = minDigits;
+            if (nbChars < minDigits)
+                nbChars = minDigits;
 
-			if (nbChars > 0)
-			{
-				w = nbChars * static_cast<int>(std::round(scale * m_printAdvance));
-				h = static_cast<int>(std::round(scale * m_digitsHeight));
-			}
-		}
-	}
+            if (nbChars > 0)
+            {
+                w = nbChars * static_cast<int>(std::round(scale * m_printAdvance));
+                h = static_cast<int>(std::round(scale * m_digitsHeight));
+            }
+        }
+    }
 
-	void NumberStamp::printNumber(sys::Renderer& rdr, const sys::Rect& rect, const sys::Color& color, unsigned int n, int minDigits) const
-	{
-		assert(m_pTexture);
-		if ((rect.w <= 0) || (rect.h <= 0) ||
-			!m_pTexture->setTextureColorMod(color))
-			return;
+    void NumberStamp::printNumber(sys::Renderer& rdr, const sys::Rect& rect, const sys::Color& color, unsigned int n,
+                                  int minDigits) const
+    {
+        assert(m_pTexture);
+        if ((rect.w <= 0) || (rect.h <= 0) || !m_pTexture->setTextureColorMod(color))
+            return;
 
-		int nbChars = 0;
-		for (unsigned int u = n; u; u /= 10)
-			nbChars++;
+        int nbChars = 0;
+        for (unsigned int u = n; u; u /= 10)
+            nbChars++;
 
-		if (nbChars < minDigits)
-			nbChars = minDigits;
+        if (nbChars < minDigits)
+            nbChars = minDigits;
 
-		if (nbChars <= 0)
-			return;
+        if (nbChars <= 0)
+            return;
 
-		int destCharWidth = rect.w / nbChars;
-		if (destCharWidth <= 0)
-			return;
+        int destCharWidth = rect.w / nbChars;
+        if (destCharWidth <= 0)
+            return;
 
-		int destOffset = rect.x + (nbChars - 1) * destCharWidth;
+        int destOffset = rect.x + (nbChars - 1) * destCharWidth;
 
-		sys::Rect srcRect = {0, 0, 0, m_digitsHeight};
-		sys::Rect destRect = {0, rect.y, 0, rect.h};
+        sys::Rect srcRect = {0, 0, 0, m_digitsHeight};
+        sys::Rect destRect = {0, rect.y, 0, rect.h};
 
-		while (nbChars--)
-		{
-			unsigned char digit = n % 10;
-			srcRect.x = m_digitOffset[digit];
-			srcRect.w = m_digitWidth[digit];
+        while (nbChars--)
+        {
+            unsigned char digit = n % 10;
+            srcRect.x = m_digitOffset[digit];
+            srcRect.w = m_digitWidth[digit];
 
-			assert(m_printAdvance > 0);
-			destRect.w = (srcRect.w * destCharWidth) / m_printAdvance;
-			destRect.x = destOffset + ((destCharWidth - destRect.w) >> 1);
+            assert(m_printAdvance > 0);
+            destRect.w = (srcRect.w * destCharWidth) / m_printAdvance;
+            destRect.x = destOffset + ((destCharWidth - destRect.w) >> 1);
 
-			rdr.drawTexture(*m_pTexture, &srcRect, &destRect);
+            rdr.drawTexture(*m_pTexture, &srcRect, &destRect);
 
-			destOffset -= destCharWidth;
-			n /= 10;
-		}
-	}
-}
+            destOffset -= destCharWidth;
+            n /= 10;
+        }
+    }
+} // namespace app

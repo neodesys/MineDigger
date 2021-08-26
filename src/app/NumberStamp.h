@@ -18,45 +18,48 @@
  */
 
 #ifndef _NUMBERSTAMP_H_
-#define	_NUMBERSTAMP_H_
+#define _NUMBERSTAMP_H_
 
 #include "../sys/Logger.h"
 
 namespace sys
 {
-	class GameEngine;
-	class Font;
-	class Renderer;
-	class Rect;
-	class Color;
-	class Texture;
-}
+    class GameEngine;
+    class Font;
+    class Renderer;
+    class Rect;
+    class Color;
+    class Texture;
+} // namespace sys
 
 namespace app
 {
-	class NumberStamp final
-	{
-	public:
-		static NumberStamp* createNumberStamp(const sys::GameEngine& engine, sys::Font& font);
-		~NumberStamp();
+    class NumberStamp final
+    {
+      public:
+        static NumberStamp* createNumberStamp(const sys::GameEngine& engine, sys::Font& font);
+        ~NumberStamp();
 
-		void getNumberPrintSize(unsigned int n, int minDigits, float scale, int& w, int& h) const;
-		void printNumber(sys::Renderer& rdr, const sys::Rect& rect, const sys::Color& color, unsigned int n, int minDigits) const;
+        void getNumberPrintSize(unsigned int n, int minDigits, float scale, int& w, int& h) const;
+        void printNumber(sys::Renderer& rdr, const sys::Rect& rect, const sys::Color& color, unsigned int n,
+                         int minDigits) const;
 
-	private:
-		NumberStamp(sys::Texture* pTexture) : m_pTexture(pTexture) {}
-		NumberStamp(const NumberStamp&) = delete;
-		NumberStamp& operator=(const NumberStamp&) = delete;
+      private:
+        NumberStamp(sys::Texture* pTexture) : m_pTexture(pTexture)
+        {
+        }
+        NumberStamp(const NumberStamp&) = delete;
+        NumberStamp& operator=(const NumberStamp&) = delete;
 
-		sys::Texture* const m_pTexture;
+        sys::Texture* const m_pTexture;
 
-		int m_digitOffset[10] = {};
-		int m_digitWidth[10] = {};
-		int m_digitsHeight = 0;
-		int m_printAdvance = 0;
+        int m_digitOffset[10] = {};
+        int m_digitWidth[10] = {};
+        int m_digitsHeight = 0;
+        int m_printAdvance = 0;
 
-		static const sys::Logger s_log;
-	};
-}
+        static const sys::Logger s_log;
+    };
+} // namespace app
 
-#endif //_NUMBERSTAMP_H_
+#endif // _NUMBERSTAMP_H_

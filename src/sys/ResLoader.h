@@ -18,7 +18,7 @@
  */
 
 #ifndef _RESLOADER_H_
-#define	_RESLOADER_H_
+#define _RESLOADER_H_
 
 #include "Logger.h"
 
@@ -31,33 +31,36 @@ typedef struct _Mix_Music Mix_Music;
 
 namespace sys
 {
-	class ResLoader final
-	{
-	public:
-		static ResLoader* createResLoader();
-		~ResLoader();
+    class ResLoader final
+    {
+      public:
+        static ResLoader* createResLoader();
+        ~ResLoader();
 
-		SDL_Surface* loadImage(const char* asset);
+        SDL_Surface* loadImage(const char* asset);
 
-		TTF_Font* loadFont(const char* asset, int pointSize, long fontFaceIdx);
+        TTF_Font* loadFont(const char* asset, int pointSize, long fontFaceIdx);
 
-		Mix_Chunk* loadSample(const char* asset);
-		Mix_Music* loadMusic(const char* asset);
+        Mix_Chunk* loadSample(const char* asset);
+        Mix_Music* loadMusic(const char* asset);
 
-	private:
-		ResLoader(std::size_t uBasePathLength, char* pPathBuffer) : m_uBasePathLength(uBasePathLength), m_pPathBuffer(pPathBuffer) {}
-		ResLoader(const ResLoader&) = delete;
-		ResLoader& operator=(const ResLoader&) = delete;
+      private:
+        ResLoader(std::size_t uBasePathLength, char* pPathBuffer)
+            : m_uBasePathLength(uBasePathLength), m_pPathBuffer(pPathBuffer)
+        {
+        }
+        ResLoader(const ResLoader&) = delete;
+        ResLoader& operator=(const ResLoader&) = delete;
 
-		const std::size_t m_uBasePathLength;
-		char* const m_pPathBuffer;
+        const std::size_t m_uBasePathLength;
+        char* const m_pPathBuffer;
 
-		static const Logger s_log;
+        static const Logger s_log;
 
-		//WARNING: returned value is temporary and only valid until next method
-		//call or "asset" buffer lifetime
-		const char* getAssetFullPath(const char* asset);
-	};
-}
+        // WARNING: returned value is temporary and only valid until next method
+        // call or "asset" buffer lifetime
+        const char* getAssetFullPath(const char* asset);
+    };
+} // namespace sys
 
-#endif //_RESLOADER_H_
+#endif // _RESLOADER_H_

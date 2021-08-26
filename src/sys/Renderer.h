@@ -18,7 +18,7 @@
  */
 
 #ifndef _RENDERER_H_
-#define	_RENDERER_H_
+#define _RENDERER_H_
 
 #include "Logger.h"
 
@@ -29,53 +29,55 @@ struct SDL_Renderer;
 
 namespace sys
 {
-	class IDrawable;
-	class Texture;
-	class Rect;
-	class Color;
-	enum struct BlendMode : unsigned char;
+    class IDrawable;
+    class Texture;
+    class Rect;
+    class Color;
+    enum struct BlendMode : unsigned char;
 
-	class Renderer final
-	{
-	public:
-		static Renderer* createRenderer(const char* wndName, int width, int height);
-		~Renderer();
+    class Renderer final
+    {
+      public:
+        static Renderer* createRenderer(const char* wndName, int width, int height);
+        ~Renderer();
 
-		bool setFullscreen(bool bFullscreen);
-		bool isFullscreen() const
-		{
-			return m_bFullscreen;
-		}
+        bool setFullscreen(bool bFullscreen);
+        bool isFullscreen() const
+        {
+            return m_bFullscreen;
+        }
 
-		SDL_Texture* createSDLTextureFromSurface(SDL_Surface* pSDLSurf);
+        SDL_Texture* createSDLTextureFromSurface(SDL_Surface* pSDLSurf);
 
-		void renderFrame(IDrawable* p);
+        void renderFrame(IDrawable* p);
 
-		//Background is always cleared with an opaque color.
-		//If pColor is null, background is cleared with opaque black.
-		void clearBackground(const Color* pColor);
+        // Background is always cleared with an opaque color.
+        // If pColor is null, background is cleared with opaque black.
+        void clearBackground(const Color* pColor);
 
-		void draw(IDrawable& d);
+        void draw(IDrawable& d);
 
-		//If pSrcRect is null, source texture is not clipped.
-		//If pDestRect is null, destination is stretched to the entire viewport
-		void drawTexture(const Texture& tex, const Rect* pSrcRect, const Rect* pDestRect);
+        // If pSrcRect is null, source texture is not clipped.
+        // If pDestRect is null, destination is stretched to the entire viewport
+        void drawTexture(const Texture& tex, const Rect* pSrcRect, const Rect* pDestRect);
 
-		//If pDestRect is null, the entire viewport is painted
-		void drawColoredRect(const Color& color, BlendMode mode, const Rect* pDestRect);
+        // If pDestRect is null, the entire viewport is painted
+        void drawColoredRect(const Color& color, BlendMode mode, const Rect* pDestRect);
 
-	private:
-		Renderer(SDL_Window* pSDLWnd, SDL_Renderer* pSDLRdr) : m_pSDLWnd(pSDLWnd), m_pSDLRdr(pSDLRdr) {}
-		Renderer(const Renderer&) = delete;
-		Renderer& operator=(const Renderer&) = delete;
+      private:
+        Renderer(SDL_Window* pSDLWnd, SDL_Renderer* pSDLRdr) : m_pSDLWnd(pSDLWnd), m_pSDLRdr(pSDLRdr)
+        {
+        }
+        Renderer(const Renderer&) = delete;
+        Renderer& operator=(const Renderer&) = delete;
 
-		SDL_Window* const m_pSDLWnd;
-		SDL_Renderer* const m_pSDLRdr;
+        SDL_Window* const m_pSDLWnd;
+        SDL_Renderer* const m_pSDLRdr;
 
-		bool m_bFullscreen = false;
+        bool m_bFullscreen = false;
 
-		static const Logger s_log;
-	};
-}
+        static const Logger s_log;
+    };
+} // namespace sys
 
-#endif //_RENDERER_H_
+#endif // _RENDERER_H_

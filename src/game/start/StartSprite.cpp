@@ -16,23 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "StartSprite.h"
 
 namespace game
 {
-	namespace start
-	{
-		bool StartSprite::isLeftUpOut() const
-		{
-			int w = 0;
-			int h = 0;
-			if (m_textureDrawer.getSpriteSize(m_scale, w, h))
-			{
-				if ((m_pos.x + 0.5f * w < 0.f) || (m_pos.y + 0.5f * h < 0.f))
-					return true;
-			}
+    namespace start
+    {
+        bool StartSprite::isLeftUpOut() const
+        {
+            int w = 0;
+            int h = 0;
+            if (m_textureDrawer.getSpriteSize(m_scale, w, h))
+            {
+                if ((m_pos.x + 0.5f * w < 0.f) || (m_pos.y + 0.5f * h < 0.f))
+                    return true;
+            }
 
-			return false;
-		}
-	}
-}
+            return false;
+        }
+    } // namespace start
+} // namespace game

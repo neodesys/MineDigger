@@ -21,67 +21,66 @@
 
 namespace game
 {
-	namespace score
-	{
-		BackButton::BackButton(ScoreScreen& scoreScreen) :
-			m_scoreScreen(scoreScreen)
-		{
-			app::Sprite::setSpriteDrawer(&m_textureDrawer);
-		}
+    namespace score
+    {
+        BackButton::BackButton(ScoreScreen& scoreScreen) : m_scoreScreen(scoreScreen)
+        {
+            app::Sprite::setSpriteDrawer(&m_textureDrawer);
+        }
 
-		void BackButton::setOverlay(const sys::Texture* pTexture, const sys::Rect* pOverlayClip, unsigned int uOverlaySubImagesCount, unsigned int uOverlaySubImagesStride)
-		{
-			if (pTexture)
-			{
-				m_overlayDrawer.setTexture(pTexture, pOverlayClip);
-				m_overlayDrawer.configureSubImages(uOverlaySubImagesCount, uOverlaySubImagesStride);
-			}
-			else
-				m_overlayDrawer.setTexture(nullptr);
+        void BackButton::setOverlay(const sys::Texture* pTexture, const sys::Rect* pOverlayClip,
+                                    unsigned int uOverlaySubImagesCount, unsigned int uOverlaySubImagesStride)
+        {
+            if (pTexture)
+            {
+                m_overlayDrawer.setTexture(pTexture, pOverlayClip);
+                m_overlayDrawer.configureSubImages(uOverlaySubImagesCount, uOverlaySubImagesStride);
+            }
+            else
+                m_overlayDrawer.setTexture(nullptr);
 
-			m_bDrawOverlay = false;
-		}
+            m_bDrawOverlay = false;
+        }
 
-		void BackButton::onMouseButtonDown(const sys::Vec2& pos)
-		{
-			if (pos.isInside(m_backButtonRect))
-			{
-				m_overlayDrawer.selectSubImage(1);
-				m_scoreScreen.playButtonSample();
-			}
-		}
+        void BackButton::onMouseButtonDown(const sys::Vec2& pos)
+        {
+            if (pos.isInside(m_backButtonRect))
+            {
+                m_overlayDrawer.selectSubImage(1);
+                m_scoreScreen.playButtonSample();
+            }
+        }
 
-		void BackButton::onMouseButtonUp(const sys::Vec2& pos)
-		{
-			if ((m_overlayDrawer.getSelectedSubImage() == 1) &&
-				pos.isInside(m_backButtonRect))
-			{
-				m_scoreScreen.playAgain();
-				m_bDrawOverlay = false;
-			}
+        void BackButton::onMouseButtonUp(const sys::Vec2& pos)
+        {
+            if ((m_overlayDrawer.getSelectedSubImage() == 1) && pos.isInside(m_backButtonRect))
+            {
+                m_scoreScreen.playAgain();
+                m_bDrawOverlay = false;
+            }
 
-			m_overlayDrawer.selectSubImage(0);
-		}
+            m_overlayDrawer.selectSubImage(0);
+        }
 
-		void BackButton::onMouseMove(const sys::Vec2& pos, bool bDragging)
-		{
-			m_bDrawOverlay = pos.isInside(m_backButtonRect);
-		}
+        void BackButton::onMouseMove(const sys::Vec2& pos, bool bDragging)
+        {
+            m_bDrawOverlay = pos.isInside(m_backButtonRect);
+        }
 
-		void BackButton::draw(sys::Renderer& rdr)
-		{
-			if (m_bDrawOverlay)
-			{
-				sys::Rect rect;
-				if (m_overlayDrawer.getSpriteSize(m_scale, rect.w, rect.h))
-				{
-					rect.x = static_cast<int>(std::round(m_pos.x - m_hotspot.x * rect.w));
-					rect.y = static_cast<int>(std::round(m_pos.y - m_hotspot.y * rect.h));
-					m_overlayDrawer.drawSprite(rdr, rect);
-				}
-			}
+        void BackButton::draw(sys::Renderer& rdr)
+        {
+            if (m_bDrawOverlay)
+            {
+                sys::Rect rect;
+                if (m_overlayDrawer.getSpriteSize(m_scale, rect.w, rect.h))
+                {
+                    rect.x = static_cast<int>(std::round(m_pos.x - m_hotspot.x * rect.w));
+                    rect.y = static_cast<int>(std::round(m_pos.y - m_hotspot.y * rect.h));
+                    m_overlayDrawer.drawSprite(rdr, rect);
+                }
+            }
 
-			app::Sprite::draw(rdr);
-		}
-	}
-}
+            app::Sprite::draw(rdr);
+        }
+    } // namespace score
+} // namespace game

@@ -1,20 +1,5 @@
-* text eol=lf
+* text=auto eol=lf
 
 *.sln text eol=crlf
 *.vcxproj* text eol=crlf
 *.bat text eol=crlf
-
-*.png binary
-*.jpg binary
-
-*.ttf binary
-
-*.ogg binary
-
-*.xcf binary
-
-*.lib binary
-*.a binary
-*.dll binary
-
-*.jar binary

@@ -18,104 +18,104 @@
  */
 
 #ifndef _SCORESPRITE_H_
-#define	_SCORESPRITE_H_
+#define _SCORESPRITE_H_
 
-#include "../../app/Sprite.h"
 #include "../../app/NumberDrawer.h"
+#include "../../app/Sprite.h"
 #include "../../app/TextureDrawer.h"
 #include "../../sys/IAnimated.h"
 
 namespace game
 {
-	namespace score
-	{
-		class ScoreSprite final : public app::Sprite, public sys::IAnimated
-		{
-		public:
-			ScoreSprite()
-			{
-				app::Sprite::setSpriteDrawer(&m_textureDrawer);
-			}
+    namespace score
+    {
+        class ScoreSprite final : public app::Sprite, public sys::IAnimated
+        {
+          public:
+            ScoreSprite()
+            {
+                app::Sprite::setSpriteDrawer(&m_textureDrawer);
+            }
 
-			void setTexture(const sys::Texture* pTexture, const sys::Rect* pClip = nullptr)
-			{
-				m_textureDrawer.setTexture(pTexture, pClip);
-			}
+            void setTexture(const sys::Texture* pTexture, const sys::Rect* pClip = nullptr)
+            {
+                m_textureDrawer.setTexture(pTexture, pClip);
+            }
 
-			void setNumberStamp(const app::NumberStamp* pNumberStamp)
-			{
-				m_numberDrawer.setNumberStamp(pNumberStamp);
-			}
+            void setNumberStamp(const app::NumberStamp* pNumberStamp)
+            {
+                m_numberDrawer.setNumberStamp(pNumberStamp);
+            }
 
-			void setNumberStampOffset(const sys::Vec2& offset)
-			{
-				m_numberStampOffset = offset;
-			}
+            void setNumberStampOffset(const sys::Vec2& offset)
+            {
+                m_numberStampOffset = offset;
+            }
 
-			void setMinDigits(int minDigits)
-			{
-				m_numberDrawer.setMinDigits(minDigits);
-			}
+            void setMinDigits(int minDigits)
+            {
+                m_numberDrawer.setMinDigits(minDigits);
+            }
 
-			void setColor(const sys::Color& color)
-			{
-				m_numberDrawer.setColor(color);
-			}
+            void setColor(const sys::Color& color)
+            {
+                m_numberDrawer.setColor(color);
+            }
 
-			void setShadowColor(const sys::Color& color)
-			{
-				m_numberDrawer.setShadowColor(color);
-			}
+            void setShadowColor(const sys::Color& color)
+            {
+                m_numberDrawer.setShadowColor(color);
+            }
 
-			void setShadowOffset(int x, int y)
-			{
-				m_numberDrawer.setShadowOffset(x, y);
-			}
+            void setShadowOffset(int x, int y)
+            {
+                m_numberDrawer.setShadowOffset(x, y);
+            }
 
-			void setFinalScore(unsigned int uFinalScore)
-			{
-				m_uFinalScore = uFinalScore;
-			}
+            void setFinalScore(unsigned int uFinalScore)
+            {
+                m_uFinalScore = uFinalScore;
+            }
 
-			void setFinalPos(const sys::Vec2& finalPos)
-			{
-				m_finalPos = finalPos;
-			}
+            void setFinalPos(const sys::Vec2& finalPos)
+            {
+                m_finalPos = finalPos;
+            }
 
-			void startAnim(unsigned long uAnimDuration); //in ms
+            void startAnim(unsigned long uAnimDuration); // in ms
 
-			bool hasAnimFinished() const
-			{
-				return (m_pos == m_finalPos);
-			}
+            bool hasAnimFinished() const
+            {
+                return (m_pos == m_finalPos);
+            }
 
-			void update(const sys::FrameInfo& frame) override final;
+            void update(const sys::FrameInfo& frame) override final;
 
-			void draw(sys::Renderer& rdr) override final;
+            void draw(sys::Renderer& rdr) override final;
 
-		private:
-			ScoreSprite(const ScoreSprite&) = delete;
-			ScoreSprite& operator=(const ScoreSprite&) = delete;
+          private:
+            ScoreSprite(const ScoreSprite&) = delete;
+            ScoreSprite& operator=(const ScoreSprite&) = delete;
 
-			//Forbid access to base methods
-			void setHotspot(const sys::Vec2&) = delete;
-			void setScale(float) = delete;
-			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+            // Forbid access to base methods
+            void setHotspot(const sys::Vec2&) = delete;
+            void setScale(float) = delete;
+            void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
-			app::TextureDrawer m_textureDrawer;
+            app::TextureDrawer m_textureDrawer;
 
-			app::NumberDrawer m_numberDrawer;
-			sys::Vec2 m_numberStampOffset;
+            app::NumberDrawer m_numberDrawer;
+            sys::Vec2 m_numberStampOffset;
 
-			unsigned int m_uFinalScore = 0;
-			float m_scoreSpeed = 0.f; //in units per sec
+            unsigned int m_uFinalScore = 0;
+            float m_scoreSpeed = 0.f; // in units per sec
 
-			sys::Vec2 m_finalPos;
-			sys::Vec2 m_moveSpeed; //in pixels per sec
+            sys::Vec2 m_finalPos;
+            sys::Vec2 m_moveSpeed; // in pixels per sec
 
-			float m_currentScore = 0.f;
-		};
-	}
-}
+            float m_currentScore = 0.f;
+        };
+    } // namespace score
+} // namespace game
 
-#endif //_SCORESPRITE_H_
+#endif // _SCORESPRITE_H_

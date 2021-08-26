@@ -18,44 +18,44 @@
  */
 
 #ifndef _SPARKSPRITE_H_
-#define	_SPARKSPRITE_H_
+#define _SPARKSPRITE_H_
 
 #include "../../app/PathSprite.h"
 #include "../../app/TextureDrawer.h"
 
 namespace game
 {
-	namespace play
-	{
-		class SparkSprite final : public app::PathSprite
-		{
-		public:
-			SparkSprite()
-			{
-				app::PathSprite::setSpriteDrawer(&m_textureDrawer);
-			}
+    namespace play
+    {
+        class SparkSprite final : public app::PathSprite
+        {
+          public:
+            SparkSprite()
+            {
+                app::PathSprite::setSpriteDrawer(&m_textureDrawer);
+            }
 
-			void setTexture(sys::Texture* pTexture, unsigned int uSubImagesCount, unsigned int uSubImagesStride);
-			void setImageAnimSpeed(float imgPerSec);
+            void setTexture(sys::Texture* pTexture, unsigned int uSubImagesCount, unsigned int uSubImagesStride);
+            void setImageAnimSpeed(float imgPerSec);
 
-			void update(const sys::FrameInfo& frame) override final;
+            void update(const sys::FrameInfo& frame) override final;
 
-		private:
-			SparkSprite(const SparkSprite&) = delete;
-			SparkSprite& operator=(const SparkSprite&) = delete;
+          private:
+            SparkSprite(const SparkSprite&) = delete;
+            SparkSprite& operator=(const SparkSprite&) = delete;
 
-			//Forbid access to base methods
-			void setAnimEndBehavior(app::AnimEndBehavior) = delete;
-			void setAnimInterpolation(app::AnimInterpolation) = delete;
-			void setPos(const sys::Vec2&) = delete;
-			void setHotspot(const sys::Vec2&) = delete;
-			void setScale(float) = delete;
-			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+            // Forbid access to base methods
+            void setAnimEndBehavior(app::AnimEndBehavior) = delete;
+            void setAnimInterpolation(app::AnimInterpolation) = delete;
+            void setPos(const sys::Vec2&) = delete;
+            void setHotspot(const sys::Vec2&) = delete;
+            void setScale(float) = delete;
+            void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
-			app::TextureDrawer m_textureDrawer;
-			unsigned int m_uImagePeriod = 80; //in ms
-		};
-	}
-}
+            app::TextureDrawer m_textureDrawer;
+            unsigned int m_uImagePeriod = 80; // in ms
+        };
+    } // namespace play
+} // namespace game
 
-#endif //_SPARKSPRITE_H_
+#endif // _SPARKSPRITE_H_

@@ -18,24 +18,24 @@
  */
 
 #ifndef _ISPRITEDRAWER_H_
-#define	_ISPRITEDRAWER_H_
+#define _ISPRITEDRAWER_H_
 
 namespace sys
 {
-	class Renderer;
-	class Rect;
-}
+    class Renderer;
+    class Rect;
+} // namespace sys
 
 namespace app
 {
-	class ISpriteDrawer
-	{
-	public:
-		virtual ~ISpriteDrawer() = default;
+    class ISpriteDrawer
+    {
+      public:
+        virtual ~ISpriteDrawer() = default;
 
-		virtual bool getSpriteSize(float scale, int& w, int& h) const = 0;
-		virtual void drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const = 0;
-	};
-}
+        virtual bool getSpriteSize(float scale, int& w, int& h) const = 0;
+        virtual void drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const = 0;
+    };
+} // namespace app
 
-#endif //_ISPRITEDRAWER_H_
+#endif // _ISPRITEDRAWER_H_

@@ -18,63 +18,63 @@
  */
 
 #ifndef _NUMBERDRAWER_H_
-#define	_NUMBERDRAWER_H_
+#define _NUMBERDRAWER_H_
 
-#include "ISpriteDrawer.h"
 #include "../sys/Color.h"
+#include "ISpriteDrawer.h"
 
 namespace app
 {
-	class NumberStamp;
+    class NumberStamp;
 
-	class NumberDrawer : public ISpriteDrawer
-	{
-	public:
-		void setNumberStamp(const NumberStamp* pNumberStamp)
-		{
-			m_pNumberStamp = pNumberStamp;
-		}
+    class NumberDrawer : public ISpriteDrawer
+    {
+      public:
+        void setNumberStamp(const NumberStamp* pNumberStamp)
+        {
+            m_pNumberStamp = pNumberStamp;
+        }
 
-		void setNumber(unsigned int uNumber)
-		{
-			m_uNumber = uNumber;
-		}
+        void setNumber(unsigned int uNumber)
+        {
+            m_uNumber = uNumber;
+        }
 
-		void setMinDigits(int minDigits)
-		{
-			m_minDigits = minDigits;
-		}
+        void setMinDigits(int minDigits)
+        {
+            m_minDigits = minDigits;
+        }
 
-		void setColor(const sys::Color& color)
-		{
-			m_color = color;
-		}
+        void setColor(const sys::Color& color)
+        {
+            m_color = color;
+        }
 
-		void setShadowColor(const sys::Color& color)
-		{
-			m_shadowColor = color;
-		}
+        void setShadowColor(const sys::Color& color)
+        {
+            m_shadowColor = color;
+        }
 
-		void setShadowOffset(int x, int y)
-		{
-			m_shadowOffset[0] = x;
-			m_shadowOffset[1] = y;
-		}
+        void setShadowOffset(int x, int y)
+        {
+            m_shadowOffset[0] = x;
+            m_shadowOffset[1] = y;
+        }
 
-		virtual bool getSpriteSize(float scale, int& w, int& h) const override;
-		virtual void drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const override;
+        virtual bool getSpriteSize(float scale, int& w, int& h) const override;
+        virtual void drawSprite(sys::Renderer& rdr, const sys::Rect& rect) const override;
 
-	protected:
-		const NumberStamp* m_pNumberStamp = nullptr;
+      protected:
+        const NumberStamp* m_pNumberStamp = nullptr;
 
-		unsigned int m_uNumber = 0;
-		int m_minDigits = 0;
+        unsigned int m_uNumber = 0;
+        int m_minDigits = 0;
 
-		sys::Color m_color;
+        sys::Color m_color;
 
-		sys::Color m_shadowColor = {0, 0, 0, 0};
-		int m_shadowOffset[2] = {};
-	};
-}
+        sys::Color m_shadowColor = {0, 0, 0, 0};
+        int m_shadowOffset[2] = {};
+    };
+} // namespace app
 
-#endif //_NUMBERDRAWER_H_
+#endif // _NUMBERDRAWER_H_

@@ -18,25 +18,25 @@
  */
 
 #ifndef _IANIMATED_H_
-#define	_IANIMATED_H_
+#define _IANIMATED_H_
 
 namespace sys
 {
-	class FrameInfo;
+    class FrameInfo;
 
-	class IAnimated
-	{
-	public:
-		virtual ~IAnimated() = default;
+    class IAnimated
+    {
+      public:
+        virtual ~IAnimated() = default;
 
-		//It is guaranteed that frame parameter is always a valid FrameInfo:
-		//- getPrevTimestamp() > 0
-		//- getTimestamp() > getPrevTimestamp()
-		//- getDuration() > 0.f
-		//- getDurationVar() > 0.f
-		//- getSquareDuration() > 0.f
-		virtual void update(const FrameInfo& frame) = 0;
-	};
-}
+        // It is guaranteed that frame parameter is always a valid FrameInfo:
+        // - getPrevTimestamp() > 0
+        // - getTimestamp() > getPrevTimestamp()
+        // - getDuration() > 0.f
+        // - getDurationVar() > 0.f
+        // - getSquareDuration() > 0.f
+        virtual void update(const FrameInfo& frame) = 0;
+    };
+} // namespace sys
 
-#endif //_IANIMATED_H_
+#endif // _IANIMATED_H_

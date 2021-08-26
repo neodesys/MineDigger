@@ -23,74 +23,74 @@
 
 namespace game
 {
-	namespace score
-	{
-		void ScoreSprite::startAnim(unsigned long uAnimDuration)
-		{
-			if (uAnimDuration)
-			{
-				m_scoreSpeed = 1000.f / uAnimDuration;
+    namespace score
+    {
+        void ScoreSprite::startAnim(unsigned long uAnimDuration)
+        {
+            if (uAnimDuration)
+            {
+                m_scoreSpeed = 1000.f / uAnimDuration;
 
-				m_moveSpeed = m_finalPos - m_pos;
-				m_moveSpeed *= m_scoreSpeed;
+                m_moveSpeed = m_finalPos - m_pos;
+                m_moveSpeed *= m_scoreSpeed;
 
-				m_scoreSpeed *= m_uFinalScore;
+                m_scoreSpeed *= m_uFinalScore;
 
-				m_currentScore = 0.f;
-				m_numberDrawer.setNumber(0);
-			}
-			else
-			{
-				m_scoreSpeed = 0.f;
-				m_moveSpeed = {};
+                m_currentScore = 0.f;
+                m_numberDrawer.setNumber(0);
+            }
+            else
+            {
+                m_scoreSpeed = 0.f;
+                m_moveSpeed = {};
 
-				m_currentScore = static_cast<float>(m_uFinalScore);
-				m_pos = m_finalPos;
-				m_numberDrawer.setNumber(m_uFinalScore);
-			}
-		}
+                m_currentScore = static_cast<float>(m_uFinalScore);
+                m_pos = m_finalPos;
+                m_numberDrawer.setNumber(m_uFinalScore);
+            }
+        }
 
-		void ScoreSprite::update(const sys::FrameInfo& frame)
-		{
-			//Update score
-			if (m_currentScore < m_uFinalScore)
-			{
-				m_currentScore += frame.getDuration() * m_scoreSpeed;
-				if (m_currentScore < m_uFinalScore)
-					m_numberDrawer.setNumber(static_cast<unsigned int>(m_currentScore));
-				else
-				{
-					m_currentScore = static_cast<float>(m_uFinalScore);
-					m_numberDrawer.setNumber(m_uFinalScore);
-				}
-			}
+        void ScoreSprite::update(const sys::FrameInfo& frame)
+        {
+            // Update score
+            if (m_currentScore < m_uFinalScore)
+            {
+                m_currentScore += frame.getDuration() * m_scoreSpeed;
+                if (m_currentScore < m_uFinalScore)
+                    m_numberDrawer.setNumber(static_cast<unsigned int>(m_currentScore));
+                else
+                {
+                    m_currentScore = static_cast<float>(m_uFinalScore);
+                    m_numberDrawer.setNumber(m_uFinalScore);
+                }
+            }
 
-			//Update position
-			sys::Vec2 offset = m_finalPos - m_pos;
-			float dist = offset.norm();
-			if (dist >= 1.f)
-			{
-				m_pos += m_moveSpeed * frame.getDuration();
+            // Update position
+            sys::Vec2 offset = m_finalPos - m_pos;
+            float dist = offset.norm();
+            if (dist >= 1.f)
+            {
+                m_pos += m_moveSpeed * frame.getDuration();
 
-				offset *= 1.f / dist;
-				if (offset.dot(m_finalPos - m_pos) >= 1.f)
-					return;
-			}
+                offset *= 1.f / dist;
+                if (offset.dot(m_finalPos - m_pos) >= 1.f)
+                    return;
+            }
 
-			m_pos = m_finalPos;
-		}
+            m_pos = m_finalPos;
+        }
 
-		void ScoreSprite::draw(sys::Renderer& rdr)
-		{
-			app::Sprite::draw(rdr);
+        void ScoreSprite::draw(sys::Renderer& rdr)
+        {
+            app::Sprite::draw(rdr);
 
-			sys::Rect rect;
-			if (m_numberDrawer.getSpriteSize(m_scale, rect.w, rect.h))
-			{
-				rect.x = static_cast<int>(std::round(m_pos.x - m_hotspot.x * rect.w + m_numberStampOffset.x * m_scale));
-				rect.y = static_cast<int>(std::round(m_pos.y - m_hotspot.y * rect.h + m_numberStampOffset.y * m_scale));
-				m_numberDrawer.drawSprite(rdr, rect);
-			}
-		}
-	}
-}
+            sys::Rect rect;
+            if (m_numberDrawer.getSpriteSize(m_scale, rect.w, rect.h))
+            {
+                rect.x = static_cast<int>(std::round(m_pos.x - m_hotspot.x * rect.w + m_numberStampOffset.x * m_scale));
+                rect.y = static_cast<int>(std::round(m_pos.y - m_hotspot.y * rect.h + m_numberStampOffset.y * m_scale));
+                m_numberDrawer.drawSprite(rdr, rect);
+            }
+        }
+    } // namespace score
+} // namespace game

@@ -19,56 +19,56 @@
 
 #include "Countdown.h"
 
-#include "../../sys/FrameInfo.h"
 #include "../../sys/AudioSample.h"
+#include "../../sys/FrameInfo.h"
 
 namespace game
 {
-	namespace play
-	{
-		void Countdown::start(unsigned int uSec)
-		{
-			m_uCurrentValue = m_uDuration = uSec;
-			m_uStartTimestamp = 0;
+    namespace play
+    {
+        void Countdown::start(unsigned int uSec)
+        {
+            m_uCurrentValue = m_uDuration = uSec;
+            m_uStartTimestamp = 0;
 
-			int minDigits = 0;
-			while (uSec)
-			{
-				minDigits++;
-				uSec /= 10;
-			}
+            int minDigits = 0;
+            while (uSec)
+            {
+                minDigits++;
+                uSec /= 10;
+            }
 
-			m_numberDrawer.setMinDigits(minDigits);
-			m_numberDrawer.setNumber(m_uCurrentValue);
-		}
+            m_numberDrawer.setMinDigits(minDigits);
+            m_numberDrawer.setNumber(m_uCurrentValue);
+        }
 
-		void Countdown::update(const sys::FrameInfo& frame)
-		{
-			if (!m_uStartTimestamp)
-			{
-				m_uStartTimestamp = frame.getTimestamp();
-				return;
-			}
+        void Countdown::update(const sys::FrameInfo& frame)
+        {
+            if (!m_uStartTimestamp)
+            {
+                m_uStartTimestamp = frame.getTimestamp();
+                return;
+            }
 
-			unsigned long t = frame.getTimestamp();
-			if (t <= m_uStartTimestamp)
-				return;
+            unsigned long t = frame.getTimestamp();
+            if (t <= m_uStartTimestamp)
+                return;
 
-			t = (t - m_uStartTimestamp) / 1000;
+            t = (t - m_uStartTimestamp) / 1000;
 
-			unsigned int uPrevValue = m_uCurrentValue;
-			if (t >= m_uDuration)
-				m_uCurrentValue = 0;
-			else
-				m_uCurrentValue = m_uDuration - t;
+            unsigned int uPrevValue = m_uCurrentValue;
+            if (t >= m_uDuration)
+                m_uCurrentValue = 0;
+            else
+                m_uCurrentValue = m_uDuration - t;
 
-			if (m_uCurrentValue != uPrevValue)
-			{
-				m_numberDrawer.setNumber(m_uCurrentValue);
+            if (m_uCurrentValue != uPrevValue)
+            {
+                m_numberDrawer.setNumber(m_uCurrentValue);
 
-				if (m_pCountdownSample && (m_uCurrentValue <= 10))
-					m_pCountdownSample->play();
-			}
-		}
-	}
-}
+                if (m_pCountdownSample && (m_uCurrentValue <= 10))
+                    m_pCountdownSample->play();
+            }
+        }
+    } // namespace play
+} // namespace game

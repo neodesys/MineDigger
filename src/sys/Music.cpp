@@ -29,114 +29,114 @@
 
 namespace sys
 {
-	const Logger Music::s_log("Music");
+    const Logger Music::s_log("Music");
 
-	Music* Music::s_pActiveMusic = nullptr;
+    Music* Music::s_pActiveMusic = nullptr;
 
-	Music* Music::loadMusic(const GameEngine& engine, const char* asset)
-	{
-		Mix_Music* pSDLMusic = engine.getResLoader().loadMusic(asset);
-		if (!pSDLMusic)
-			return nullptr;
+    Music* Music::loadMusic(const GameEngine& engine, const char* asset)
+    {
+        Mix_Music* pSDLMusic = engine.getResLoader().loadMusic(asset);
+        if (!pSDLMusic)
+            return nullptr;
 
-		Music* pMusic = new(std::nothrow) Music(pSDLMusic);
-		if (!pMusic)
-		{
-			Mix_FreeMusic(pSDLMusic);
-			s_log.critical("Out of memory");
-			return nullptr;
-		}
+        Music* pMusic = new (std::nothrow) Music(pSDLMusic);
+        if (!pMusic)
+        {
+            Mix_FreeMusic(pSDLMusic);
+            s_log.critical("Out of memory");
+            return nullptr;
+        }
 
-		s_log.info("Music loaded for \"%s\"", asset);
-		return pMusic;
-	}
+        s_log.info("Music loaded for \"%s\"", asset);
+        return pMusic;
+    }
 
-	Music::~Music()
-	{
-		assert(m_pSDLMusic);
-		Mix_FreeMusic(m_pSDLMusic);
+    Music::~Music()
+    {
+        assert(m_pSDLMusic);
+        Mix_FreeMusic(m_pSDLMusic);
 
-		if (s_pActiveMusic == this)
-			s_pActiveMusic = nullptr;
-	}
+        if (s_pActiveMusic == this)
+            s_pActiveMusic = nullptr;
+    }
 
-	bool Music::play(int repeat)
-	{
-		assert(m_pSDLMusic);
-		if (repeat >= FOREVER)
-		{
-			if (!Mix_PlayMusic(m_pSDLMusic, repeat))
-			{
-				s_pActiveMusic = this;
-				return true;
-			}
+    bool Music::play(int repeat)
+    {
+        assert(m_pSDLMusic);
+        if (repeat >= FOREVER)
+        {
+            if (!Mix_PlayMusic(m_pSDLMusic, repeat))
+            {
+                s_pActiveMusic = this;
+                return true;
+            }
 
-			s_log.warning("Cannot play music (%s)", Mix_GetError());
-		}
+            s_log.warning("Cannot play music (%s)", Mix_GetError());
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	AudioStatus Music::getStatus() const
-	{
-		if (s_pActiveMusic == this)
-		{
-			if (Mix_PlayingMusic())
-			{
-				if (Mix_PausedMusic())
-					return AudioStatus::PAUSED;
-				else
-					return AudioStatus::PLAYING;
-			}
+    AudioStatus Music::getStatus() const
+    {
+        if (s_pActiveMusic == this)
+        {
+            if (Mix_PlayingMusic())
+            {
+                if (Mix_PausedMusic())
+                    return AudioStatus::PAUSED;
+                else
+                    return AudioStatus::PLAYING;
+            }
 
-			s_pActiveMusic = nullptr;
-		}
+            s_pActiveMusic = nullptr;
+        }
 
-		return AudioStatus::STOPPED;
-	}
+        return AudioStatus::STOPPED;
+    }
 
-	void Music::pause()
-	{
-		if (s_pActiveMusic == this)
-			Mix_PauseMusic();
-	}
+    void Music::pause()
+    {
+        if (s_pActiveMusic == this)
+            Mix_PauseMusic();
+    }
 
-	void Music::resume()
-	{
-		if (s_pActiveMusic == this)
-			Mix_ResumeMusic();
-	}
+    void Music::resume()
+    {
+        if (s_pActiveMusic == this)
+            Mix_ResumeMusic();
+    }
 
-	void Music::stop()
-	{
-		if (s_pActiveMusic == this)
-		{
-			Mix_HaltMusic();
-			s_pActiveMusic = nullptr;
-		}
-	}
+    void Music::stop()
+    {
+        if (s_pActiveMusic == this)
+        {
+            Mix_HaltMusic();
+            s_pActiveMusic = nullptr;
+        }
+    }
 
-	void Music::setVolume(float vol)
-	{
-		if (s_pActiveMusic == this)
-		{
-			int v = 0;
-			if (vol > 0.f)
-				v = static_cast<int>(MIX_MAX_VOLUME * vol);
+    void Music::setVolume(float vol)
+    {
+        if (s_pActiveMusic == this)
+        {
+            int v = 0;
+            if (vol > 0.f)
+                v = static_cast<int>(MIX_MAX_VOLUME * vol);
 
-			Mix_VolumeMusic(v);
-		}
-	}
+            Mix_VolumeMusic(v);
+        }
+    }
 
-	float Music::getVolume() const
-	{
-		if (s_pActiveMusic == this)
-		{
-			int vol = Mix_VolumeMusic(-1);
-			if (vol > 0)
-				return static_cast<float>(vol) / MIX_MAX_VOLUME;
-		}
+    float Music::getVolume() const
+    {
+        if (s_pActiveMusic == this)
+        {
+            int vol = Mix_VolumeMusic(-1);
+            if (vol > 0)
+                return static_cast<float>(vol) / MIX_MAX_VOLUME;
+        }
 
-		return 0.f;
-	}
-}
+        return 0.f;
+    }
+} // namespace sys

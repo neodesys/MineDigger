@@ -18,37 +18,37 @@
  */
 
 #ifndef _BACKBOARD_H_
-#define	_BACKBOARD_H_
+#define _BACKBOARD_H_
 
-#include "../sys/IDrawable.h"
 #include "../sys/Color.h"
+#include "../sys/IDrawable.h"
 
 namespace sys
 {
-	class Texture;
+    class Texture;
 }
 
 namespace app
 {
-	class BackBoard : public sys::IDrawable
-	{
-	public:
-		void setColor(unsigned char r, unsigned char g, unsigned char b)
-		{
-			m_backColor = {r, g, b};
-		}
+    class BackBoard : public sys::IDrawable
+    {
+      public:
+        void setColor(unsigned char r, unsigned char g, unsigned char b)
+        {
+            m_backColor = {r, g, b};
+        }
 
-		void setTexture(const sys::Texture* pTexture)
-		{
-			m_pTexture = pTexture;
-		}
+        void setTexture(const sys::Texture* pTexture)
+        {
+            m_pTexture = pTexture;
+        }
 
-		virtual void draw(sys::Renderer& rdr) override;
+        virtual void draw(sys::Renderer& rdr) override;
 
-	protected:
-		sys::Color m_backColor;
-		const sys::Texture* m_pTexture = nullptr;
-	};
-}
+      protected:
+        sys::Color m_backColor;
+        const sys::Texture* m_pTexture = nullptr;
+    };
+} // namespace app
 
-#endif //_BACKBOARD_H_
+#endif // _BACKBOARD_H_

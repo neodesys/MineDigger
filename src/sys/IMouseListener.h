@@ -18,21 +18,21 @@
  */
 
 #ifndef _IMOUSELISTENER_H_
-#define	_IMOUSELISTENER_H_
+#define _IMOUSELISTENER_H_
 
 namespace sys
 {
-	class Vec2;
+    class Vec2;
 
-	class IMouseListener
-	{
-	public:
-		virtual ~IMouseListener() = default;
+    class IMouseListener
+    {
+      public:
+        virtual ~IMouseListener() = default;
 
-		virtual void onMouseButtonDown(const Vec2& pos) = 0;
-		virtual void onMouseButtonUp(const Vec2& pos) = 0;
-		virtual void onMouseMove(const Vec2& pos, bool bDragging) = 0;
-	};
-}
+        virtual void onMouseButtonDown(const Vec2& pos) = 0;
+        virtual void onMouseButtonUp(const Vec2& pos) = 0;
+        virtual void onMouseMove(const Vec2& pos, bool bDragging) = 0;
+    };
+} // namespace sys
 
-#endif //_IMOUSELISTENER_H_
+#endif // _IMOUSELISTENER_H_

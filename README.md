@@ -1,6 +1,8 @@
 MineDigger
 ==========
 
+[![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat)](/LICENSE)
+
 **Contents**
 
 1. [About the game](#about-the-game)
@@ -35,6 +37,10 @@ licenses for non-commercial usage. If you are the owner of any of these
 resources and you changed the license type or you just want to be credited for
 it, please contact me at contact@neodesys.com
 
+You can install and try the final game by yourself on your Android phone from
+the Google Play Store:
+https://play.google.com/store/apps/details?id=com.neodesys.minedigger
+
 --------------------------------------------------------------------------------
 
 Build the game
@@ -57,7 +63,7 @@ In all cases you will need a full-featured C++11 compiler and its tool suite:
 
 - [g++](https://gcc.gnu.org/) (version 4.8 and above)
 - [MinGW-w64](http://mingw-w64.org/) (version 3.0 and above)
-- [Visual Studio](https://www.visualstudio.com/) (version 2015 and above)
+- [Visual Studio](https://www.visualstudio.com/) (version 2019 and above)
 
 To build the game under Linux, you will need to install SDL2 libraries:
 
@@ -156,11 +162,11 @@ To build the game for Android, you will need:
 
 - A Linux host or, at least, a Linux-like environment such as
   [Cygwin](https://www.cygwin.com/) under a Windows host
-- [Java JDK](http://openjdk.java.net/install/) (version 7 and above)
+- [Java JDK](http://openjdk.java.net/install/) (version 11 and above)
 - [Android SDK](https://developer.android.com/sdk/index.html#Other) (version
-  23.0.1 and above)
+  30.0.2 and above)
 - [Android NDK](http://developer.android.com/ndk/downloads/index.html) (version
-  r10e and above)
+  21.4.7075529 and above)
 - [SDL2 sources](https://www.libsdl.org/release/SDL2-2.0.3.zip) (version 2.0.3)
 - [SDL2_image sources](https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.0.zip)
   (version 2.0.0)

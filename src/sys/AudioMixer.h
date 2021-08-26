@@ -18,62 +18,64 @@
  */
 
 #ifndef _AUDIOMIXER_H_
-#define	_AUDIOMIXER_H_
+#define _AUDIOMIXER_H_
 
 #include "Logger.h"
 
 namespace sys
 {
-	enum struct AudioStatus : unsigned char
-	{
-		PLAYING,
-		PAUSED,
-		STOPPED
-	};
+    enum struct AudioStatus : unsigned char
+    {
+        PLAYING,
+        PAUSED,
+        STOPPED
+    };
 
-	class AudioMixer final
-	{
-	public:
-		//Pass -1 for default values
-		//Default frequency is 44100 Hz
-		//Default polyphony is 8 channels
-		//Default buffer size is 2048 bytes (a big buffer increases latency
-		//while a small one uses more CPU and augments the risk of jerky sound
-		//reproduction on slow machines)
-		static AudioMixer* createAudioMixer(int freq = -1, int polyphony = -1, int bufferSize = -1);
-		~AudioMixer();
+    class AudioMixer final
+    {
+      public:
+        // Pass -1 for default values
+        // Default frequency is 44100 Hz
+        // Default polyphony is 8 channels
+        // Default buffer size is 2048 bytes (a big buffer increases latency
+        // while a small one uses more CPU and augments the risk of jerky sound
+        // reproduction on slow machines)
+        static AudioMixer* createAudioMixer(int freq = -1, int polyphony = -1, int bufferSize = -1);
+        ~AudioMixer();
 
-		const int m_frequency;
-		const int m_polyphony;
+        const int m_frequency;
+        const int m_polyphony;
 
-		//Audio samples
-		void pauseAllSamples();
-		void resumeAllSamples();
-		void stopAllSamples();
+        // Audio samples
+        void pauseAllSamples();
+        void resumeAllSamples();
+        void stopAllSamples();
 
-		//Volume is between 0.f and 1.f
-		//This controls the samples global volume, it will be mixed with each
-		//sample independent volume on playing
-		void setSamplesGlobalVolume(float vol);
-		float getSamplesGlobalVolume() const;
+        // Volume is between 0.f and 1.f
+        // This controls the samples global volume, it will be mixed with each
+        // sample independent volume on playing
+        void setSamplesGlobalVolume(float vol);
+        float getSamplesGlobalVolume() const;
 
-		//Music
-		AudioStatus getMusicStatus() const;
+        // Music
+        AudioStatus getMusicStatus() const;
 
-		void pauseMusic();
-		void resumeMusic();
-		void stopMusic();
+        void pauseMusic();
+        void resumeMusic();
+        void stopMusic();
 
-		void setMusicVolume(float vol);
-		float getMusicVolume() const;
+        void setMusicVolume(float vol);
+        float getMusicVolume() const;
 
-	private:
-		AudioMixer(int frequency, int polyphony) : m_frequency(frequency), m_polyphony(polyphony) {}
-		AudioMixer(const AudioMixer&) = delete;
-		AudioMixer& operator=(const AudioMixer&) = delete;
+      private:
+        AudioMixer(int frequency, int polyphony) : m_frequency(frequency), m_polyphony(polyphony)
+        {
+        }
+        AudioMixer(const AudioMixer&) = delete;
+        AudioMixer& operator=(const AudioMixer&) = delete;
 
-		static const Logger s_log;
-	};
-}
+        static const Logger s_log;
+    };
+} // namespace sys
 
-#endif //_AUDIOMIXER_H_
+#endif // _AUDIOMIXER_H_

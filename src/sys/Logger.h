@@ -18,61 +18,61 @@
  */
 
 #ifndef _LOGGER_H_
-#define	_LOGGER_H_
+#define _LOGGER_H_
 
 #include <cstdarg>
 
 namespace sys
 {
-	enum struct LogLevel : unsigned char
-	{
-		INFO,
-		WARNING,
-		CRITICAL
-	};
+    enum struct LogLevel : unsigned char
+    {
+        INFO,
+        WARNING,
+        CRITICAL
+    };
 
-	class Logger final
-	{
-	public:
-		//WARNING: moduleName string content is not copied. The pointer is
-		//directly stored internally, so moduleName memory buffer must have a
-		//lifetime superior to the Logger instance. Normally, moduleName
-		//should be a string literal set at compile-time. Common usage of
-		//Logger class is as follows:
-		//class MyClass
-		//{
-		//protected:
-		//    static const Logger s_log;
-		//};
-		//
-		//const Logger MyClass::s_log("MyClass");
-		Logger(const char* moduleName)
-		{
-			if (moduleName)
-				m_moduleName = moduleName;
-		}
+    class Logger final
+    {
+      public:
+        // WARNING: moduleName string content is not copied. The pointer is
+        // directly stored internally, so moduleName memory buffer must have a
+        // lifetime superior to the Logger instance. Normally, moduleName
+        // should be a string literal set at compile-time. Common usage of
+        // Logger class is as follows:
+        // class MyClass
+        // {
+        //   protected:
+        //      static const Logger s_log;
+        //  };
+        //
+        // const Logger MyClass::s_log("MyClass");
+        Logger(const char* moduleName)
+        {
+            if (moduleName)
+                m_moduleName = moduleName;
+        }
 
-		void log(LogLevel level, const char* format, ...) const;
-		void info(const char* format, ...) const;
-		void warning(const char* format, ...) const;
-		void critical(const char* format, ...) const;
+        void log(LogLevel level, const char* format, ...) const;
+        void info(const char* format, ...) const;
+        void warning(const char* format, ...) const;
+        void critical(const char* format, ...) const;
 
-		static void setLogPriority(LogLevel level);
-		static LogLevel getLogPriority()
-		{
-			return s_logPriority;
-		}
+        static void setLogPriority(LogLevel level);
+        static LogLevel getLogPriority()
+        {
+            return s_logPriority;
+        }
 
-	private:
-		Logger(const Logger&) = delete;
-		Logger& operator=(const Logger&) = delete;
+      private:
+        Logger(const Logger&) = delete;
+        Logger& operator=(const Logger&) = delete;
 
-		static LogLevel s_logPriority;
+        static LogLevel s_logPriority;
 
-		const char* m_moduleName = "";
+        const char* m_moduleName = "";
 
-		void vlog(LogLevel level, const char* format, std::va_list varArgs) const;
-	};
-}
+        void vlog(LogLevel level, const char* format, std::va_list varArgs) const;
+    };
+} // namespace sys
 
-#endif //_LOGGER_H_
+#endif // _LOGGER_H_

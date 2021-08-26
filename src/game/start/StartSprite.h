@@ -18,42 +18,42 @@
  */
 
 #ifndef _STARTSPRITE_H_
-#define	_STARTSPRITE_H_
+#define _STARTSPRITE_H_
 
 #include "../../app/DynSprite.h"
 #include "../../app/TextureDrawer.h"
 
 namespace game
 {
-	namespace start
-	{
-		class StartSprite : public app::DynSprite
-		{
-		public:
-			StartSprite()
-			{
-				app::DynSprite::setSpriteDrawer(&m_textureDrawer);
-			}
+    namespace start
+    {
+        class StartSprite : public app::DynSprite
+        {
+          public:
+            StartSprite()
+            {
+                app::DynSprite::setSpriteDrawer(&m_textureDrawer);
+            }
 
-			void setTexture(const sys::Texture* pTexture, const sys::Rect* pClip = nullptr)
-			{
-				m_textureDrawer.setTexture(pTexture, pClip);
-			}
+            void setTexture(const sys::Texture* pTexture, const sys::Rect* pClip = nullptr)
+            {
+                m_textureDrawer.setTexture(pTexture, pClip);
+            }
 
-			bool isLeftUpOut() const;
+            bool isLeftUpOut() const;
 
-		private:
-			StartSprite(const StartSprite&) = delete;
-			StartSprite& operator=(const StartSprite&) = delete;
+          private:
+            StartSprite(const StartSprite&) = delete;
+            StartSprite& operator=(const StartSprite&) = delete;
 
-			//Forbid access to base methods
-			void setHotspot(const sys::Vec2&) = delete;
-			void setScale(float) = delete;
-			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+            // Forbid access to base methods
+            void setHotspot(const sys::Vec2&) = delete;
+            void setScale(float) = delete;
+            void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
-			app::TextureDrawer m_textureDrawer;
-		};
-	}
-}
+            app::TextureDrawer m_textureDrawer;
+        };
+    } // namespace start
+} // namespace game
 
-#endif //_STARTSPRITE_H_
+#endif // _STARTSPRITE_H_

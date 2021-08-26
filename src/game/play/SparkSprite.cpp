@@ -19,54 +19,55 @@
 
 #include "SparkSprite.h"
 
-#include "../../sys/Texture.h"
 #include "../../sys/FrameInfo.h"
+#include "../../sys/Texture.h"
 
 namespace game
 {
-	namespace play
-	{
-		void SparkSprite::setTexture(sys::Texture* pTexture, unsigned int uSubImagesCount, unsigned int uSubImagesStride)
-		{
-			if (pTexture)
-			{
-				pTexture->setTextureBlendMode(sys::BlendMode::ADDITIVE);
-				m_textureDrawer.setTexture(pTexture);
-				m_textureDrawer.configureSubImages(uSubImagesCount, uSubImagesStride);
-			}
-			else
-				m_textureDrawer.setTexture(nullptr);
-		}
+    namespace play
+    {
+        void SparkSprite::setTexture(sys::Texture* pTexture, unsigned int uSubImagesCount,
+                                     unsigned int uSubImagesStride)
+        {
+            if (pTexture)
+            {
+                pTexture->setTextureBlendMode(sys::BlendMode::ADDITIVE);
+                m_textureDrawer.setTexture(pTexture);
+                m_textureDrawer.configureSubImages(uSubImagesCount, uSubImagesStride);
+            }
+            else
+                m_textureDrawer.setTexture(nullptr);
+        }
 
-		void SparkSprite::setImageAnimSpeed(float imgPerSec)
-		{
-			if (imgPerSec > 0.f)
-			{
-				m_uImagePeriod = static_cast<unsigned int>(1000.f / imgPerSec);
-				if (!m_uImagePeriod)
-					m_uImagePeriod = 1;
-			}
-			else
-				m_uImagePeriod = 80;
-		}
+        void SparkSprite::setImageAnimSpeed(float imgPerSec)
+        {
+            if (imgPerSec > 0.f)
+            {
+                m_uImagePeriod = static_cast<unsigned int>(1000.f / imgPerSec);
+                if (!m_uImagePeriod)
+                    m_uImagePeriod = 1;
+            }
+            else
+                m_uImagePeriod = 80;
+        }
 
-		void SparkSprite::update(const sys::FrameInfo& frame)
-		{
-			app::PathSprite::update(frame);
+        void SparkSprite::update(const sys::FrameInfo& frame)
+        {
+            app::PathSprite::update(frame);
 
-			if (m_bAnimRunning)
-			{
-				unsigned int uSubImagesCount = m_textureDrawer.getSubImagesCount();
-				if (uSubImagesCount)
-				{
-					unsigned long t = frame.getTimestamp();
-					if (t >= m_uAnimStartTimestamp)
-					{
-						t = (t - m_uAnimStartTimestamp) / m_uImagePeriod;
-						m_textureDrawer.selectSubImage(t % uSubImagesCount);
-					}
-				}
-			}
-		}
-	}
-}
+            if (m_bAnimRunning)
+            {
+                unsigned int uSubImagesCount = m_textureDrawer.getSubImagesCount();
+                if (uSubImagesCount)
+                {
+                    unsigned long t = frame.getTimestamp();
+                    if (t >= m_uAnimStartTimestamp)
+                    {
+                        t = (t - m_uAnimStartTimestamp) / m_uImagePeriod;
+                        m_textureDrawer.selectSubImage(t % uSubImagesCount);
+                    }
+                }
+            }
+        }
+    } // namespace play
+} // namespace game

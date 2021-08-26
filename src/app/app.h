@@ -18,22 +18,22 @@
  */
 
 #ifndef _APP_H_
-#define	_APP_H_
+#define _APP_H_
 
 namespace app
 {
-	class IGame;
+    class IGame;
 
-	enum RetCode : short
-	{
-		SUCCESS = 0,
-		ERR_NO_ENGINE = -1,
-		ERR_NO_LOADING_SCREEN = -2,
-		ERR_GAME_RES_LOADING = -3,
-		ERR_SCREEN_RES_LOADING = -4
-	};
+    enum RetCode : short
+    {
+        SUCCESS = 0,
+        ERR_NO_ENGINE = -1,
+        ERR_NO_LOADING_SCREEN = -2,
+        ERR_GAME_RES_LOADING = -3,
+        ERR_SCREEN_RES_LOADING = -4
+    };
 
-	RetCode run(IGame& game);
-}
+    RetCode run(IGame& game);
+} // namespace app
 
-#endif //_APP_H_
+#endif // _APP_H_

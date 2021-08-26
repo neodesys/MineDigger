@@ -23,17 +23,17 @@
 
 namespace app
 {
-	void Sprite::draw(sys::Renderer& rdr)
-	{
-		if (m_pDrawer)
-		{
-			sys::Rect rect;
-			if (m_pDrawer->getSpriteSize(m_scale, rect.w, rect.h))
-			{
-				rect.x = static_cast<int>(std::round(m_pos.x - m_hotspot.x * rect.w));
-				rect.y = static_cast<int>(std::round(m_pos.y - m_hotspot.y * rect.h));
-				m_pDrawer->drawSprite(rdr, rect);
-			}
-		}
-	}
-}
+    void Sprite::draw(sys::Renderer& rdr)
+    {
+        if (m_pDrawer)
+        {
+            sys::Rect rect;
+            if (m_pDrawer->getSpriteSize(m_scale, rect.w, rect.h))
+            {
+                rect.x = static_cast<int>(std::round(m_pos.x - m_hotspot.x * rect.w));
+                rect.y = static_cast<int>(std::round(m_pos.y - m_hotspot.y * rect.h));
+                m_pDrawer->drawSprite(rdr, rect);
+            }
+        }
+    }
+} // namespace app

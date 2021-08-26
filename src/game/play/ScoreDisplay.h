@@ -18,93 +18,93 @@
  */
 
 #ifndef _SCOREDISPLAY_H_
-#define	_SCOREDISPLAY_H_
+#define _SCOREDISPLAY_H_
 
-#include "../../app/Sprite.h"
 #include "../../app/NumberDrawer.h"
-#include "../../sys/IAnimated.h"
+#include "../../app/Sprite.h"
 #include "../../sys/AudioSample.h"
+#include "../../sys/IAnimated.h"
 
 namespace game
 {
-	namespace play
-	{
-		class ScoreDisplay final : public app::Sprite, public sys::IAnimated
-		{
-		public:
-			ScoreDisplay()
-			{
-				app::Sprite::setSpriteDrawer(&m_numberDrawer);
-			}
+    namespace play
+    {
+        class ScoreDisplay final : public app::Sprite, public sys::IAnimated
+        {
+          public:
+            ScoreDisplay()
+            {
+                app::Sprite::setSpriteDrawer(&m_numberDrawer);
+            }
 
-			void setNumberStamp(const app::NumberStamp* pNumberStamp)
-			{
-				m_numberDrawer.setNumberStamp(pNumberStamp);
-			}
+            void setNumberStamp(const app::NumberStamp* pNumberStamp)
+            {
+                m_numberDrawer.setNumberStamp(pNumberStamp);
+            }
 
-			void setSuccessSample(sys::AudioSample* pSample)
-			{
-				m_pSuccessSample = pSample;
-			}
+            void setSuccessSample(sys::AudioSample* pSample)
+            {
+                m_pSuccessSample = pSample;
+            }
 
-			void setMinDigits(int minDigits)
-			{
-				m_numberDrawer.setMinDigits(minDigits);
-			}
+            void setMinDigits(int minDigits)
+            {
+                m_numberDrawer.setMinDigits(minDigits);
+            }
 
-			void setColor(const sys::Color& color)
-			{
-				m_numberDrawer.setColor(color);
-			}
+            void setColor(const sys::Color& color)
+            {
+                m_numberDrawer.setColor(color);
+            }
 
-			void setShadowColor(const sys::Color& color)
-			{
-				m_numberDrawer.setShadowColor(color);
-			}
+            void setShadowColor(const sys::Color& color)
+            {
+                m_numberDrawer.setShadowColor(color);
+            }
 
-			void setShadowOffset(int x, int y)
-			{
-				m_numberDrawer.setShadowOffset(x, y);
-			}
+            void setShadowOffset(int x, int y)
+            {
+                m_numberDrawer.setShadowOffset(x, y);
+            }
 
-			void setScoreSpeed(float scoreSpeed) //in points per sec
-			{
-				m_scoreSpeed = (scoreSpeed > 0.f) ? scoreSpeed : 100.f;
-			}
+            void setScoreSpeed(float scoreSpeed) // in points per sec
+            {
+                m_scoreSpeed = (scoreSpeed > 0.f) ? scoreSpeed : 100.f;
+            }
 
-			void addScore(unsigned int uPoints)
-			{
-				m_uScore += uPoints;
-			}
+            void addScore(unsigned int uPoints)
+            {
+                m_uScore += uPoints;
+            }
 
-			unsigned int getScore() const
-			{
-				return m_uScore;
-			}
+            unsigned int getScore() const
+            {
+                return m_uScore;
+            }
 
-			void resetScore();
+            void resetScore();
 
-			void update(const sys::FrameInfo& frame) override final;
+            void update(const sys::FrameInfo& frame) override final;
 
-		private:
-			ScoreDisplay(const ScoreDisplay&) = delete;
-			ScoreDisplay& operator=(const ScoreDisplay&) = delete;
+          private:
+            ScoreDisplay(const ScoreDisplay&) = delete;
+            ScoreDisplay& operator=(const ScoreDisplay&) = delete;
 
-			//Forbid access to base methods
-			void setHotspot(const sys::Vec2&) = delete;
-			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+            // Forbid access to base methods
+            void setHotspot(const sys::Vec2&) = delete;
+            void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
-			app::NumberDrawer m_numberDrawer;
+            app::NumberDrawer m_numberDrawer;
 
-			sys::AudioSample* m_pSuccessSample = nullptr;
-			sys::AudioSample::Tracker m_successSampleTracker;
+            sys::AudioSample* m_pSuccessSample = nullptr;
+            sys::AudioSample::Tracker m_successSampleTracker;
 
-			float m_scoreSpeed = 100.f;
-			float m_drawnScore = 0.f;
+            float m_scoreSpeed = 100.f;
+            float m_drawnScore = 0.f;
 
-			unsigned int m_uScore = 0;
-		};
-	}
-}
+            unsigned int m_uScore = 0;
+        };
+    } // namespace play
+} // namespace game
 
-#endif //_SCOREDISPLAY_H_
+#endif // _SCOREDISPLAY_H_

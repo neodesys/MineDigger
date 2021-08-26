@@ -34,122 +34,124 @@
 
 namespace
 {
-	//Size of a string buffer (including terminating \0 character) for ISO-8601
-	//representation of UTC dates using the extended format.
-	//ex: 2015-04-07T11:35:15Z
-	const std::size_t DATE_BUFFER_SIZE = 21;
+    // Size of a string buffer (including terminating \0 character) for ISO-8601
+    // representation of UTC dates using the extended format.
+    // ex: 2015-04-07T11:35:15Z
+    const std::size_t DATE_BUFFER_SIZE = 21;
 
-	//Maximum size of a log message (including terminating \0 character).
-	const std::size_t LOG_MSG_SIZE = 2048;
+    // Maximum size of a log message (including terminating \0 character).
+    const std::size_t LOG_MSG_SIZE = 2048;
 
-	SDL_LogPriority convertLogPriority(sys::LogLevel level)
-	{
-		switch (level)
-		{
-		case sys::LogLevel::INFO:
-			return SDL_LOG_PRIORITY_INFO;
+    SDL_LogPriority convertLogPriority(sys::LogLevel level)
+    {
+        switch (level)
+        {
+        case sys::LogLevel::INFO:
+            return SDL_LOG_PRIORITY_INFO;
 
-		case sys::LogLevel::WARNING:
-			return SDL_LOG_PRIORITY_WARN;
+        case sys::LogLevel::WARNING:
+            return SDL_LOG_PRIORITY_WARN;
 
-		case sys::LogLevel::CRITICAL:
-			return SDL_LOG_PRIORITY_CRITICAL;
+        case sys::LogLevel::CRITICAL:
+            return SDL_LOG_PRIORITY_CRITICAL;
 
-		default:
-			return SDL_LOG_PRIORITY_CRITICAL;
-		}
-	}
+        default:
+            return SDL_LOG_PRIORITY_CRITICAL;
+        }
+    }
 
-	sys::LogLevel initLogPriority()
-	{
+    sys::LogLevel initLogPriority()
+    {
 #ifdef NDEBUG
-		sys::LogLevel level = sys::LogLevel::CRITICAL;
+        sys::LogLevel level = sys::LogLevel::CRITICAL;
 #else
-		sys::LogLevel level = sys::LogLevel::INFO;
-#endif //NDEBUG
+        sys::LogLevel level = sys::LogLevel::INFO;
+#endif // NDEBUG
 
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, convertLogPriority(level));
-		return level;
-	}
-}
+        SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, convertLogPriority(level));
+        return level;
+    }
+} // namespace
 
 namespace sys
 {
-	LogLevel Logger::s_logPriority = initLogPriority();
+    LogLevel Logger::s_logPriority = initLogPriority();
 
-	void Logger::log(LogLevel level, const char* format, ...) const
-	{
-		if (format && (format[0] != '\0'))
-		{
-			std::va_list varArgs;
-			va_start(varArgs, format);
-			vlog(level, format, varArgs);
-			va_end(varArgs);
-		}
-	}
+    void Logger::log(LogLevel level, const char* format, ...) const
+    {
+        if (format && (format[0] != '\0'))
+        {
+            std::va_list varArgs;
+            va_start(varArgs, format);
+            vlog(level, format, varArgs);
+            va_end(varArgs);
+        }
+    }
 
-	void Logger::info(const char* format, ...) const
-	{
-		if (format && (format[0] != '\0'))
-		{
-			std::va_list varArgs;
-			va_start(varArgs, format);
-			vlog(LogLevel::INFO, format, varArgs);
-			va_end(varArgs);
-		}
-	}
+    void Logger::info(const char* format, ...) const
+    {
+        if (format && (format[0] != '\0'))
+        {
+            std::va_list varArgs;
+            va_start(varArgs, format);
+            vlog(LogLevel::INFO, format, varArgs);
+            va_end(varArgs);
+        }
+    }
 
-	void Logger::warning(const char* format, ...) const
-	{
-		if (format && (format[0] != '\0'))
-		{
-			std::va_list varArgs;
-			va_start(varArgs, format);
-			vlog(LogLevel::WARNING, format, varArgs);
-			va_end(varArgs);
-		}
-	}
+    void Logger::warning(const char* format, ...) const
+    {
+        if (format && (format[0] != '\0'))
+        {
+            std::va_list varArgs;
+            va_start(varArgs, format);
+            vlog(LogLevel::WARNING, format, varArgs);
+            va_end(varArgs);
+        }
+    }
 
-	void Logger::critical(const char* format, ...) const
-	{
-		if (format && (format[0] != '\0'))
-		{
-			std::va_list varArgs;
-			va_start(varArgs, format);
-			vlog(LogLevel::CRITICAL, format, varArgs);
-			va_end(varArgs);
-		}
-	}
+    void Logger::critical(const char* format, ...) const
+    {
+        if (format && (format[0] != '\0'))
+        {
+            std::va_list varArgs;
+            va_start(varArgs, format);
+            vlog(LogLevel::CRITICAL, format, varArgs);
+            va_end(varArgs);
+        }
+    }
 
-	void Logger::setLogPriority(LogLevel level)
-	{
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, convertLogPriority(level));
-		s_logPriority = level;
-	}
+    void Logger::setLogPriority(LogLevel level)
+    {
+        SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, convertLogPriority(level));
+        s_logPriority = level;
+    }
 
-	void Logger::vlog(LogLevel level, const char* format, std::va_list varArgs) const
-	{
-		static char s_dateBuffer[DATE_BUFFER_SIZE];
-		static char s_msgBuffer[LOG_MSG_SIZE];
+    void Logger::vlog(LogLevel level, const char* format, std::va_list varArgs) const
+    {
+        static char s_dateBuffer[DATE_BUFFER_SIZE];
+        static char s_msgBuffer[LOG_MSG_SIZE];
 
-		s_dateBuffer[0] = '\0';
-		std::time_t timestamp = std::time(nullptr);
-		if (timestamp != -1)
-		{
-			std::tm timeStruct = {};
-			if (GMTIME(&timestamp, &timeStruct))
-			{
-				if (std::strftime(s_dateBuffer, DATE_BUFFER_SIZE, "%Y-%m-%dT%H:%M:%SZ", &timeStruct) != DATE_BUFFER_SIZE - 1)
-					s_dateBuffer[0] = '\0';
-			}
-		}
+        s_dateBuffer[0] = '\0';
+        std::time_t timestamp = std::time(nullptr);
+        if (timestamp != -1)
+        {
+            std::tm timeStruct = {};
+            if (GMTIME(&timestamp, &timeStruct))
+            {
+                if (std::strftime(s_dateBuffer, DATE_BUFFER_SIZE, "%Y-%m-%dT%H:%M:%SZ", &timeStruct) !=
+                    DATE_BUFFER_SIZE - 1)
+                    s_dateBuffer[0] = '\0';
+            }
+        }
 
-		int nbChars = SDL_vsnprintf(s_msgBuffer, LOG_MSG_SIZE, format, varArgs);
-		if (nbChars < 0)
-			s_msgBuffer[0] = '\0';
-		else if (nbChars >= static_cast<int>(LOG_MSG_SIZE))
-			s_msgBuffer[LOG_MSG_SIZE - 1] = '\0';
+        int nbChars = SDL_vsnprintf(s_msgBuffer, LOG_MSG_SIZE, format, varArgs);
+        if (nbChars < 0)
+            s_msgBuffer[0] = '\0';
+        else if (nbChars >= static_cast<int>(LOG_MSG_SIZE))
+            s_msgBuffer[LOG_MSG_SIZE - 1] = '\0';
 
-		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, convertLogPriority(level), "[%s][%s] %s", s_dateBuffer, m_moduleName, s_msgBuffer);
-	}
-}
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, convertLogPriority(level), "[%s][%s] %s", s_dateBuffer,
+                       m_moduleName, s_msgBuffer);
+    }
+} // namespace sys

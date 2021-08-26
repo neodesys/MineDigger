@@ -18,52 +18,52 @@
  */
 
 #ifndef _SPRITE_H_
-#define	_SPRITE_H_
+#define _SPRITE_H_
 
 #include "../sys/IDrawable.h"
 #include "../sys/Vec2.h"
 
 namespace app
 {
-	class ISpriteDrawer;
+    class ISpriteDrawer;
 
-	class Sprite : public sys::IDrawable
-	{
-	public:
-		void setPos(const sys::Vec2& pos)
-		{
-			m_pos = pos;
-		}
+    class Sprite : public sys::IDrawable
+    {
+      public:
+        void setPos(const sys::Vec2& pos)
+        {
+            m_pos = pos;
+        }
 
-		//Hotspot coordinates are relative to the sprite dimensions (between
-		//0.f and 1.f). Thus, {0.f, 0.f} represents the sprite upper-left corner
-		//and {1.f, 1.f} the sprite bottom-right corner. Default hotspot is
-		//at sprite center: {0.5f, 0.5f}.
-		void setHotspot(const sys::Vec2& hotspot)
-		{
-			m_hotspot = hotspot;
-		}
+        // Hotspot coordinates are relative to the sprite dimensions (between
+        // 0.f and 1.f). Thus, {0.f, 0.f} represents the sprite upper-left corner
+        // and {1.f, 1.f} the sprite bottom-right corner. Default hotspot is
+        // at sprite center: {0.5f, 0.5f}.
+        void setHotspot(const sys::Vec2& hotspot)
+        {
+            m_hotspot = hotspot;
+        }
 
-		void setScale(float scale)
-		{
-			m_scale = scale;
-		}
+        void setScale(float scale)
+        {
+            m_scale = scale;
+        }
 
-		void setSpriteDrawer(const ISpriteDrawer* pDrawer)
-		{
-			m_pDrawer = pDrawer;
-		}
+        void setSpriteDrawer(const ISpriteDrawer* pDrawer)
+        {
+            m_pDrawer = pDrawer;
+        }
 
-		virtual void draw(sys::Renderer& rdr) override;
+        virtual void draw(sys::Renderer& rdr) override;
 
-	protected:
-		sys::Vec2 m_pos;
-		sys::Vec2 m_hotspot = {0.5f, 0.5f};
-		float m_scale = 1.f;
+      protected:
+        sys::Vec2 m_pos;
+        sys::Vec2 m_hotspot = {0.5f, 0.5f};
+        float m_scale = 1.f;
 
-	private:
-		const ISpriteDrawer* m_pDrawer = nullptr;
-	};
-}
+      private:
+        const ISpriteDrawer* m_pDrawer = nullptr;
+    };
+} // namespace app
 
-#endif //_SPRITE_H_
+#endif // _SPRITE_H_

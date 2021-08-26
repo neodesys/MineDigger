@@ -1,6 +1,6 @@
 --- SDL2-2.0.3/android-project/src/org/libsdl/app/SDLActivity.java
-+++ android/app/src/main/java/org/libsdl/app/SDLActivity.java
-@@ -1,11 +1,62 @@
++++ MineDigger/android/app/src/main/java/org/libsdl/app/SDLActivity.java
+@@ -1,25 +1,70 @@
 +/*
 +  Simple DirectMedia Layer
 +  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
@@ -22,10 +22,11 @@
 +  3. This notice may not be removed or altered from any source distribution.
 +*/
 +/*
-+  WARNING: this file has been modified from the original source code to
++  WARNING: this file has been modified from the original source code
++  (SDL2-2.0.3/android-project/src/org/libsdl/app/SDLActivity.java) to
 +  delete or replace deprecated features with Java 1.8.
 +  Default native libraries loading has also been removed.
-+  See: android/patch/SDLActivity.java.patch for details.
++  See: android/patch/SDLActivity.java.patch for more details.
 +*/
  package org.libsdl.app;
  
@@ -44,7 +45,7 @@
 +import android.os.Bundle;
 +import android.os.Handler;
 +import android.os.Message;
- import android.util.Log;
++import android.util.Log;
 +import android.view.Display;
 +import android.view.InputDevice;
 +import android.view.KeyEvent;
@@ -55,16 +56,49 @@
 +import android.view.View;
 +import android.view.ViewGroup;
 +import android.view.WindowManager;
- import android.view.inputmethod.BaseInputConnection;
- import android.view.inputmethod.EditorInfo;
- import android.view.inputmethod.InputConnection;
- import android.view.inputmethod.InputMethodManager;
--import android.widget.AbsoluteLayout;
++import android.view.inputmethod.BaseInputConnection;
++import android.view.inputmethod.EditorInfo;
++import android.view.inputmethod.InputConnection;
++import android.view.inputmethod.InputMethodManager;
 +import android.widget.RelativeLayout;
++import java.lang.SuppressWarnings;
  import java.util.ArrayList;
  import java.util.Arrays;
  import java.util.Collections;
-@@ -36,16 +87,6 @@
+ import java.util.Comparator;
+ import java.util.List;
+ 
+-import android.app.*;
+-import android.content.*;
+-import android.view.*;
+-import android.view.inputmethod.BaseInputConnection;
+-import android.view.inputmethod.EditorInfo;
+-import android.view.inputmethod.InputConnection;
+-import android.view.inputmethod.InputMethodManager;
+-import android.widget.AbsoluteLayout;
+-import android.os.*;
+-import android.util.Log;
+-import android.graphics.*;
+-import android.media.*;
+-import android.hardware.*;
+-
+ 
+ /**
+     SDL Activity
+@@ -32,9 +77,12 @@
+     public static boolean mExitCalledFromJava;
+ 
+     // Main components
++    @SuppressWarnings("StaticFieldLeak")
+     protected static SDLActivity mSingleton;
+     protected static SDLSurface mSurface;
++    @SuppressWarnings("StaticFieldLeak")
+     protected static View mTextEdit;
++    @SuppressWarnings("StaticFieldLeak")
+     protected static ViewGroup mLayout;
+     protected static SDLJoystickHandler mJoystickHandler;
+ 
+@@ -44,16 +92,6 @@
      // Audio
      protected static AudioTrack mAudioTrack;
  
@@ -77,20 +111,28 @@
 -        //System.loadLibrary("SDL2_ttf");
 -        System.loadLibrary("main");
 -    }
--
- 
+-    
+     
      public static void initialize() {
          // The static nature of the singleton and Android quirkyness force us to initialize everything here
-@@ -83,7 +124,7 @@
-             mJoystickHandler = new SDLJoystickHandler();
-         }
+@@ -83,15 +121,9 @@
+ 
+         // Set up the surface
+         mSurface = new SDLSurface(getApplication());
+-        
+-        if(Build.VERSION.SDK_INT >= 12) {
+             mJoystickHandler = new SDLJoystickHandler_API12();
+-        }
+-        else {
+-            mJoystickHandler = new SDLJoystickHandler();
+-        }
  
 -        mLayout = new AbsoluteLayout(this);
 +        mLayout = new RelativeLayout(this);
          mLayout.addView(mSurface);
  
          setContentView(mLayout);
-@@ -353,8 +394,9 @@
+@@ -361,8 +393,9 @@
  
          @Override
          public void run() {
@@ -102,7 +144,7 @@
  
              if (mTextEdit == null) {
                  mTextEdit = new DummyEdit(getContext());
-@@ -383,7 +425,7 @@
+@@ -391,7 +424,7 @@
  
      // Audio
      public static int audioInit(int sampleRate, boolean is16Bit, boolean isStereo, int desiredFrames) {
@@ -110,8 +152,19 @@
 +        int channelConfig = isStereo ? AudioFormat.CHANNEL_OUT_STEREO : AudioFormat.CHANNEL_OUT_MONO;
          int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
          int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
+         
+@@ -541,10 +574,7 @@
  
-@@ -551,7 +593,6 @@
+         mDisplay = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+         mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+-        
+-        if(Build.VERSION.SDK_INT >= 12) {
+             setOnGenericMotionListener(new SDLGenericMotionListener_API12());
+-        }
+ 
+         // Some arbitrary defaults to avoid a potential division by zero
+         mWidth = 1.0f;
+@@ -559,7 +589,6 @@
      @Override
      public void surfaceCreated(SurfaceHolder holder) {
          Log.v("SDL", "surfaceCreated()");
@@ -119,7 +172,15 @@
      }
  
      // Called when we lose the surface
-@@ -572,23 +613,6 @@
+@@ -573,6 +602,7 @@
+     }
+ 
+     // Called when the surface is resized
++    @SuppressWarnings("SwitchIntDef")
+     @Override
+     public void surfaceChanged(SurfaceHolder holder,
+                                int format, int width, int height) {
+@@ -580,23 +610,6 @@
  
          int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
          switch (format) {
@@ -143,7 +204,7 @@
          case PixelFormat.RGBA_8888:
              Log.v("SDL", "pixel format RGBA_8888");
              sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
-@@ -597,10 +621,6 @@
+@@ -605,10 +618,6 @@
              Log.v("SDL", "pixel format RGBX_8888");
              sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
              break;
@@ -154,3 +215,11 @@
          case PixelFormat.RGB_565:
              Log.v("SDL", "pixel format RGB_565");
              sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
+@@ -766,6 +775,7 @@
+         // TODO
+     }
+ 
++    @SuppressWarnings("SwitchIntDef")
+     @Override
+     public void onSensorChanged(SensorEvent event) {
+         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {

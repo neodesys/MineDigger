@@ -19,10 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 /*
-  WARNING: this file has been modified from the original source code to
+  WARNING: this file has been modified from the original source code
+  (SDL2-2.0.3/android-project/src/org/libsdl/app/SDLActivity.java) to
   delete or replace deprecated features with Java 1.8.
   Default native libraries loading has also been removed.
-  See: android/patch/SDLActivity.java.patch for details.
+  See: android/patch/SDLActivity.java.patch for more details.
 */
 package org.libsdl.app;
 
@@ -57,6 +58,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
+import java.lang.SuppressWarnings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,9 +77,12 @@ public class SDLActivity extends Activity {
     public static boolean mExitCalledFromJava;
 
     // Main components
+    @SuppressWarnings("StaticFieldLeak")
     protected static SDLActivity mSingleton;
     protected static SDLSurface mSurface;
+    @SuppressWarnings("StaticFieldLeak")
     protected static View mTextEdit;
+    @SuppressWarnings("StaticFieldLeak")
     protected static ViewGroup mLayout;
     protected static SDLJoystickHandler mJoystickHandler;
 
@@ -116,13 +121,7 @@ public class SDLActivity extends Activity {
 
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
-
-        if(Build.VERSION.SDK_INT >= 12) {
-            mJoystickHandler = new SDLJoystickHandler_API12();
-        }
-        else {
-            mJoystickHandler = new SDLJoystickHandler();
-        }
+        mJoystickHandler = new SDLJoystickHandler_API12();
 
         mLayout = new RelativeLayout(this);
         mLayout.addView(mSurface);
@@ -575,10 +574,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         mDisplay = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-
-        if(Build.VERSION.SDK_INT >= 12) {
-            setOnGenericMotionListener(new SDLGenericMotionListener_API12());
-        }
+        setOnGenericMotionListener(new SDLGenericMotionListener_API12());
 
         // Some arbitrary defaults to avoid a potential division by zero
         mWidth = 1.0f;
@@ -606,6 +602,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     // Called when the surface is resized
+    @SuppressWarnings("SwitchIntDef")
     @Override
     public void surfaceChanged(SurfaceHolder holder,
                                int format, int width, int height) {
@@ -778,6 +775,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // TODO
     }
 
+    @SuppressWarnings("SwitchIntDef")
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {

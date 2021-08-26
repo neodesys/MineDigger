@@ -23,10 +23,10 @@
 
 namespace app
 {
-	void DynSprite::update(const sys::FrameInfo& frame)
-	{
-		m_moveVec *= frame.getDurationVar();
-		m_moveVec += m_acceleration * frame.getSquareDuration();
-		m_pos += m_moveVec;
-	}
-}
+    void DynSprite::update(const sys::FrameInfo& frame)
+    {
+        m_moveVec *= frame.getDurationVar();
+        m_moveVec += m_acceleration * frame.getSquareDuration();
+        m_pos += m_moveVec;
+    }
+} // namespace app

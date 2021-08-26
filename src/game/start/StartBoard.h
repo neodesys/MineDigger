@@ -18,50 +18,53 @@
  */
 
 #ifndef _STARTBOARD_H_
-#define	_STARTBOARD_H_
+#define _STARTBOARD_H_
 
-#include "StartSprite.h"
 #include "../../sys/IMouseListener.h"
+#include "StartSprite.h"
 
 namespace game
 {
-	namespace start
-	{
-		class StartScreen;
+    namespace start
+    {
+        class StartScreen;
 
-		class StartBoard final : public StartSprite, public sys::IMouseListener
-		{
-		public:
-			StartBoard(StartScreen& startScreen) : m_startScreen(startScreen) {}
+        class StartBoard final : public StartSprite, public sys::IMouseListener
+        {
+          public:
+            StartBoard(StartScreen& startScreen) : m_startScreen(startScreen)
+            {
+            }
 
-			void setOverlay(const sys::Texture* pTexture, const sys::Rect* pOverlayClip, unsigned int uOverlaySubImagesCount, unsigned int uOverlaySubImagesStride);
+            void setOverlay(const sys::Texture* pTexture, const sys::Rect* pOverlayClip,
+                            unsigned int uOverlaySubImagesCount, unsigned int uOverlaySubImagesStride);
 
-			void setOverlayOffset(const sys::Vec2& offset)
-			{
-				m_overlayOffset = offset;
-			}
+            void setOverlayOffset(const sys::Vec2& offset)
+            {
+                m_overlayOffset = offset;
+            }
 
-			void setStartButtonRect(const sys::Rect& rect)
-			{
-				m_startButtonRect = rect;
-			}
+            void setStartButtonRect(const sys::Rect& rect)
+            {
+                m_startButtonRect = rect;
+            }
 
-			void onMouseButtonDown(const sys::Vec2& pos) override final;
-			void onMouseButtonUp(const sys::Vec2& pos) override final;
-			void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
+            void onMouseButtonDown(const sys::Vec2& pos) override final;
+            void onMouseButtonUp(const sys::Vec2& pos) override final;
+            void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
 
-			void draw(sys::Renderer& rdr) override final;
+            void draw(sys::Renderer& rdr) override final;
 
-		private:
-			StartScreen& m_startScreen;
+          private:
+            StartScreen& m_startScreen;
 
-			bool m_bDrawOverlay = false;
-			app::TextureDrawer m_overlayDrawer;
-			sys::Vec2 m_overlayOffset;
+            bool m_bDrawOverlay = false;
+            app::TextureDrawer m_overlayDrawer;
+            sys::Vec2 m_overlayOffset;
 
-			sys::Rect m_startButtonRect;
-		};
-	}
-}
+            sys::Rect m_startButtonRect;
+        };
+    } // namespace start
+} // namespace game
 
-#endif //_STARTBOARD_H_
+#endif // _STARTBOARD_H_

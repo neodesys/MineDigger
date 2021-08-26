@@ -19,37 +19,37 @@
 
 #include <SDL2/SDL_main.h>
 
-#include "sys/Logger.h"
 #include "app/app.h"
 #include "game/MineDigger.h"
+#include "sys/Logger.h"
 
 int main(int argc, char** argv)
 {
-	//Parse command line for log priority
-	for (int i = 1; i < argc; ++i)
-	{
-		if ((!SDL_strcmp(argv[i], "-l") || !SDL_strcmp(argv[i], "--log")) && (i + 1 < argc))
-		{
-			const char* level = argv[i + 1];
-			if (!SDL_strcasecmp(level, "info"))
-			{
-				sys::Logger::setLogPriority(sys::LogLevel::INFO);
-				break;
-			}
-			else if (!SDL_strcasecmp(level, "warn") || !SDL_strcasecmp(level, "warning"))
-			{
-				sys::Logger::setLogPriority(sys::LogLevel::WARNING);
-				break;
-			}
-			else if (!SDL_strcasecmp(level, "crit") || !SDL_strcasecmp(level, "critical"))
-			{
-				sys::Logger::setLogPriority(sys::LogLevel::CRITICAL);
-				break;
-			}
-		}
-	}
+    // Parse command line for log priority
+    for (int i = 1; i < argc; ++i)
+    {
+        if ((!SDL_strcmp(argv[i], "-l") || !SDL_strcmp(argv[i], "--log")) && (i + 1 < argc))
+        {
+            const char* level = argv[i + 1];
+            if (!SDL_strcasecmp(level, "info"))
+            {
+                sys::Logger::setLogPriority(sys::LogLevel::INFO);
+                break;
+            }
+            else if (!SDL_strcasecmp(level, "warn") || !SDL_strcasecmp(level, "warning"))
+            {
+                sys::Logger::setLogPriority(sys::LogLevel::WARNING);
+                break;
+            }
+            else if (!SDL_strcasecmp(level, "crit") || !SDL_strcasecmp(level, "critical"))
+            {
+                sys::Logger::setLogPriority(sys::LogLevel::CRITICAL);
+                break;
+            }
+        }
+    }
 
-	//Run game
-	game::MineDigger game;
-	return app::run(game);
+    // Run game
+    game::MineDigger game;
+    return app::run(game);
 }

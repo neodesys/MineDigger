@@ -18,7 +18,7 @@
  */
 
 #ifndef _FONT_H_
-#define	_FONT_H_
+#define _FONT_H_
 
 #include "Logger.h"
 
@@ -27,71 +27,73 @@ typedef struct _TTF_Font TTF_Font;
 
 namespace sys
 {
-	class GameEngine;
-	class Texture;
-	class Rect;
+    class GameEngine;
+    class Texture;
+    class Rect;
 
-	class Font final
-	{
-	public:
-		static Font* loadFont(const GameEngine& engine, const char* asset, int pointSize = 12, long fontFaceIdx = 0);
-		~Font();
+    class Font final
+    {
+      public:
+        static Font* loadFont(const GameEngine& engine, const char* asset, int pointSize = 12, long fontFaceIdx = 0);
+        ~Font();
 
-		const int m_pointSize;
+        const int m_pointSize;
 
-		bool isFontMonospace() const;
+        bool isFontMonospace() const;
 
-		int getFontHeight() const;
-		int getFontAscent() const;
-		int getFontDescent() const;
+        int getFontHeight() const;
+        int getFontAscent() const;
+        int getFontDescent() const;
 
-		int getFontLineSkip() const;
+        int getFontLineSkip() const;
 
-		enum struct Hinting : unsigned char
-		{
-			NORMAL,
-			LIGHT,
-			MONO,
-			NONE
-		};
+        enum struct Hinting : unsigned char
+        {
+            NORMAL,
+            LIGHT,
+            MONO,
+            NONE
+        };
 
-		void setFontHinting(Hinting hinting);
-		Hinting getFontHinting() const;
+        void setFontHinting(Hinting hinting);
+        Hinting getFontHinting() const;
 
-		enum : int
-		{
-			STYLE_NORMAL = 0x00,
-			STYLE_BOLD = 0x01,
-			STYLE_ITALIC = 0x02,
-			STYLE_UNDERLINE = 0x04,
-			STYLE_STRIKETHROUGH = 0x08
-		};
+        enum : int
+        {
+            STYLE_NORMAL = 0x00,
+            STYLE_BOLD = 0x01,
+            STYLE_ITALIC = 0x02,
+            STYLE_UNDERLINE = 0x04,
+            STYLE_STRIKETHROUGH = 0x08
+        };
 
-		void setFontStyle(int style);
-		int getFontStyle() const;
+        void setFontStyle(int style);
+        int getFontStyle() const;
 
-		void setFontOutline(int outline);
-		int getFontOutline() const;
+        void setFontOutline(int outline);
+        int getFontOutline() const;
 
-		void enableKerning(bool bEnable);
-		bool isKerningEnabled() const;
+        void enableKerning(bool bEnable);
+        bool isKerningEnabled() const;
 
-		//WARNING: glyph metrics are returned with a bottom-to-top y axis
-		bool getGlyphMetrics(char16_t glyph, Rect* pRect, int* pAdvance) const;
+        // WARNING: glyph metrics are returned with a bottom-to-top y axis
+        bool getGlyphMetrics(char16_t glyph, Rect* pRect, int* pAdvance) const;
 
-		//txt must be encoded in UTF-8
-		bool getTextSize(const char* txt, int& w, int& h) const;
-		Texture* createTextTexture(const GameEngine& engine, const char* txt) const;
+        // txt must be encoded in UTF-8
+        bool getTextSize(const char* txt, int& w, int& h) const;
+        Texture* createTextTexture(const GameEngine& engine, const char* txt) const;
 
-	private:
-		Font(int pointSize, TTF_Font* pSDLFont) : m_pointSize(pointSize), m_pSDLFont(pSDLFont) {}
-		Font(const Font&) = delete;
-		Font& operator=(const Font&) = delete;
+      private:
+        Font(int pointSize, TTF_Font* pSDLFont) : m_pointSize(pointSize), m_pSDLFont(pSDLFont)
+        {
+        }
+        Font(const Font&) = delete;
+        Font& operator=(const Font&) = delete;
 
-		TTF_Font* const m_pSDLFont;
+        TTF_Font* const m_pSDLFont;
 
-		static const Logger s_log;
-	};
-}
+        static const Logger s_log;
+    };
+} // namespace sys
 
-#endif //_FONT_H_
+#endif // _FONT_H_

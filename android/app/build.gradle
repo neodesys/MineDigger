@@ -1,117 +1,113 @@
-apply plugin: 'com.android.application'
+plugins {
+    id "com.android.application"
+}
 
 android {
-	compileSdkVersion 23
-	buildToolsVersion '23.0.1'
+    compileSdk 30
 
-	defaultConfig {
-		minSdkVersion 12
-		targetSdkVersion 23
-		versionCode 1
-		versionName '0.5'
-	}
+    defaultConfig {
+        minSdk 16
+        targetSdk 30
+        versionCode 3
+        versionName "1.0"
+    }
 
-	sourceSets.main {
-		jniLibs.srcDir 'src/main/libs'
-		jni.srcDirs = []
-		assets.srcDir '../../res'
-	}
+    sourceSets.main {
+        jniLibs.srcDir "src/main/libs"
+        jni.srcDirs = []
+        assets.srcDir "../../res"
+    }
 
-	aaptOptions {
-		ignoreAssets 'BackGround.jpg:ScoreBack.jpg'
-	}
+    aaptOptions {
+        ignoreAssets "BackGround.jpg:ScoreBack.jpg"
+    }
 
-	lintOptions {
-		disable 'AllowBackup', 'ClickableViewAccessibility'
-	}
+    lintOptions {
+        disable "AllowBackup"
+    }
 
-	signingConfigs {
-		release {
-			storeFile file('../minedigger.keystore')
-			keyAlias 'release'
-			storePassword ''
-			keyPassword ''
-		}
-	}
+    signingConfigs {
+        release {
+            storeFile file("../minedigger.keystore")
+            keyAlias "release"
+            storePassword ""
+            keyPassword ""
+        }
+    }
 
-	buildTypes {
-		debug {
-			applicationIdSuffix '.debug'
-			debuggable true
-			jniDebuggable true
-		}
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+            jniDebuggable true
+        }
 
-		release {
-			debuggable false
-			jniDebuggable false
-			minifyEnabled true
-			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
-			signingConfig signingConfigs.release
-		}
-	}
-}
+        release {
+            debuggable false
+            jniDebuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
 
-def ndkCommand = android.ndkDirectory.absolutePath + '/ndk-build'
-if (System.properties['os.name'].toLowerCase().contains('windows'))
-	ndkCommand += '.cmd'
+            ndk {
+                debugSymbolLevel "FULL"
+            }
+        }
+    }
 
-ndkCommand += ' -C ' + file('src/main').absolutePath + ' -j ' + Runtime.runtime.availableProcessors()
+    externalNativeBuild {
+        ndkBuild {
+            path "src/main/jni/Android.mk"
+        }
+    }
 
-task ndkBuildDebug(type: Exec) {
-	def cmdArgs = ndkCommand + ' NDK_DEBUG=1'
-	commandLine cmdArgs.split(' ')
-}
-
-task ndkBuildRelease(type: Exec) {
-	def cmdArgs = ndkCommand + ' NDK_DEBUG=0'
-	commandLine cmdArgs.split(' ')
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 import groovy.swing.SwingBuilder;
 
-task askReleaseSigningPasswords << {
-	def storePass = ''
-	def keyPass = ''
+tasks.register("askReleaseSigningPasswords") {
+    doLast {
+        def storePass = ""
+        def keyPass = ""
 
-	if (System.console() == null) {
-		new SwingBuilder().edt {
-			dialog(modal: true, title: 'Keystore passwords', alwaysOnTop: true, resizable: false, locationRelativeTo: null, pack: true, show: true) {
-				vbox {
-					label(text: 'Please enter keystore password:')
-					def input1 = passwordField()
-					label(text: 'Please enter signing key password:')
-					def input2 = passwordField()
-					button(defaultButton: true, text: 'OK', actionPerformed: {
-							storePass = input1.password;
-							keyPass = input2.password;
-							dispose();
-					})
-				}
-			}
-		}
-	} else {
-		storePass = System.console().readPassword('\nPlease enter keystore password: ')
-		keyPass = System.console().readPassword('\nPlease enter signing key password: ')
-	}
+        if (System.console() == null) {
+            System.setProperty("java.awt.headless", "false")
+            new SwingBuilder().edt {
+                dialog(modal: true, title: "Keystore passwords", alwaysOnTop: true, resizable: false, locationRelativeTo: null, pack: true, show: true) {
+                    vbox {
+                        label(text: "Please enter keystore password:")
+                        def input1 = passwordField()
+                        label(text: "Please enter signing key password:")
+                        def input2 = passwordField()
+                        button(defaultButton: true, text: "OK", actionPerformed: {
+                                storePass = input1.password;
+                                keyPass = input2.password;
+                                dispose();
+                        })
+                    }
+                }
+            }
+        } else {
+            storePass = System.console().readPassword("\nPlease enter keystore password: ")
+            keyPass = System.console().readPassword("\nPlease enter signing key password: ")
+        }
 
-	if ((storePass.size() <= 0) || (keyPass.size() <= 0))
-		throw new InvalidUserDataException('You must enter keystore passwords to proceed.')
+        if ((storePass.size() <= 0) || (keyPass.size() <= 0)) {
+            throw new InvalidUserDataException("You must enter keystore passwords to proceed.")
+        }
 
-	android.signingConfigs.release.storePassword = new String(storePass)
-	android.signingConfigs.release.keyPassword = new String(keyPass)
+        android.signingConfigs.release.storePassword = new String(storePass)
+        android.signingConfigs.release.keyPassword = new String(keyPass)
+    }
 }
 
 tasks.whenTaskAdded { task ->
-	if (task.name == 'compileDebugNdk')
-		task.dependsOn ndkBuildDebug
-	else if (task.name == 'compileReleaseNdk')
-		task.dependsOn ndkBuildRelease
-	else if (task.name == 'validateReleaseSigning')
-		task.dependsOn askReleaseSigningPasswords
+    if ((task.name == "packageRelease") || (task.name == "signReleaseBundle")) {
+        task.dependsOn askReleaseSigningPasswords
+    }
 }
-
-task ndkClean(type: Delete) {
-	delete 'src/main/obj', 'src/main/libs'
-}
-
-clean.dependsOn 'ndkClean'

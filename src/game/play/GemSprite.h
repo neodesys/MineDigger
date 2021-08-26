@@ -18,7 +18,7 @@
  */
 
 #ifndef _GEMSPRITE_H_
-#define	_GEMSPRITE_H_
+#define _GEMSPRITE_H_
 
 #include "../../app/DynSprite.h"
 #include "../../app/TextureDrawer.h"
@@ -26,118 +26,118 @@
 
 namespace game
 {
-	namespace play
-	{
-		class GemSprite final : public app::DynSprite
-		{
-		public:
-			struct Config
-			{
-				float selectedSpriteScale;
+    namespace play
+    {
+        class GemSprite final : public app::DynSprite
+        {
+          public:
+            struct Config
+            {
+                float selectedSpriteScale;
 
-				float minMoveOffset;
-				float maxMoveOffset;
+                float minMoveOffset;
+                float maxMoveOffset;
 
-				float initRowSpacingFactor;
+                float initRowSpacingFactor;
 
-				float thrownOutImpulseCoeff;
-				float gravityCoeff;
+                float thrownOutImpulseCoeff;
+                float gravityCoeff;
 
-				float anchorSpringConstant;
-				float anchorSpringDampingCoeff;
-			};
+                float anchorSpringConstant;
+                float anchorSpringDampingCoeff;
+            };
 
-			GemSprite()
-			{
-				app::DynSprite::setSpriteDrawer(&m_textureDrawer);
-			}
+            GemSprite()
+            {
+                app::DynSprite::setSpriteDrawer(&m_textureDrawer);
+            }
 
-			void attachView(GemBoardView* pView)
-			{
-				unselect();
-				m_pView = pView;
-			}
+            void attachView(GemBoardView* pView)
+            {
+                unselect();
+                m_pView = pView;
+            }
 
-			enum struct State : unsigned char
-			{
-				RECYCLED,
-				FALLING,
-				IN_PLACE,
-				SPRING_ATTACHED,
-				THROWN_OUT
-			};
+            enum struct State : unsigned char
+            {
+                RECYCLED,
+                FALLING,
+                IN_PLACE,
+                SPRING_ATTACHED,
+                THROWN_OUT
+            };
 
-			State getState() const
-			{
-				return m_state;
-			}
+            State getState() const
+            {
+                return m_state;
+            }
 
-			int getModelRow() const
-			{
-				return m_modelRow;
-			}
+            int getModelRow() const
+            {
+                return m_modelRow;
+            }
 
-			int getModelCol() const
-			{
-				return m_modelCol;
-			}
+            int getModelCol() const
+            {
+                return m_modelCol;
+            }
 
-			const sys::Vec2& getPos() const
-			{
-				return m_pos;
-			}
+            const sys::Vec2& getPos() const
+            {
+                return m_pos;
+            }
 
-			const sys::Vec2& getTargetPos() const
-			{
-				return m_targetPos;
-			}
+            const sys::Vec2& getTargetPos() const
+            {
+                return m_targetPos;
+            }
 
-			void setPos(const sys::Vec2& pos);
-			bool select(const sys::Vec2& mousePos);
-			void unselect();
+            void setPos(const sys::Vec2& pos);
+            bool select(const sys::Vec2& mousePos);
+            void unselect();
 
-			void initGem(GemType type, int row, int col);
-			bool trySwapGem(int row, int col);
-			void cancelMove();
-			void validateMove(int row, int col);
-			void fallGem(int lowerRow);
-			void throwGemOut();
+            void initGem(GemType type, int row, int col);
+            bool trySwapGem(int row, int col);
+            void cancelMove();
+            void validateMove(int row, int col);
+            void fallGem(int lowerRow);
+            void throwGemOut();
 
-			void update(const sys::FrameInfo& frame) override final;
+            void update(const sys::FrameInfo& frame) override final;
 
-			void draw(sys::Renderer& rdr) override final;
+            void draw(sys::Renderer& rdr) override final;
 
-		private:
-			GemSprite(const GemSprite&) = delete;
-			GemSprite& operator=(const GemSprite&) = delete;
+          private:
+            GemSprite(const GemSprite&) = delete;
+            GemSprite& operator=(const GemSprite&) = delete;
 
-			//Forbid access to base methods
-			void setAcceleration(const sys::Vec2&) = delete;
-			void setImpulse(const sys::Vec2&) = delete;
-			void setHotspot(const sys::Vec2&) = delete;
-			void setScale(float) = delete;
-			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+            // Forbid access to base methods
+            void setAcceleration(const sys::Vec2&) = delete;
+            void setImpulse(const sys::Vec2&) = delete;
+            void setHotspot(const sys::Vec2&) = delete;
+            void setScale(float) = delete;
+            void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
-			app::TextureDrawer m_textureDrawer;
+            app::TextureDrawer m_textureDrawer;
 
-			GemBoardView* m_pView = nullptr;
+            GemBoardView* m_pView = nullptr;
 
-			State m_state = State::RECYCLED;
+            State m_state = State::RECYCLED;
 
-			int m_modelRow = -1;
-			int m_modelCol = -1;
+            int m_modelRow = -1;
+            int m_modelCol = -1;
 
-			int m_swapModelRow = -1;
-			int m_swapModelCol = -1;
+            int m_swapModelRow = -1;
+            int m_swapModelCol = -1;
 
-			bool m_bSelected = false;
-			sys::Vec2 m_selectMouseOffset;
+            bool m_bSelected = false;
+            sys::Vec2 m_selectMouseOffset;
 
-			sys::Vec2 m_targetPos;
+            sys::Vec2 m_targetPos;
 
-			void interruptSwap();
-		};
-	}
-}
+            void interruptSwap();
+        };
+    } // namespace play
+} // namespace game
 
-#endif //_GEMSPRITE_H_
+#endif // _GEMSPRITE_H_

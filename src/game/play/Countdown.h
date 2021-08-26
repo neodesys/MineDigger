@@ -18,80 +18,80 @@
  */
 
 #ifndef _COUNTDOWN_H_
-#define	_COUNTDOWN_H_
+#define _COUNTDOWN_H_
 
-#include "../../app/Sprite.h"
 #include "../../app/NumberDrawer.h"
+#include "../../app/Sprite.h"
 #include "../../sys/IAnimated.h"
 
 namespace sys
 {
-	class AudioSample;
+    class AudioSample;
 }
 
 namespace game
 {
-	namespace play
-	{
-		class Countdown final : public app::Sprite, public sys::IAnimated
-		{
-		public:
-			Countdown()
-			{
-				app::Sprite::setSpriteDrawer(&m_numberDrawer);
-			}
+    namespace play
+    {
+        class Countdown final : public app::Sprite, public sys::IAnimated
+        {
+          public:
+            Countdown()
+            {
+                app::Sprite::setSpriteDrawer(&m_numberDrawer);
+            }
 
-			void setNumberStamp(const app::NumberStamp* pNumberStamp)
-			{
-				m_numberDrawer.setNumberStamp(pNumberStamp);
-			}
+            void setNumberStamp(const app::NumberStamp* pNumberStamp)
+            {
+                m_numberDrawer.setNumberStamp(pNumberStamp);
+            }
 
-			void setCountdownSample(sys::AudioSample* pSample)
-			{
-				m_pCountdownSample = pSample;
-			}
+            void setCountdownSample(sys::AudioSample* pSample)
+            {
+                m_pCountdownSample = pSample;
+            }
 
-			void setColor(const sys::Color& color)
-			{
-				m_numberDrawer.setColor(color);
-			}
+            void setColor(const sys::Color& color)
+            {
+                m_numberDrawer.setColor(color);
+            }
 
-			void setShadowColor(const sys::Color& color)
-			{
-				m_numberDrawer.setShadowColor(color);
-			}
+            void setShadowColor(const sys::Color& color)
+            {
+                m_numberDrawer.setShadowColor(color);
+            }
 
-			void setShadowOffset(int x, int y)
-			{
-				m_numberDrawer.setShadowOffset(x, y);
-			}
+            void setShadowOffset(int x, int y)
+            {
+                m_numberDrawer.setShadowOffset(x, y);
+            }
 
-			void start(unsigned int uSec);
+            void start(unsigned int uSec);
 
-			unsigned int getCurrentValue() const
-			{
-				return m_uCurrentValue;
-			}
+            unsigned int getCurrentValue() const
+            {
+                return m_uCurrentValue;
+            }
 
-			void update(const sys::FrameInfo& frame) override final;
+            void update(const sys::FrameInfo& frame) override final;
 
-		private:
-			Countdown(const Countdown&) = delete;
-			Countdown& operator=(const Countdown&) = delete;
+          private:
+            Countdown(const Countdown&) = delete;
+            Countdown& operator=(const Countdown&) = delete;
 
-			//Forbid access to base methods
-			void setHotspot(const sys::Vec2&) = delete;
-			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+            // Forbid access to base methods
+            void setHotspot(const sys::Vec2&) = delete;
+            void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
-			app::NumberDrawer m_numberDrawer;
+            app::NumberDrawer m_numberDrawer;
 
-			sys::AudioSample* m_pCountdownSample = nullptr;
+            sys::AudioSample* m_pCountdownSample = nullptr;
 
-			unsigned long m_uStartTimestamp = 0;
-			unsigned int m_uDuration = 0;
-			unsigned int m_uCurrentValue = 0;
-		};
-	}
-}
+            unsigned long m_uStartTimestamp = 0;
+            unsigned int m_uDuration = 0;
+            unsigned int m_uCurrentValue = 0;
+        };
+    } // namespace play
+} // namespace game
 
-#endif //_COUNTDOWN_H_
+#endif // _COUNTDOWN_H_

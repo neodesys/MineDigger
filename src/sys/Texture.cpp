@@ -24,145 +24,144 @@
 
 #include <SDL2/SDL_render.h>
 
-#include "GameEngine.h"
-#include "ResLoader.h"
-#include "Renderer.h"
 #include "Color.h"
+#include "GameEngine.h"
+#include "Renderer.h"
+#include "ResLoader.h"
 
 namespace sys
 {
-	const Logger Texture::s_log("Texture");
+    const Logger Texture::s_log("Texture");
 
-	Texture* Texture::loadTexture(const GameEngine& engine, const char* asset)
-	{
-		SDL_Surface* pSDLSurf = engine.getResLoader().loadImage(asset);
-		if (!pSDLSurf)
-			return nullptr;
+    Texture* Texture::loadTexture(const GameEngine& engine, const char* asset)
+    {
+        SDL_Surface* pSDLSurf = engine.getResLoader().loadImage(asset);
+        if (!pSDLSurf)
+            return nullptr;
 
-		SDL_Texture* pSDLTex = engine.getRenderer().createSDLTextureFromSurface(pSDLSurf);
-		if (!pSDLTex)
-		{
-			SDL_FreeSurface(pSDLSurf);
-			return nullptr;
-		}
+        SDL_Texture* pSDLTex = engine.getRenderer().createSDLTextureFromSurface(pSDLSurf);
+        if (!pSDLTex)
+        {
+            SDL_FreeSurface(pSDLSurf);
+            return nullptr;
+        }
 
-		Texture* pTex = new(std::nothrow) Texture(pSDLSurf->w, pSDLSurf->h, pSDLTex);
-		SDL_FreeSurface(pSDLSurf);
+        Texture* pTex = new (std::nothrow) Texture(pSDLSurf->w, pSDLSurf->h, pSDLTex);
+        SDL_FreeSurface(pSDLSurf);
 
-		if (!pTex)
-		{
-			SDL_DestroyTexture(pSDLTex);
-			s_log.critical("Out of memory");
-			return nullptr;
-		}
+        if (!pTex)
+        {
+            SDL_DestroyTexture(pSDLTex);
+            s_log.critical("Out of memory");
+            return nullptr;
+        }
 
-		s_log.info("Texture loaded for \"%s\"", asset);
-		return pTex;
-	}
+        s_log.info("Texture loaded for \"%s\"", asset);
+        return pTex;
+    }
 
-	Texture::Texture(int width, int height, SDL_Texture* pSDLTex) :
-		m_width(width), m_height(height), m_pSDLTex(pSDLTex)
-	{
-		assert(width >= 1);
-		assert(height >= 1);
-		assert(pSDLTex);
-	}
+    Texture::Texture(int width, int height, SDL_Texture* pSDLTex) : m_width(width), m_height(height), m_pSDLTex(pSDLTex)
+    {
+        assert(width >= 1);
+        assert(height >= 1);
+        assert(pSDLTex);
+    }
 
-	Texture::~Texture()
-	{
-		assert(m_pSDLTex);
-		SDL_DestroyTexture(m_pSDLTex);
-	}
+    Texture::~Texture()
+    {
+        assert(m_pSDLTex);
+        SDL_DestroyTexture(m_pSDLTex);
+    }
 
-	bool Texture::setTextureColorMod(const Color& color)
-	{
-		bool bRet = true;
+    bool Texture::setTextureColorMod(const Color& color)
+    {
+        bool bRet = true;
 
-		assert(m_pSDLTex);
-		if (SDL_SetTextureColorMod(m_pSDLTex, color.r, color.g, color.b))
-		{
-			bRet = false;
-			s_log.warning("Cannot set texture modulation color (%s)", SDL_GetError());
-		}
+        assert(m_pSDLTex);
+        if (SDL_SetTextureColorMod(m_pSDLTex, color.r, color.g, color.b))
+        {
+            bRet = false;
+            s_log.warning("Cannot set texture modulation color (%s)", SDL_GetError());
+        }
 
-		if (SDL_SetTextureAlphaMod(m_pSDLTex, color.a))
-		{
-			bRet = false;
-			s_log.warning("Cannot set texture modulation alpha (%s)", SDL_GetError());
-		}
+        if (SDL_SetTextureAlphaMod(m_pSDLTex, color.a))
+        {
+            bRet = false;
+            s_log.warning("Cannot set texture modulation alpha (%s)", SDL_GetError());
+        }
 
-		return bRet;
-	}
+        return bRet;
+    }
 
-	Color Texture::getTextureColorMod() const
-	{
-		Color ret = {255, 255, 255, 255};
+    Color Texture::getTextureColorMod() const
+    {
+        Color ret = {255, 255, 255, 255};
 
-		assert(m_pSDLTex);
-		if (SDL_GetTextureColorMod(m_pSDLTex, &ret.r, &ret.g, &ret.b))
-			s_log.warning("Cannot get texture modulation color information (%s)", SDL_GetError());
+        assert(m_pSDLTex);
+        if (SDL_GetTextureColorMod(m_pSDLTex, &ret.r, &ret.g, &ret.b))
+            s_log.warning("Cannot get texture modulation color information (%s)", SDL_GetError());
 
-		if (SDL_GetTextureAlphaMod(m_pSDLTex, &ret.a))
-			s_log.warning("Cannot get texture modulation alpha information (%s)", SDL_GetError());
+        if (SDL_GetTextureAlphaMod(m_pSDLTex, &ret.a))
+            s_log.warning("Cannot get texture modulation alpha information (%s)", SDL_GetError());
 
-		return ret;
-	}
+        return ret;
+    }
 
-	bool Texture::setTextureBlendMode(BlendMode mode)
-	{
-		SDL_BlendMode sdlMode = SDL_BLENDMODE_NONE;
-		switch (mode)
-		{
-		case BlendMode::NO_BLEND:
-			break;
+    bool Texture::setTextureBlendMode(BlendMode mode)
+    {
+        SDL_BlendMode sdlMode = SDL_BLENDMODE_NONE;
+        switch (mode)
+        {
+        case BlendMode::NO_BLEND:
+            break;
 
-		case BlendMode::ALPHA_BLEND:
-			sdlMode = SDL_BLENDMODE_BLEND;
-			break;
+        case BlendMode::ALPHA_BLEND:
+            sdlMode = SDL_BLENDMODE_BLEND;
+            break;
 
-		case BlendMode::ADDITIVE:
-			sdlMode = SDL_BLENDMODE_ADD;
-			break;
+        case BlendMode::ADDITIVE:
+            sdlMode = SDL_BLENDMODE_ADD;
+            break;
 
-		case BlendMode::COLOR_MOD:
-			sdlMode = SDL_BLENDMODE_MOD;
-			break;
-		}
+        case BlendMode::COLOR_MOD:
+            sdlMode = SDL_BLENDMODE_MOD;
+            break;
+        }
 
-		assert(m_pSDLTex);
-		if (SDL_SetTextureBlendMode(m_pSDLTex, sdlMode))
-		{
-			s_log.warning("Cannot set texture blend mode (%s)", SDL_GetError());
-			return false;
-		}
+        assert(m_pSDLTex);
+        if (SDL_SetTextureBlendMode(m_pSDLTex, sdlMode))
+        {
+            s_log.warning("Cannot set texture blend mode (%s)", SDL_GetError());
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	BlendMode Texture::getTextureBlendMode() const
-	{
-		SDL_BlendMode sdlMode = SDL_BLENDMODE_NONE;
+    BlendMode Texture::getTextureBlendMode() const
+    {
+        SDL_BlendMode sdlMode = SDL_BLENDMODE_NONE;
 
-		assert(m_pSDLTex);
-		if (SDL_GetTextureBlendMode(m_pSDLTex, &sdlMode))
-		{
-			s_log.warning("Cannot get texture blend mode information (%s)", SDL_GetError());
-			return BlendMode::NO_BLEND;
-		}
+        assert(m_pSDLTex);
+        if (SDL_GetTextureBlendMode(m_pSDLTex, &sdlMode))
+        {
+            s_log.warning("Cannot get texture blend mode information (%s)", SDL_GetError());
+            return BlendMode::NO_BLEND;
+        }
 
-		switch (sdlMode)
-		{
-		case SDL_BLENDMODE_BLEND:
-			return BlendMode::ALPHA_BLEND;
+        switch (sdlMode)
+        {
+        case SDL_BLENDMODE_BLEND:
+            return BlendMode::ALPHA_BLEND;
 
-		case SDL_BLENDMODE_ADD:
-			return BlendMode::ADDITIVE;
+        case SDL_BLENDMODE_ADD:
+            return BlendMode::ADDITIVE;
 
-		case SDL_BLENDMODE_MOD:
-			return BlendMode::COLOR_MOD;
+        case SDL_BLENDMODE_MOD:
+            return BlendMode::COLOR_MOD;
 
-		default:
-			return BlendMode::NO_BLEND;
-		}
-	}
-}
+        default:
+            return BlendMode::NO_BLEND;
+        }
+    }
+} // namespace sys

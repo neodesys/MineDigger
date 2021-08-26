@@ -18,7 +18,7 @@
  */
 
 #ifndef _BACKBUTTON_H_
-#define	_BACKBUTTON_H_
+#define _BACKBUTTON_H_
 
 #include "../../app/Sprite.h"
 #include "../../app/TextureDrawer.h"
@@ -26,51 +26,52 @@
 
 namespace game
 {
-	namespace score
-	{
-		class ScoreScreen;
+    namespace score
+    {
+        class ScoreScreen;
 
-		class BackButton final : public app::Sprite, public sys::IMouseListener
-		{
-		public:
-			BackButton(ScoreScreen& scoreScreen);
+        class BackButton final : public app::Sprite, public sys::IMouseListener
+        {
+          public:
+            BackButton(ScoreScreen& scoreScreen);
 
-			void setTexture(const sys::Texture* pTexture, const sys::Rect* pClip = nullptr)
-			{
-				m_textureDrawer.setTexture(pTexture, pClip);
-			}
+            void setTexture(const sys::Texture* pTexture, const sys::Rect* pClip = nullptr)
+            {
+                m_textureDrawer.setTexture(pTexture, pClip);
+            }
 
-			void setOverlay(const sys::Texture* pTexture, const sys::Rect* pOverlayClip, unsigned int uOverlaySubImagesCount, unsigned int uOverlaySubImagesStride);
+            void setOverlay(const sys::Texture* pTexture, const sys::Rect* pOverlayClip,
+                            unsigned int uOverlaySubImagesCount, unsigned int uOverlaySubImagesStride);
 
-			void setBackButtonRect(const sys::Rect& rect)
-			{
-				m_backButtonRect = rect;
-			}
+            void setBackButtonRect(const sys::Rect& rect)
+            {
+                m_backButtonRect = rect;
+            }
 
-			void onMouseButtonDown(const sys::Vec2& pos) override final;
-			void onMouseButtonUp(const sys::Vec2& pos) override final;
-			void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
+            void onMouseButtonDown(const sys::Vec2& pos) override final;
+            void onMouseButtonUp(const sys::Vec2& pos) override final;
+            void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
 
-			void draw(sys::Renderer& rdr) override final;
+            void draw(sys::Renderer& rdr) override final;
 
-		private:
-			BackButton(const BackButton&) = delete;
-			BackButton& operator=(const BackButton&) = delete;
+          private:
+            BackButton(const BackButton&) = delete;
+            BackButton& operator=(const BackButton&) = delete;
 
-			//Forbid access to base methods
-			void setHotspot(const sys::Vec2&) = delete;
-			void setScale(float) = delete;
-			void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
+            // Forbid access to base methods
+            void setHotspot(const sys::Vec2&) = delete;
+            void setScale(float) = delete;
+            void setSpriteDrawer(const app::ISpriteDrawer*) = delete;
 
-			ScoreScreen& m_scoreScreen;
-			app::TextureDrawer m_textureDrawer;
+            ScoreScreen& m_scoreScreen;
+            app::TextureDrawer m_textureDrawer;
 
-			bool m_bDrawOverlay = false;
-			app::TextureDrawer m_overlayDrawer;
+            bool m_bDrawOverlay = false;
+            app::TextureDrawer m_overlayDrawer;
 
-			sys::Rect m_backButtonRect;
-		};
-	}
-}
+            sys::Rect m_backButtonRect;
+        };
+    } // namespace score
+} // namespace game
 
-#endif //_BACKBUTTON_H_
+#endif // _BACKBUTTON_H_

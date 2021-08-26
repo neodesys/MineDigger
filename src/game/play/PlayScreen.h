@@ -18,139 +18,139 @@
  */
 
 #ifndef _PLAYSCREEN_H_
-#define	_PLAYSCREEN_H_
+#define _PLAYSCREEN_H_
 
-#include "../../app/IGameScreen.h"
 #include "../../app/BackBoard.h"
-#include "GemBoardView.h"
-#include "SparkSprite.h"
+#include "../../app/IGameScreen.h"
 #include "Countdown.h"
+#include "GemBoardView.h"
 #include "ScoreDisplay.h"
+#include "SparkSprite.h"
 
 namespace sys
 {
-	class Music;
+    class Music;
 }
 
 namespace game
 {
-	class MineDigger;
+    class MineDigger;
 
-	namespace play
-	{
-		class PlayScreen final : public app::IGameScreen
-		{
-		public:
-			struct Config
-			{
-				const char* gemAssetArray[GemType::NB_GEM_TYPES];
-				const char* sparkAsset;
+    namespace play
+    {
+        class PlayScreen final : public app::IGameScreen
+        {
+          public:
+            struct Config
+            {
+                const char* gemAssetArray[GemType::NB_GEM_TYPES];
+                const char* sparkAsset;
 
-				const char* playMusicAsset;
+                const char* playMusicAsset;
 
-				const char* swapSampleAsset;
-				const char* cancelSampleAsset;
-				const char* countdownSampleAsset;
+                const char* swapSampleAsset;
+                const char* cancelSampleAsset;
+                const char* countdownSampleAsset;
 
-				GemBoardView::Config gemBoardConfig;
+                GemBoardView::Config gemBoardConfig;
 
-				sys::Rect gemBoardTopClip;
-				sys::Vec2 gemBoardTopPos;
+                sys::Rect gemBoardTopClip;
+                sys::Vec2 gemBoardTopPos;
 
-				const app::KeyFrame* pSparkAnimPath;
-				std::size_t uSparkAnimPathLength;
-				unsigned int uSparkAnimSubImagesCount;
-				unsigned int uSparkAnimSubImagesStride;
-				float uSparkAnimSubImagesSpeed; //in images per sec
+                const app::KeyFrame* pSparkAnimPath;
+                std::size_t uSparkAnimPathLength;
+                unsigned int uSparkAnimSubImagesCount;
+                unsigned int uSparkAnimSubImagesStride;
+                float uSparkAnimSubImagesSpeed; // in images per sec
 
-				sys::Vec2 countdownPos;
-				float countdownScale;
-				sys::Color countdownColor;
-				sys::Color countdownShadowColor;
-				int countdownShadowOffset[2];
-				unsigned int uCountdownDuration; //in sec
+                sys::Vec2 countdownPos;
+                float countdownScale;
+                sys::Color countdownColor;
+                sys::Color countdownShadowColor;
+                int countdownShadowOffset[2];
+                unsigned int uCountdownDuration; // in sec
 
-				sys::Vec2 scoreDisplayPos;
-				float scoreDisplayScale;
-				int scoreDisplayMinDigits;
-				sys::Color scoreDisplayColor;
-				sys::Color scoreDisplayShadowColor;
-				int scoreDisplayShadowOffset[2];
-				float scoreDisplaySpeed; //in points per sec
+                sys::Vec2 scoreDisplayPos;
+                float scoreDisplayScale;
+                int scoreDisplayMinDigits;
+                sys::Color scoreDisplayColor;
+                sys::Color scoreDisplayShadowColor;
+                int scoreDisplayShadowOffset[2];
+                float scoreDisplaySpeed; // in points per sec
 
-				unsigned int uGemScorePoints;
-			};
+                unsigned int uGemScorePoints;
+            };
 
-			PlayScreen(MineDigger& game);
-			~PlayScreen() override final;
+            PlayScreen(MineDigger& game);
+            ~PlayScreen() override final;
 
-			const char* getScreenName() override final;
+            const char* getScreenName() override final;
 
-			app::ResState getResState(const sys::GameEngine* pEngine) override final;
-			void cleanRes(bool bForce) override final;
+            app::ResState getResState(const sys::GameEngine* pEngine) override final;
+            void cleanRes(bool bForce) override final;
 
-			void onGameScreenStart(sys::AudioMixer& mixer) override final;
-			void onGameScreenEnd(sys::AudioMixer& mixer) override final;
+            void onGameScreenStart(sys::AudioMixer& mixer) override final;
+            void onGameScreenEnd(sys::AudioMixer& mixer) override final;
 
-			void onMouseButtonDown(const sys::Vec2& pos) override final;
-			void onMouseButtonUp(const sys::Vec2& pos) override final;
-			void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
+            void onMouseButtonDown(const sys::Vec2& pos) override final;
+            void onMouseButtonUp(const sys::Vec2& pos) override final;
+            void onMouseMove(const sys::Vec2& pos, bool bDragging) override final;
 
-			void update(const sys::FrameInfo& frame) override final;
+            void update(const sys::FrameInfo& frame) override final;
 
-			void draw(sys::Renderer& rdr) override final;
+            void draw(sys::Renderer& rdr) override final;
 
-			void addGemPoints()
-			{
-				m_scoreDisplay.addScore(m_config.uGemScorePoints);
-			}
+            void addGemPoints()
+            {
+                m_scoreDisplay.addScore(m_config.uGemScorePoints);
+            }
 
-			unsigned int getFinalScore() const
-			{
-				return m_scoreDisplay.getScore();
-			}
+            unsigned int getFinalScore() const
+            {
+                return m_scoreDisplay.getScore();
+            }
 
-			const Config& getConfig() const
-			{
-				return m_config;
-			}
+            const Config& getConfig() const
+            {
+                return m_config;
+            }
 
-			const sys::Texture* getGemTex(GemType type) const;
+            const sys::Texture* getGemTex(GemType type) const;
 
-			sys::AudioSample* getSwapSample() const
-			{
-				return m_pSwapSample;
-			}
+            sys::AudioSample* getSwapSample() const
+            {
+                return m_pSwapSample;
+            }
 
-			sys::AudioSample* getCancelSample() const
-			{
-				return m_pCancelSample;
-			}
+            sys::AudioSample* getCancelSample() const
+            {
+                return m_pCancelSample;
+            }
 
-		private:
-			PlayScreen(const PlayScreen&) = delete;
-			PlayScreen& operator=(const PlayScreen&) = delete;
+          private:
+            PlayScreen(const PlayScreen&) = delete;
+            PlayScreen& operator=(const PlayScreen&) = delete;
 
-			MineDigger& m_game;
-			const Config& m_config;
+            MineDigger& m_game;
+            const Config& m_config;
 
-			app::BackBoard m_background;
-			GemBoardView m_gemBoardView;
-			app::TextureDrawer m_gemBoardTopDrawer;
-			app::Sprite m_gemBoardTop;
-			SparkSprite m_sparkSprite;
-			Countdown m_countdown;
-			ScoreDisplay m_scoreDisplay;
+            app::BackBoard m_background;
+            GemBoardView m_gemBoardView;
+            app::TextureDrawer m_gemBoardTopDrawer;
+            app::Sprite m_gemBoardTop;
+            SparkSprite m_sparkSprite;
+            Countdown m_countdown;
+            ScoreDisplay m_scoreDisplay;
 
-			//Screen resources
-			const sys::Texture* m_pGemTexArray[GemType::NB_GEM_TYPES] = {};
-			sys::Texture* m_pSparkTex = nullptr;
-			sys::Music* m_pPlayMusic = nullptr;
-			sys::AudioSample* m_pSwapSample = nullptr;
-			sys::AudioSample* m_pCancelSample = nullptr;
-			sys::AudioSample* m_pCountdownSample = nullptr;
-		};
-	}
-}
+            // Screen resources
+            const sys::Texture* m_pGemTexArray[GemType::NB_GEM_TYPES] = {};
+            sys::Texture* m_pSparkTex = nullptr;
+            sys::Music* m_pPlayMusic = nullptr;
+            sys::AudioSample* m_pSwapSample = nullptr;
+            sys::AudioSample* m_pCancelSample = nullptr;
+            sys::AudioSample* m_pCountdownSample = nullptr;
+        };
+    } // namespace play
+} // namespace game
 
-#endif //_PLAYSCREEN_H_
+#endif // _PLAYSCREEN_H_

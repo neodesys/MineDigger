@@ -18,23 +18,27 @@
  */
 
 #ifndef _RECT_H_
-#define	_RECT_H_
+#define _RECT_H_
 
 namespace sys
 {
-	//WARNING: Rect MUST begin exactly as SDL_Rect structure.
-	class Rect
-	{
-	public:
-		Rect() = default;
-		Rect(int x, int y) : x(x), y(y) {}
-		Rect(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
+    // WARNING: Rect MUST begin exactly as SDL_Rect structure.
+    class Rect
+    {
+      public:
+        Rect() = default;
+        Rect(int x, int y) : x(x), y(y)
+        {
+        }
+        Rect(int x, int y, int w, int h) : x(x), y(y), w(w), h(h)
+        {
+        }
 
-		int x = 0;
-		int y = 0;
-		int w = 0;
-		int h = 0;
-	};
-}
+        int x = 0;
+        int y = 0;
+        int w = 0;
+        int h = 0;
+    };
+} // namespace sys
 
-#endif //_RECT_H_
+#endif // _RECT_H_

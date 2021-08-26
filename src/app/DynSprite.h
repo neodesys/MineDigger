@@ -18,34 +18,34 @@
  */
 
 #ifndef _DYNSPRITE_H_
-#define	_DYNSPRITE_H_
+#define _DYNSPRITE_H_
 
-#include "Sprite.h"
 #include "../sys/IAnimated.h"
+#include "Sprite.h"
 
 namespace app
 {
-	class DynSprite : public Sprite, public sys::IAnimated
-	{
-	public:
-		void setAcceleration(const sys::Vec2& v)
-		{
-			m_acceleration = v;
-		}
+    class DynSprite : public Sprite, public sys::IAnimated
+    {
+      public:
+        void setAcceleration(const sys::Vec2& v)
+        {
+            m_acceleration = v;
+        }
 
-		void setImpulse(const sys::Vec2& v)
-		{
-			m_moveVec = v;
-		}
+        void setImpulse(const sys::Vec2& v)
+        {
+            m_moveVec = v;
+        }
 
-		//Position is updated using time corrected Verlet integration:
-		//P(i+1) - P(i) = (P(i) - P(i-1)) * dt(i)/dt(i-1) + A(i) * dt(i)²
-		virtual void update(const sys::FrameInfo& frame) override;
+        // Position is updated using time corrected Verlet integration:
+        // P(i+1) - P(i) = (P(i) - P(i-1)) * dt(i)/dt(i-1) + A(i) * dt(i)²
+        virtual void update(const sys::FrameInfo& frame) override;
 
-	protected:
-		sys::Vec2 m_acceleration;
-		sys::Vec2 m_moveVec;
-	};
-}
+      protected:
+        sys::Vec2 m_acceleration;
+        sys::Vec2 m_moveVec;
+    };
+} // namespace app
 
-#endif //_DYNSPRITE_H_
+#endif // _DYNSPRITE_H_

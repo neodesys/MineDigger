@@ -18,75 +18,75 @@
  */
 
 #ifndef _PATHSPRITE_H_
-#define	_PATHSPRITE_H_
+#define _PATHSPRITE_H_
 
-#include "Sprite.h"
 #include "../sys/IAnimated.h"
+#include "Sprite.h"
 
 namespace app
 {
-	struct KeyFrame
-	{
-		unsigned long uTimestamp; //in ms
-		sys::Vec2 pos;
-		float scale;
-	};
+    struct KeyFrame
+    {
+        unsigned long uTimestamp; // in ms
+        sys::Vec2 pos;
+        float scale;
+    };
 
-	enum struct AnimEndBehavior : unsigned char
-	{
-		STOP,
-		REPEAT,
-		REVERSE
-	};
+    enum struct AnimEndBehavior : unsigned char
+    {
+        STOP,
+        REPEAT,
+        REVERSE
+    };
 
-	enum struct AnimInterpolation : unsigned char
-	{
-		LINEAR,
-		CATMULL_ROM
-	};
+    enum struct AnimInterpolation : unsigned char
+    {
+        LINEAR,
+        CATMULL_ROM
+    };
 
-	class PathSprite : public Sprite, public sys::IAnimated
-	{
-	public:
-		//WARNING: animation key-frames are considered as a resource which can
-		//be shared among different sprites, therefore pAnimPath array is NOT
-		//copied. Thus, pAnimPath array lifetime MUST be superior to this
-		//sprite lifetime.
-		//
-		//WARNING: animation key-frames MUST be ordered correctly with
-		//DISTINCT and INCREASING uTimestamp timestamps. If the key-frames are
-		//not correctly ordered or with identic timestamps, the sprite behavior
-		//is undefined.
-		void setAnimPath(const KeyFrame* pAnimPath, std::size_t uAnimPathLength);
+    class PathSprite : public Sprite, public sys::IAnimated
+    {
+      public:
+        // WARNING: animation key-frames are considered as a resource which can
+        // be shared among different sprites, therefore pAnimPath array is NOT
+        // copied. Thus, pAnimPath array lifetime MUST be superior to this
+        // sprite lifetime.
+        //
+        // WARNING: animation key-frames MUST be ordered correctly with
+        // DISTINCT and INCREASING uTimestamp timestamps. If the key-frames are
+        // not correctly ordered or with identic timestamps, the sprite behavior
+        // is undefined.
+        void setAnimPath(const KeyFrame* pAnimPath, std::size_t uAnimPathLength);
 
-		bool startAnim();
-		void stopAnim();
+        bool startAnim();
+        void stopAnim();
 
-		void setAnimEndBehavior(AnimEndBehavior behavior)
-		{
-			m_animEndBehavior = behavior;
-		}
+        void setAnimEndBehavior(AnimEndBehavior behavior)
+        {
+            m_animEndBehavior = behavior;
+        }
 
-		void setAnimInterpolation(AnimInterpolation interpol)
-		{
-			m_animInterpolation = interpol;
-		}
+        void setAnimInterpolation(AnimInterpolation interpol)
+        {
+            m_animInterpolation = interpol;
+        }
 
-		virtual void update(const sys::FrameInfo& frame) override;
+        virtual void update(const sys::FrameInfo& frame) override;
 
-	protected:
-		const KeyFrame* m_pAnimPath = nullptr;
-		std::size_t m_uAnimPathLength = 0;
+      protected:
+        const KeyFrame* m_pAnimPath = nullptr;
+        std::size_t m_uAnimPathLength = 0;
 
-		unsigned long m_uAnimStartTimestamp = 0;
-		bool m_bAnimRunning = false;
+        unsigned long m_uAnimStartTimestamp = 0;
+        bool m_bAnimRunning = false;
 
-		AnimEndBehavior m_animEndBehavior = AnimEndBehavior::STOP;
-		AnimInterpolation m_animInterpolation = AnimInterpolation::LINEAR;
+        AnimEndBehavior m_animEndBehavior = AnimEndBehavior::STOP;
+        AnimInterpolation m_animInterpolation = AnimInterpolation::LINEAR;
 
-		void linearInterpolate(const KeyFrame* pPrevKey, float f, const KeyFrame* pNextKey);
-		void catmullRomInterpolate(const KeyFrame* pPrevKey, float f, const KeyFrame* pNextKey);
-	};
-}
+        void linearInterpolate(const KeyFrame* pPrevKey, float f, const KeyFrame* pNextKey);
+        void catmullRomInterpolate(const KeyFrame* pPrevKey, float f, const KeyFrame* pNextKey);
+    };
+} // namespace app
 
-#endif //_PATHSPRITE_H_
+#endif // _PATHSPRITE_H_

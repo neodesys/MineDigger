@@ -18,63 +18,63 @@
  */
 
 #ifndef _GEMBOARDMODEL_H_
-#define	_GEMBOARDMODEL_H_
+#define _GEMBOARDMODEL_H_
 
 namespace game
 {
-	namespace play
-	{
-		enum GemType : unsigned char
-		{
-			BLUE_GEM = 0,
-			GREEN_GEM,
-			PURPLE_GEM,
-			RED_GEM,
-			YELLOW_GEM,
-			NB_GEM_TYPES,
-			NO_GEM = NB_GEM_TYPES
-		};
+    namespace play
+    {
+        enum GemType : unsigned char
+        {
+            BLUE_GEM = 0,
+            GREEN_GEM,
+            PURPLE_GEM,
+            RED_GEM,
+            YELLOW_GEM,
+            NB_GEM_TYPES,
+            NO_GEM = NB_GEM_TYPES
+        };
 
-		class GemBoardView;
+        class GemBoardView;
 
-		class GemBoardModel final
-		{
-		public:
-			GemBoardModel(GemBoardView& view) : m_view(view)
-			{
-				clearBoard();
-			}
+        class GemBoardModel final
+        {
+          public:
+            GemBoardModel(GemBoardView& view) : m_view(view)
+            {
+                clearBoard();
+            }
 
-			static constexpr int NB_ROWS = 8;
-			static constexpr int NB_COLS = 8;
-			static constexpr int COLLAPSE_SIZE = 3;
+            static constexpr int NB_ROWS = 8;
+            static constexpr int NB_COLS = 8;
+            static constexpr int COLLAPSE_SIZE = 3;
 
-			GemType getGem(int row, int col) const
-			{
-				return m_board[row][col];
-			}
+            GemType getGem(int row, int col) const
+            {
+                return m_board[row][col];
+            }
 
-			void resetBoard(bool bFillBoard);
-			void swapGems(int rowA, int colA, int rowB, int colB);
-			void tryCollapse(int row, int col);
+            void resetBoard(bool bFillBoard);
+            void swapGems(int rowA, int colA, int rowB, int colB);
+            void tryCollapse(int row, int col);
 
-		private:
-			GemBoardModel(const GemBoardModel&) = delete;
-			GemBoardModel& operator=(const GemBoardModel&) = delete;
+          private:
+            GemBoardModel(const GemBoardModel&) = delete;
+            GemBoardModel& operator=(const GemBoardModel&) = delete;
 
-			GemBoardView& m_view;
+            GemBoardView& m_view;
 
-			GemType m_board[NB_ROWS][NB_COLS];
+            GemType m_board[NB_ROWS][NB_COLS];
 
-			void clearBoard();
-			GemType generateGem(int row, int col) const;
+            void clearBoard();
+            GemType generateGem(int row, int col) const;
 
-			bool getHCollapseBounds(int row, int& minCol, int& maxCol, GemType type) const;
-			bool getVCollapseBounds(int col, int& minRow, int& maxRow, GemType type) const;
+            bool getHCollapseBounds(int row, int& minCol, int& maxCol, GemType type) const;
+            bool getVCollapseBounds(int col, int& minRow, int& maxRow, GemType type) const;
 
-			void executeVCollapsing(int col, int minRow, int maxRow);
-		};
-	}
-}
+            void executeVCollapsing(int col, int minRow, int maxRow);
+        };
+    } // namespace play
+} // namespace game
 
-#endif //_GEMBOARDMODEL_H_
+#endif // _GEMBOARDMODEL_H_

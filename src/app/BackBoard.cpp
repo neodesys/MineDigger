@@ -23,11 +23,11 @@
 
 namespace app
 {
-	void BackBoard::draw(sys::Renderer& rdr)
-	{
-		rdr.clearBackground(&m_backColor);
+    void BackBoard::draw(sys::Renderer& rdr)
+    {
+        rdr.clearBackground(&m_backColor);
 
-		if (m_pTexture)
-			rdr.drawTexture(*m_pTexture, nullptr, nullptr);
-	}
-}
+        if (m_pTexture)
+            rdr.drawTexture(*m_pTexture, nullptr, nullptr);
+    }
+} // namespace app

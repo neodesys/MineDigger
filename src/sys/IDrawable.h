@@ -18,18 +18,18 @@
  */
 
 #ifndef _IDRAWABLE_H_
-#define	_IDRAWABLE_H_
+#define _IDRAWABLE_H_
 
 namespace sys
 {
-	class Renderer;
+    class Renderer;
 
-	class IDrawable
-	{
-	public:
-		virtual ~IDrawable() = default;
-		virtual void draw(Renderer& rdr) = 0;
-	};
-}
+    class IDrawable
+    {
+      public:
+        virtual ~IDrawable() = default;
+        virtual void draw(Renderer& rdr) = 0;
+    };
+} // namespace sys
 
-#endif //_IDRAWABLE_H_
+#endif // _IDRAWABLE_H_

@@ -18,43 +18,43 @@
  */
 
 #ifndef _IRESHOLDER_H_
-#define	_IRESHOLDER_H_
+#define _IRESHOLDER_H_
 
 namespace sys
 {
-	class GameEngine;
+    class GameEngine;
 }
 
 namespace app
 {
-	enum struct ResState : unsigned char
-	{
-		READY,
-		LOADING,
-		ERROR
-	};
+    enum struct ResState : unsigned char
+    {
+        READY,
+        LOADING,
+        ERROR
+    };
 
-	class IResHolder
-	{
-	public:
-		virtual ~IResHolder() = default;
+    class IResHolder
+    {
+      public:
+        virtual ~IResHolder() = default;
 
-		//If pEngine is null, getResState() MUST only return the current
-		//resources state WITHOUT trying to load next resource.
-		//If pEngine is valid, getResState() MUST load next resource and return
-		//READY if all resources have been loaded, LOADING if there is still
-		//resources to load, or ERROR if resource loading has failed.
-		//In all cases, before returning ERROR, getResState() SHOULD call
-		//cleanRes(true) to enforce resources cleaning.
-		virtual ResState getResState(const sys::GameEngine* pEngine) = 0;
+        // If pEngine is null, getResState() MUST only return the current
+        // resources state WITHOUT trying to load next resource.
+        // If pEngine is valid, getResState() MUST load next resource and return
+        // READY if all resources have been loaded, LOADING if there is still
+        // resources to load, or ERROR if resource loading has failed.
+        // In all cases, before returning ERROR, getResState() SHOULD call
+        // cleanRes(true) to enforce resources cleaning.
+        virtual ResState getResState(const sys::GameEngine* pEngine) = 0;
 
-		//cleanRes() must be deeply transitive if this IResHolder contains any
-		//embedded IResHolder.
-		//If bForce is true, cleanRes() MUST clean all resources.
-		//If bForce is false, cleanRes() MAY clean all or some of the resources
-		//depending of the IResHolder usage.
-		virtual void cleanRes(bool bForce) = 0;
-	};
-}
+        // cleanRes() must be deeply transitive if this IResHolder contains any
+        // embedded IResHolder.
+        // If bForce is true, cleanRes() MUST clean all resources.
+        // If bForce is false, cleanRes() MAY clean all or some of the resources
+        // depending of the IResHolder usage.
+        virtual void cleanRes(bool bForce) = 0;
+    };
+} // namespace app
 
-#endif //_IRESHOLDER_H_
+#endif // _IRESHOLDER_H_

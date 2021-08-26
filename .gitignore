@@ -1,16 +1,105 @@
-/ide/nbproject/private/
+# Project artifacts
+minedigger.keystore
+prebuild/
 
-/ide/msvc/ipch/
-/ide/msvc/.vs/
-/ide/msvc/~*
-/ide/msvc/*.sdf
-/ide/msvc/*.opensdf
-/ide/msvc/*.suo
-/ide/msvc/*.user
+# Build artifacts
+build*/
+obj/
+bin/
+out/
+Debug/
+Release/
+Properties/
+*.pdb
 
-/build/
-/bin/
+# IDE auto-generated files
+.idea/
+.vs/
+.vscode/
+ipch/
+nbproject/private/
+nbbuild/
+nbdist/
+.gradle/
+.nb-gradle
+.nb-gradle-properties
+local.properties
+DerivedData/
+xcuserdata/
+~*
+*.booproj
+*.csproj
+*.log
+*.opensdf
+*.pidb
+*.projitems
+*.sdf
+*.shproj
+*.suo
+*.svd
+*.tmp
+*.user
+*.userprefs
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.iml
+*.db
+*.opendb
+.settings
+.classpath
 
-*.swp
+# Vim artifacts
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+Session.vim
+.netrwhist
+tags
+
+# Patch/diff artifacts
+*.diff
+*.orig
+*.rej
+interdiff*.txt
+
+# Linux artifacts
+\#*\#
 *~
+*.swo
+*.swp
 core
+
+# Mac artifacts
+._*
+.DS*
+*.DS_Store
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.project
+.Spotlight-V100
+.Trashes
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows artifacts
+$RECYCLE.BIN/
+*.lnk
+*.cab
+*.msi
+*.msm
+*.msp
+ehthumbs.db
+ehthumbs_vista.db
+[Tt]humbs.db
+*.stackdump
+Desktop.ini
