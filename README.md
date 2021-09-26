@@ -2,6 +2,7 @@ MineDigger
 ==========
 
 [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat)](/LICENSE)
+[![Build](https://github.com/neodesys/MineDigger/workflows/Build%20MineDigger/badge.svg)](https://github.com/neodesys/MineDigger/actions)
 
 **Contents**
 

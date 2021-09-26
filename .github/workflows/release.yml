@@ -1,0 +1,58 @@
+name: Release MineDigger
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+"]
+
+jobs:
+  package-linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive sudo apt-get install -qq libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+      - uses: actions/checkout@v2
+      - name: Build project
+        run: make PLATFORM=linux ARCH=64 BUILD=release
+      - name: Create package
+        run: tar -czvf MineDigger_linux64.tgz -C bin/linux64 MineDigger_release res/
+      - name: Upload package
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux64
+          path: MineDigger_linux64.tgz
+          retention-days: 1
+          if-no-files-found: error
+  package-windows:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
+      - name: Build project
+        run: msbuild.exe ide/msvc/MineDigger.vcxproj -property:Configuration=Release -property:Platform=x64
+      - name: Create package
+        run: 7z.exe a -y ../../MineDigger_windows64.zip -mx=9 MineDigger_release.exe *.dll res/
+        working-directory: bin/msc64
+      - name: Upload package
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows64
+          path: MineDigger_windows64.zip
+          retention-days: 1
+          if-no-files-found: error
+  create-release:
+    runs-on: ubuntu-20.04
+    needs: [package-linux, package-windows]
+    steps:
+      - name: Download packages
+        id: download
+        uses: actions/download-artifact@v2
+        with:
+          path: ~/packages
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          fail_on_unmatched_files: true
+          files: |
+            ${{ steps.download.outputs.download-path }}/linux64/MineDigger_linux64.tgz
+            ${{ steps.download.outputs.download-path }}/windows64/MineDigger_windows64.zip
