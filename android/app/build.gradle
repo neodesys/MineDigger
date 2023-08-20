@@ -3,12 +3,13 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 33
+    namespace "com.neodesys.minedigger"
 
     defaultConfig {
         minSdk 16
-        targetSdk 30
-        versionCode 3
+        targetSdk 33
+        versionCode 4
         versionName "1.0"
     }
 
@@ -18,11 +19,11 @@ android {
         assets.srcDir "../../res"
     }
 
-    aaptOptions {
-        ignoreAssets "BackGround.jpg:ScoreBack.jpg"
+    androidResources {
+        ignoreAssetsPattern "BackGround.jpg:ScoreBack.jpg"
     }
 
-    lintOptions {
+    lint {
         disable "AllowBackup"
     }
 
@@ -30,8 +31,8 @@ android {
         release {
             storeFile file("../minedigger.keystore")
             keyAlias "release"
-            storePassword ""
-            keyPassword ""
+            storePassword = getPassword("store")
+            keyPassword = getPassword("key")
         }
     }
 
@@ -68,46 +69,36 @@ android {
     }
 }
 
-import groovy.swing.SwingBuilder;
+import groovy.swing.SwingBuilder
 
-tasks.register("askReleaseSigningPasswords") {
-    doLast {
-        def storePass = ""
-        def keyPass = ""
+def getPassword(String type) {
+    String password = ""
 
-        if (System.console() == null) {
-            System.setProperty("java.awt.headless", "false")
-            new SwingBuilder().edt {
-                dialog(modal: true, title: "Keystore passwords", alwaysOnTop: true, resizable: false, locationRelativeTo: null, pack: true, show: true) {
-                    vbox {
-                        label(text: "Please enter keystore password:")
-                        def input1 = passwordField()
-                        label(text: "Please enter signing key password:")
-                        def input2 = passwordField()
-                        button(defaultButton: true, text: "OK", actionPerformed: {
-                                storePass = input1.password;
-                                keyPass = input2.password;
-                                dispose();
-                        })
-                    }
+    def signingTasks = ["assemble", "assembleRelease", "build", "buildRelease", "bundle", "bundleRelease", "installRelease"]
+    signingTasks.retainAll(gradle.startParameter.taskNames)
+    if (signingTasks.size() <= 0)
+        return password
+
+    if (System.console() == null) {
+        System.setProperty("java.awt.headless", "false")
+        new SwingBuilder().edt {
+            dialog(modal: true, title: "Password", alwaysOnTop: true, resizable: false, locationRelativeTo: null, pack: true, show: true) {
+                vbox {
+                    label(text: "Please enter " + type + " password:")
+                    def input = passwordField()
+                    button(defaultButton: true, text: "OK", actionPerformed: {
+                        password = input.password
+                        dispose()
+                    })
                 }
             }
-        } else {
-            storePass = System.console().readPassword("\nPlease enter keystore password: ")
-            keyPass = System.console().readPassword("\nPlease enter signing key password: ")
         }
-
-        if ((storePass.size() <= 0) || (keyPass.size() <= 0)) {
-            throw new InvalidUserDataException("You must enter keystore passwords to proceed.")
-        }
-
-        android.signingConfigs.release.storePassword = new String(storePass)
-        android.signingConfigs.release.keyPassword = new String(keyPass)
+    } else {
+        password = System.console().readPassword("\nPlease enter " + type + " password: ")
     }
-}
 
-tasks.whenTaskAdded { task ->
-    if ((task.name == "packageRelease") || (task.name == "signReleaseBundle")) {
-        task.dependsOn askReleaseSigningPasswords
-    }
+    if (password.size() <= 0)
+        throw new InvalidUserDataException("You must enter " + type + " password to proceed.")
+
+    return password
 }

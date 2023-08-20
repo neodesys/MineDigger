@@ -153,7 +153,7 @@ function buildAndroidLibs()
         APP_PLATFORM := android-$ANDROID_VERSION
         APP_STL := c++_static
         APP_MODULES := ${MODULE}_static
-    EOF
+EOF
 
     #Build Android libraries
     local RET=0
