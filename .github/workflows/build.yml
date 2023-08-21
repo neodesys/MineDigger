@@ -13,13 +13,13 @@ jobs:
         run: |
           sudo apt-get update -qq
           DEBIAN_FRONTEND=noninteractive sudo apt-get install -qq libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build project
         run: make PLATFORM=linux ARCH=64 BUILD=debug
   build-windows:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: microsoft/setup-msbuild@v1
       - name: Build project
         run: msbuild.exe ide/msvc/MineDigger.vcxproj -property:Configuration=Debug -property:Platform=x64
