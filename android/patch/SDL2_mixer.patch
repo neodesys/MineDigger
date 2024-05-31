@@ -1,52 +1,122 @@
---- Android.mk
-+++ Android.mk
-@@ -2,21 +2,22 @@
- 
+---
+ Android.mk  | 15 ++++++++-------
+ load_ogg.c  | 16 ++++++++--------
+ music_ogg.c |  8 ++++----
+ 3 files changed, 20 insertions(+), 19 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 81c94b5..06e6973 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -2,21 +2,22 @@ LOCAL_PATH := $(call my-dir)
+
  include $(CLEAR_VARS)
- 
+
 -LOCAL_MODULE := SDL2_mixer
 +LOCAL_MODULE := SDL2_mixer_static
 +LOCAL_MODULE_FILENAME := libSDL2_mixer
- 
+
  # Enable this if you want to support loading MOD music via modplug
  # The library path should be a relative path to this directory.
 -SUPPORT_MOD_MODPLUG := true
 +SUPPORT_MOD_MODPLUG := false
  MODPLUG_LIBRARY_PATH := external/libmodplug-0.8.8.4
- 
+
  # Enable this if you want to support loading MOD music via mikmod
  # The library path should be a relative path to this directory.
 -SUPPORT_MOD_MIKMOD := true
 +SUPPORT_MOD_MIKMOD := false
  MIKMOD_LIBRARY_PATH := external/libmikmod-3.1.12
- 
+
  # Enable this if you want to support loading MP3 music via SMPEG
  # The library path should be a relative path to this directory.
 -SUPPORT_MP3_SMPEG := true
 +SUPPORT_MP3_SMPEG := false
  SMPEG_LIBRARY_PATH := external/smpeg2-2.0.0
- 
+
  # Enable this if you want to support loading OGG Vorbis music via Tremor
-@@ -26,14 +27,14 @@
+@@ -26,14 +27,14 @@ OGG_LIBRARY_PATH := external/libogg-1.3.1
  VORBIS_LIBRARY_PATH := external/libvorbisidec-1.2.1
- 
- 
+
+
 -LOCAL_C_INCLUDES := $(LOCAL_PATH)
 +LOCAL_C_INCLUDES := $(LOCAL_PATH) ../SDL2-2.0.3/include
  LOCAL_CFLAGS := -DWAV_MUSIC
- 
+
  LOCAL_SRC_FILES := $(notdir $(filter-out %/playmus.c %/playwave.c, $(wildcard $(LOCAL_PATH)/*.c)))
- 
+
  LOCAL_LDLIBS :=
  LOCAL_STATIC_LIBRARIES :=
 -LOCAL_SHARED_LIBRARIES := SDL2
 +LOCAL_SHARED_LIBRARIES :=
- 
+
  ifeq ($(SUPPORT_MOD_MODPLUG),true)
      LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(MODPLUG_LIBRARY_PATH)/src $(LOCAL_PATH)/$(MODPLUG_LIBRARY_PATH)/src/libmodplug
-@@ -110,4 +111,4 @@
- 
+@@ -110,4 +111,4 @@ endif
+
  LOCAL_EXPORT_C_INCLUDES += $(LOCAL_C_INCLUDES)
- 
+
 -include $(BUILD_SHARED_LIBRARY)
 +include $(BUILD_STATIC_LIBRARY)
+diff --git a/load_ogg.c b/load_ogg.c
+index 4b92f44..c1e1e7a 100644
+--- a/load_ogg.c
++++ b/load_ogg.c
+@@ -43,24 +43,24 @@ static size_t sdl_read_func(void *ptr, size_t size, size_t nmemb, void *datasour
+     return SDL_RWread((SDL_RWops*)datasource, ptr, size, nmemb);
+ }
+
+-static Sint64 sdl_seek_func(void *datasource, ogg_int64_t offset, int whence)
++static int sdl_seek_func(void *datasource, ogg_int64_t offset, int whence)
+ {
+-    return SDL_RWseek((SDL_RWops*)datasource, offset, whence);
++    return (int)SDL_RWseek((SDL_RWops*)datasource, offset, whence);
+ }
+
+-static Sint64 sdl_close_func_freesrc(void *datasource)
++static int sdl_close_func_freesrc(void *datasource)
+ {
+-    return SDL_RWclose((SDL_RWops*)datasource);
++    return (int)SDL_RWclose((SDL_RWops*)datasource);
+ }
+
+-static Sint64 sdl_close_func_nofreesrc(void *datasource)
++static int sdl_close_func_nofreesrc(void *datasource)
+ {
+-    return SDL_RWseek((SDL_RWops*)datasource, 0, RW_SEEK_SET);
++    return (int)SDL_RWseek((SDL_RWops*)datasource, 0, RW_SEEK_SET);
+ }
+
+-static Sint64 sdl_tell_func(void *datasource)
++static long sdl_tell_func(void *datasource)
+ {
+-    return SDL_RWtell((SDL_RWops*)datasource);
++    return (long)SDL_RWtell((SDL_RWops*)datasource);
+ }
+
+
+diff --git a/music_ogg.c b/music_ogg.c
+index 5997cc7..fb42a35 100644
+--- a/music_ogg.c
++++ b/music_ogg.c
+@@ -56,14 +56,14 @@ static size_t sdl_read_func(void *ptr, size_t size, size_t nmemb, void *datasour
+     return SDL_RWread((SDL_RWops*)datasource, ptr, size, nmemb);
+ }
+
+-static Sint64 sdl_seek_func(void *datasource, ogg_int64_t offset, int whence)
++static int sdl_seek_func(void *datasource, ogg_int64_t offset, int whence)
+ {
+-    return SDL_RWseek((SDL_RWops*)datasource, offset, whence);
++    return (int)SDL_RWseek((SDL_RWops*)datasource, offset, whence);
+ }
+
+-static Sint64 sdl_tell_func(void *datasource)
++static long sdl_tell_func(void *datasource)
+ {
+-    return SDL_RWtell((SDL_RWops*)datasource);
++    return (long)SDL_RWtell((SDL_RWops*)datasource);
+ }
+
+ /* Load an OGG stream from an SDL_RWops object */
+--
+2.34.1

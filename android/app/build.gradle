@@ -3,13 +3,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
+    ndkVersion "26.3.11579264"
     namespace "com.neodesys.minedigger"
 
     defaultConfig {
-        minSdk 16
-        targetSdk 33
-        versionCode 4
+        minSdk 21
+        targetSdk 34
+        versionCode 5
         versionName "1.0"
     }
 

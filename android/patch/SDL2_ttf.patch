@@ -1,28 +1,36 @@
---- Android.mk
-+++ Android.mk
-@@ -2,11 +2,12 @@
- 
+---
+ Android.mk | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index ed5a9bf..f2efe5c 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -2,11 +2,12 @@ LOCAL_PATH := $(call my-dir)
+
  include $(CLEAR_VARS)
- 
+
 -LOCAL_MODULE := SDL2_ttf
 +LOCAL_MODULE := SDL2_ttf_static
 +LOCAL_MODULE_FILENAME := libSDL2_ttf
- 
+
  FREETYPE_LIBRARY_PATH := external/freetype-2.4.12
- 
+
 -LOCAL_C_INCLUDES := $(LOCAL_PATH)
 +LOCAL_C_INCLUDES := $(LOCAL_PATH) ../SDL2-2.0.3/include
- 
+
  LOCAL_SRC_FILES := SDL_ttf.c \
- 
-@@ -59,8 +60,8 @@
+
+@@ -59,8 +60,8 @@ ifneq ($(FREETYPE_LIBRARY_PATH),)
          $(FREETYPE_LIBRARY_PATH)/src/winfonts/winfnt.c
  endif
- 
+
 -LOCAL_SHARED_LIBRARIES := SDL2
 +LOCAL_SHARED_LIBRARIES :=
- 
+
  LOCAL_EXPORT_C_INCLUDES += $(LOCAL_C_INCLUDES)
- 
+
 -include $(BUILD_SHARED_LIBRARY)
 +include $(BUILD_STATIC_LIBRARY)
+--
+2.34.1

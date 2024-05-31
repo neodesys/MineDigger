@@ -1,11 +1,35 @@
---- Android.mk
-+++ Android.mk
-@@ -61,7 +61,7 @@
- 
+---
+ Android.mk                            | 4 ++--
+ src/render/opengles2/SDL_gles2funcs.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 4f94082..a213083 100755
+--- a/Android.mk
++++ b/Android.mk
+@@ -61,9 +61,9 @@ LOCAL_MODULE := SDL2_static
+
  LOCAL_MODULE_FILENAME := libSDL2
- 
+
 -LOCAL_SRC_FILES += $(LOCAL_PATH)/src/main/android/SDL_android_main.c
 +LOCAL_SRC_FILES += src/main/android/SDL_android_main.c
- 
+
  LOCAL_LDLIBS := 
  LOCAL_EXPORT_LDLIBS := -Wl,--undefined=Java_org_libsdl_app_SDLActivity_nativeInit -ldl -lGLESv1_CM -lGLESv2 -llog -landroid
+
+ include $(BUILD_STATIC_LIBRARY)
+diff --git a/src/render/opengles2/SDL_gles2funcs.h b/src/render/opengles2/SDL_gles2funcs.h
+index c2a20f7..7178659 100644
+--- a/src/render/opengles2/SDL_gles2funcs.h
++++ b/src/render/opengles2/SDL_gles2funcs.h
+@@ -53,7 +53,7 @@ SDL_PROC(void, glPixelStorei, (GLenum, GLint))
+ SDL_PROC(void, glReadPixels, (GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*))
+ SDL_PROC(void, glScissor, (GLint, GLint, GLsizei, GLsizei))
+ SDL_PROC(void, glShaderBinary, (GLsizei, const GLuint *, GLenum, const void *, GLsizei))
+-SDL_PROC(void, glShaderSource, (GLuint, GLsizei, const char **, const GLint *))
++SDL_PROC(void, glShaderSource, (GLuint, GLsizei, const char *const *, const GLint *))
+ SDL_PROC(void, glTexImage2D, (GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *))
+ SDL_PROC(void, glTexParameteri, (GLenum, GLenum, GLint))
+ SDL_PROC(void, glTexSubImage2D, (GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *))
+--
+2.34.1
