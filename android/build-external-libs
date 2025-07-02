@@ -31,7 +31,7 @@ readonly PATCH_DIR="patch"
 readonly DEST_DIR="app/prebuild"
 
 readonly ANDROID_ABI="all"
-readonly ANDROID_VERSION="16"
+readonly ANDROID_VERSION="21"
 
 readonly ZENITY=`which zenity`
 readonly NDK_BUILD=`which ndk-build`
@@ -136,15 +136,14 @@ function buildAndroidLibs()
 
     #Patch external sources
     if [ -f "$PATCH_DIR/${MODULE}.patch" ]; then
-        if ! patch -bd "$SRC_DIR" -r - <"$PATCH_DIR/${MODULE}.patch" &>$DEBUG_STREAM; then
-            rm -f "$SRC_DIR/Android.mk.orig"
+        if ! patch -d "$SRC_DIR" -p1 -r - <"$PATCH_DIR/${MODULE}.patch" &>$DEBUG_STREAM; then
             echo -e "\033[1;31mCannot apply sources patch to $SRC_DIR\033[0m" >&2
             return 3
         fi
     fi
 
     #Create Application.mk file
-    trap 'rm -f "$SRC_DIR/Application.mk"; mv -f "$SRC_DIR/Android.mk.orig" "$SRC_DIR/Android.mk" 2>/dev/null; rm -rf "$SRC_DIR/obj"; exit 0' SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGTERM
+    trap 'rm -rf "$SRC_DIR/obj"; exit 0' SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGTERM
 
     cat <<-EOF > "$SRC_DIR/Application.mk"
         APP_BUILD_SCRIPT := Android.mk
@@ -179,8 +178,6 @@ EOF
         RET=4
     fi
 
-    rm -f "$SRC_DIR/Application.mk"
-    mv -f "$SRC_DIR/Android.mk.orig" "$SRC_DIR/Android.mk" 2>$DEBUG_STREAM
     rm -rf "$SRC_DIR/obj"
 
     return $RET
