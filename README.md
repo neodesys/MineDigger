@@ -165,9 +165,9 @@ To build the game for Android, you will need:
   [Cygwin](https://www.cygwin.com/) under a Windows host
 - [Java JDK](http://openjdk.java.net/install/) (version 11 and above)
 - [Android SDK](https://developer.android.com/sdk/index.html#Other) (version
-  30.0.2 and above)
+  36 and above)
 - [Android NDK](http://developer.android.com/ndk/downloads/index.html) (version
-  21.4.7075529 and above)
+  29.0.13599879 and above)
 - [SDL2 sources](https://www.libsdl.org/release/SDL2-2.0.3.zip) (version 2.0.3)
 - [SDL2_image sources](https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.0.zip)
   (version 2.0.0)
